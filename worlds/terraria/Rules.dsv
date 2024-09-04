@@ -508,6 +508,7 @@ The Plan;                           ;                                           
 Tax Collector;                      Npc;                                        (Purification Powder & Wall of Flesh) | @getfixedboi;
 Spider Fangs;                       ;                                           Wall of Flesh;
 Spider Armor;                       Armor Minions(3);                           Spider Fangs;
+Spider Staff;                       Summoning;                                  Spider Fangs;
 Cross Necklace;                     ;                                           Wall of Flesh;
 Altar;                              ;                                           Wall of Flesh & @hammer(80);
 Begone, Evil!;                      Achievement;                                Altar;
@@ -562,13 +563,17 @@ Dreadnautilus;                      Calamity | Location;                        
 Don't Dread on Me;                  Not Calamity | Achievement;                 Hardmode Blood Moon;
 
 // Hardmode Goblins
-The First Shadowflame;              Calamity | Minions(1);                      Goblin Army Clear | Wall of Flesh;
+Hardmode Goblin Army;               ;                                           Goblin Army CLear | Wall of Flesh;
+The First Shadowflame;              Calamity | Minions(1);                      Hardmode Goblin Army;
+Shadowflame Hex Doll;               Magic;                                      Hardmode Goblin Army;
+Shadowflame Knife;                  Melee;                                      Hardmode Goblin Army;
+Shadowflame Bow;                    Ranged;                                     Hardmode Goblin Army;
 
 // Advanced Mobility
 Advanced Mobility;                  ;                                           Basic Mobility & (Soul of Flight | ~@require_wings);
 
 // Pre-HM Boss
-Pre-Mech Melee Weapons;             Melee | Weapon Power(4);                    Wall of Flesh & (Goblin Invasion | Blood Moon | Ice Biome);
+Pre-Mech Melee Weapons;             Melee | Weapon Power(4);                    Wall of Flesh & (Shadowflame Knife | Bananarang | Ice Biome);
 Pre-Mech Melee Armor;               Melee | Armor Power(4);                     Wall of Flesh & Hardmode Forge;
 Pre-Mech Melee Accessories;         Melee | Accessory Power(4);                 Wall of Flesh & Feral Claws & Magma Stone & Cobalt Shield & #Wall of Flesh;
 Pre-Mech Ranged Weapons;            Ranged | Weapon Power(4);                   Wall of Flesh & Hellwing Bow | Phoenix Blaster;
