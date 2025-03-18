@@ -172,7 +172,7 @@ class RequireOptimalGear(Toggle):
     """
     Whether access to optimal gear is required logically before fighting a boss.
     This option covers weapons, armor, and non-mobility accessories.
-    Enabled by default.
+    Enabled by default. (DEPRECATED FOR NOW)
     """
     display_name = "Require Optimal Gear"
     default = True

@@ -69,6 +69,7 @@ class TerrariaWorld(World):
 
     calamity = False
     getfixedboi = False
+    require_optimal_gear = False
 
     ter_items: List[str]
     ter_locations: List[str]
@@ -93,6 +94,8 @@ class TerrariaWorld(World):
         allowed_as_class_item = self.class_acceptable(flags)
         return allowed_as_rule and allowed_as_class_item
 
+    def is_disallowed_enumerable_location(self, flags):
+        return ("Orb" in flags and not self.options.orb_loot) or ("Chest" in flags and not self.options.chest_loot)
     def class_acceptable(self, flags):
         if ("Melee" not in flags
                 and "Ranged" not in flags
@@ -106,7 +109,7 @@ class TerrariaWorld(World):
                 or ("Summoning" in flags and self.options.class_preference.value == 4))
 
     def is_event(self, flags):
-        return not self.is_location(flags) and not self.is_item(flags)
+        return not self.is_disallowed_enumerable_location(flags) and not self.is_location(flags) and not self.is_item(flags)
 
     def any_achievements_enabled(self):
         return (self.options.normal_achievements.value
@@ -376,7 +379,7 @@ class TerrariaWorld(World):
 
                 return not condition.sign
             elif condition.condition == "gear_power":
-                if not self.options.require_optimal_gear.value:
+                if not self.require_optimal_gear:
                     return True
                 if type(condition.argument) is not int:
                     raise Exception("@gear_power requires an integer argument")

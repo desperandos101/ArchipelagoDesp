@@ -123,7 +123,6 @@ Celestial Magnet;                   Chest Item;                                 
 // Underground
 Watch Your Step!;                   Achievement | Early;
 Throwing Lines;                     Achievement | Early;
-Torch God;                          Location | Item(Reward: Torch God's Favor);
 Vehicular Manslaughter;             Achievement | Early;
 Ancient Bone Dust;                  Calamity;
 Depth Meter;
@@ -311,6 +310,9 @@ Pre-Boss Magic Accessories;         Magic | Accessory Power(2);                 
 Pre-Boss Summoning Weapons;         Summoning | Weapon Power(1);                Snapthorn & (Vampire Frog Staff | Flinx Staff);
 Pre-Boss Summoning Armor;           Summoning | Armor Power(1);                 Flinx Fur Coat;
 Pre-Boss Summoning Accessories;     Summoning | Accessory Power(1);             Feral Claws;
+
+// Torch God
+Torch God;                          Location | Item(Reward: Torch God's Favor); Basic Mobility;
 
 // King Slime
 King Slime;                         Location;                                   Basic Mobility & @gear_power(1);
