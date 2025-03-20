@@ -312,7 +312,7 @@ Pre-Boss Summoning Armor;           Summoning | Armor Power(1);                 
 Pre-Boss Summoning Accessories;     Summoning | Accessory Power(1);             Feral Claws;
 
 // Torch God
-Torch God;                          Location | Item(Reward: Torch God's Favor); Basic Mobility;
+Torch God;                          Location | Item(Torch God's Favor);         Basic Mobility;
 
 // King Slime
 King Slime;                         Location;                                   Basic Mobility & @gear_power(1);

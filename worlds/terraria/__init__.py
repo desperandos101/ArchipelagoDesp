@@ -13,8 +13,8 @@ from .Checks import (
     rule_indices,
     labels,
     rewards,
-    item_name_to_id,
-    location_name_to_id,
+    item_names,
+    location_names,
     loc_to_item,
     get_cond_name,
     COND_ITEM,
@@ -64,8 +64,10 @@ class TerrariaWorld(World):
     # cache any texts, then increase by 1 for each release that makes changes.
     data_version = 3
 
-    item_name_to_id = item_name_to_id
-    location_name_to_id = location_name_to_id
+    item_names = item_names
+    location_names = location_names
+    item_name_to_id = {}
+    location_name_to_id = {}
 
     calamity = False
     getfixedboi = False
@@ -95,7 +97,9 @@ class TerrariaWorld(World):
         return allowed_as_rule and allowed_as_class_item
 
     def is_disallowed_enumerable_location(self, flags):
-        return ("Orb" in flags and not self.options.orb_loot) or ("Chest" in flags and not self.options.chest_loot)
+        return (("Orb" in flags and not self.options.orb_loot)
+                or ("Chest" in flags and not self.options.chest_loot))
+
     def class_acceptable(self, flags):
         if ("Melee" not in flags
                 and "Ranged" not in flags
@@ -109,7 +113,8 @@ class TerrariaWorld(World):
                 or ("Summoning" in flags and self.options.class_preference.value == 4))
 
     def is_event(self, flags):
-        return not self.is_disallowed_enumerable_location(flags) and not self.is_location(flags) and not self.is_item(flags)
+        return not self.is_disallowed_enumerable_location(flags) and not self.is_location(flags) and not self.is_item(
+            flags)
 
     def any_achievements_enabled(self):
         return (self.options.normal_achievements.value
@@ -172,6 +177,9 @@ class TerrariaWorld(World):
                 self.mark_progression(
                     rule.conditions
                 )
+
+        next_id = 0x7E0000
+
         for rule in rules[:goal]:
             early = "Early" in rule.flags
             grindy = "Grindy" in rule.flags
@@ -212,23 +220,29 @@ class TerrariaWorld(World):
             if self.is_location(rule.flags):
                 # Location
                 location_count += 1
-                locations.append(rule.name)
-            elif self.is_event(rule.flags):
-                # Event
+                self.location_name_to_id[rule.name] = next_id
+                next_id += 1
                 locations.append(rule.name)
 
             if self.is_item(rule.flags) and not (
                     "Achievement" in rule.flags and rule.name not in goal_locations
             ):
                 # Item
+                rule.name = rule.flags.get("Item") or rule.name
                 item_count += 1
+                self.item_name_to_id[rule.name] = next_id
+                next_id += 1
                 if rule.name not in goal_locations:
                     items.append(rule.name)
-            elif (
-                    self.is_event(rule.flags)
-            ):
+
+            if self.is_event(rule.flags):
                 # Event
+                self.item_name_to_id[rule.name] = next_id
+                next_id += 1
+                self.location_name_to_id[rule.name] = next_id
+                next_id += 1
                 items.append(rule.name)
+                locations.append(rule.name)
 
         fill_checks = self.options.fill_extra_checks_with.value
         ordered_rewards = [
@@ -267,7 +281,7 @@ class TerrariaWorld(World):
         for location in self.ter_locations:
             menu.locations.append(
                 TerrariaLocation(
-                    self.player, location, location_name_to_id.get(location), menu
+                    self.player, location, self.location_name_to_id.get(location), menu
                 )
             )
 
@@ -279,7 +293,7 @@ class TerrariaWorld(World):
         else:
             classification = ItemClassification.filler
 
-        return TerrariaItem(item, classification, item_name_to_id[item], self.player)
+        return TerrariaItem(item, classification, self.item_name_to_id.get(item), self.player)
 
     def create_items(self) -> None:
         for item in self.ter_items:
@@ -305,7 +319,7 @@ class TerrariaWorld(World):
                     classification = ItemClassification.useful
 
                 locked_items[location] = TerrariaItem(
-                    location, classification, None, self.player
+                    location, classification, self.location_name_to_id[location], self.player
                 )
 
         for item, location in self.ter_goals.items():

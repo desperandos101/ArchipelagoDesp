@@ -2,6 +2,10 @@ from BaseClasses import Item, Location
 from typing import Tuple, Union, Set, List, Dict
 import string
 import pkgutil
+from .Options import TerrariaOptions, Goal
+
+class Options:
+    options: TerrariaOptions
 
 
 class TerrariaItem(Item):
@@ -258,9 +262,9 @@ def read_data() -> Tuple[
         # Reward to flags
     Dict[str, Set[str]],
         # Item name to ID
-    Dict[str, int],
+    List[str],
         # Location name to ID
-    Dict[str, int],
+    List[str],
         # Location name to Item name
     Dict[str, str],
         # NPCs
@@ -286,8 +290,8 @@ def read_data() -> Tuple[
         # Accessory to minion count,
     Dict[str, int],
 ]:
-    next_id = 0x7E0000
-    item_name_to_id = {}
+
+    item_names = []
 
     goals = []
     goal_indices = {}
@@ -635,12 +639,11 @@ def read_data() -> Tuple[
                     or "Not Biome Lock" in flags
                     or "Grappling Hook" in flags):
                 item_name = get_default_item_name(name, flags)
-                if item_name in item_name_to_id:
+                if item_name in item_names:
                     raise Exception(
                         f"item `{item_name}` on line `{line + 1}` shadows a previous item"
                     )
-                item_name_to_id[item_name] = next_id
-                next_id += 1
+                item_names.append(item_name)
                 loc_to_item[name] = item_name
             else:
                 loc_to_item[name] = name
@@ -664,8 +667,7 @@ def read_data() -> Tuple[
                 accessories[name] = power
 
             if "Mech Boss" in flags:
-                item_name_to_id[name] = next_id
-                next_id += 1
+                item_names.append(name)
                 mech_bosses.append(name)
                 mech_boss_loc.append(name)
 
@@ -779,24 +781,21 @@ def read_data() -> Tuple[
                 )
             labels[label].append(reward)
 
-            if reward in item_name_to_id:
+            if reward in item_names:
                 raise Exception(
                     f"item `{reward}` on line `{line + 1}` shadows a previous item"
                 )
-            item_name_to_id[reward] = next_id
-            next_id += 1
+            item_names.append(reward)
 
-    item_name_to_id["Reward: Coins"] = next_id
-    next_id += 1
+    item_names.append("Reward: Coins")
 
-    location_name_to_id = {}
+    location_names = []
 
     for rule in rules:
         if "Location" in rule.flags or "Achievement" in rule.flags or "Chest" in rule.flags or "Orb" in rule.flags:
-            if rule.name in location_name_to_id:
+            if rule.name in location_names:
                 raise Exception(f"location `{rule.name}` shadows a previous location")
-            location_name_to_id[rule.name] = next_id
-            next_id += 1
+            location_names.append(rule.name)
 
     return (
         goals,
@@ -804,8 +803,8 @@ def read_data() -> Tuple[
         rule_indices,
         labels,
         rewards,
-        item_name_to_id,
-        location_name_to_id,
+        item_names,
+        location_names,
         loc_to_item,
         npcs,
         pickaxes,
@@ -827,8 +826,8 @@ def read_data() -> Tuple[
     rule_indices,
     labels,
     rewards,
-    item_name_to_id,
-    location_name_to_id,
+    item_names,
+    location_names,
     loc_to_item,
     npcs,
     pickaxes,

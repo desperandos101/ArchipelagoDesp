@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Choice, DeathLink, PerGameCommonOptions, Toggle
+from Options import Choice, DeathLink, PerGameCommonOptions, Toggle, Range
 
 
 class Calamity(Toggle):
@@ -178,6 +178,15 @@ class RequireOptimalGear(Toggle):
     default = True
 
 
+class EpicNumber(Range):
+    """
+    A funny little thing! I wonder what it may do.
+    """
+    display_name = 'Epic Number'
+    default = 0
+    range_end = 1000
+
+
 @dataclass
 class TerrariaOptions(PerGameCommonOptions):
     calamity: Calamity
@@ -197,4 +206,5 @@ class TerrariaOptions(PerGameCommonOptions):
     require_boots_jump_hook: RequireBootsJumpAndHook
     require_wings: RequireWings
     require_optimal_gear: RequireOptimalGear
+    epic_number: EpicNumber
     death_link: DeathLink
