@@ -1,5 +1,5 @@
 # Look at `Rules.dsv` first to get an idea for how this works
-
+import copy
 import logging
 from typing import Union, Tuple, List, Dict, Set
 from worlds.AutoWorld import WebWorld, World
@@ -228,12 +228,12 @@ class TerrariaWorld(World):
                     "Achievement" in rule.flags and rule.name not in goal_locations
             ):
                 # Item
-                rule.name = rule.flags.get("Item") or rule.name
+                item_name = rule.flags.get("Item") or rule.name
                 item_count += 1
-                self.item_name_to_id[rule.name] = next_id
+                self.item_name_to_id[item_name] = next_id
                 next_id += 1
                 if rule.name not in goal_locations:
-                    items.append(rule.name)
+                    items.append(item_name)
 
             if self.is_event(rule.flags):
                 # Event

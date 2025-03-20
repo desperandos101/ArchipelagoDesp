@@ -2,10 +2,6 @@ from BaseClasses import Item, Location
 from typing import Tuple, Union, Set, List, Dict
 import string
 import pkgutil
-from .Options import TerrariaOptions, Goal
-
-class Options:
-    options: TerrariaOptions
 
 
 class TerrariaItem(Item):
