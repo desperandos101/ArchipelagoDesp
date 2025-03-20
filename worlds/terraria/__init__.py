@@ -71,6 +71,8 @@ class TerrariaWorld(World):
     getfixedboi = False
     require_optimal_gear = False
 
+    multi_loc_dict = {}
+
     ter_items: List[str]
     ter_locations: List[str]
 
@@ -82,20 +84,32 @@ class TerrariaWorld(World):
         return ("Location" in flags
                 or ("Achievement" in flags and self.any_achievements_enabled)
                 or ("Chest" in flags and self.options.chest_loot)
-                or ("Orb" in flags and self.options.orb_loot))
+                or ("Orb" in flags and self.options.orb_loot.value))
 
     def is_item(self, flags):
         allowed_as_rule = ("Item" in flags
                            or ("Chest Item" in flags and self.options.chest_loot)
-                           or ("Orb Item" in flags and self.options.orb_loot)
+                           or ("Orb Item" in flags and self.options.orb_loot.value)
                            or ("Biome Lock" in flags and self.options.biome_locks)
                            or ("Not Biome Lock" in flags and not self.options.biome_locks)
                            or ("Grappling Hook" in flags and self.options.grappling_hook))
         allowed_as_class_item = self.class_acceptable(flags)
         return allowed_as_rule and allowed_as_class_item
 
-    def is_disallowed_enumerable_location(self, flags):
-        return ("Orb" in flags and not self.options.orb_loot) or ("Chest" in flags and not self.options.chest_loot)
+    def is_multi_location(self, flags):
+        return "Orb" in flags or "Chest" in flags
+
+    def multi_is_overflow(self, name):
+        loc_name = ''.join(i for i in name if not i.isdigit()).strip()
+        loc_num = int(''.join(i for i in name if i.isdigit()))
+        allowed_quant = self.multi_loc_dict[loc_name]
+        return loc_num > allowed_quant
+
+
+    def is_disallowed_multi_location(self, flags):
+        return ("Orb" in flags and not self.options.orb_loot.value) or (
+                    "Chest" in flags and not self.options.chest_loot)
+
     def class_acceptable(self, flags):
         if ("Melee" not in flags
                 and "Ranged" not in flags
@@ -109,7 +123,7 @@ class TerrariaWorld(World):
                 or ("Summoning" in flags and self.options.class_preference.value == 4))
 
     def is_event(self, flags):
-        return not self.is_disallowed_enumerable_location(flags) and not self.is_location(flags) and not self.is_item(flags)
+        return not self.is_disallowed_multi_location(flags) and not self.is_location(flags) and not self.is_item(flags)
 
     def any_achievements_enabled(self):
         return (self.options.normal_achievements.value
@@ -125,7 +139,18 @@ class TerrariaWorld(World):
                 or self.options.chest_loot)
 
     def generate_early(self) -> None:
-        self.options.goal
+        self.multi_loc_dict = {
+            "Gold or Wooden Chest": self.options.chest_surface.value,
+            "Water Chest": self.options.chest_water.value,
+            "Floating Island Chest": self.options.chest_sky.value,
+            "Frozen Chest": self.options.chest_frozen.value,
+            "Sandstone Chest": self.options.chest_desert.value,
+            "Ivy or Mahogany Chest": self.options.chest_jungle.value,
+            "Shadow Chest": self.options.chest_underworld.value,
+            "Dungeon Chest": self.options.chest_dungeon.value,
+
+            "Shadow/Crimson Orb": self.options.orb_loot.value
+        }
         goal_id = self.options.goal.value
         goal, goal_locations = goals[goal_id]
         ter_goals = {}
@@ -178,7 +203,9 @@ class TerrariaWorld(World):
             fishing = "Fishing" in rule.flags
 
             if (
-                    (not self.getfixedboi and "Getfixedboi" in rule.flags)
+                    (self.options.toggle_evil == 0 and "Crimson" in rule.flags)
+                    or (self.options.toggle_evil == 1 and "Corruption" in rule.flags)
+                    or (not self.getfixedboi and "Getfixedboi" in rule.flags)
                     or (self.getfixedboi and "Not Getfixedboi" in rule.flags)
                     or (not self.calamity and "Calamity" in rule.flags)
                     or (self.calamity and "Not Calamity" in rule.flags)
@@ -208,6 +235,9 @@ class TerrariaWorld(World):
                     while current_item_count < item_count:
                         items.append(progressive_item)
                         current_item_count += 1
+
+            if ("Chest" in rule.flags or "Orb" in rule.flags) and self.multi_is_overflow(rule.name):
+                continue
 
             if self.is_location(rule.flags):
                 # Location

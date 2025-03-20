@@ -623,6 +623,8 @@ def read_data() -> Tuple[
                     "Weapon Power",
                     "Armor Power",
                     "Accessory Power",
+                    "Corruption",
+                    "Crimson",
                 }:
                     raise Exception(
                         f"rule `{name}` on line `{line + 1}` has unrecognized flag `{flag}`"

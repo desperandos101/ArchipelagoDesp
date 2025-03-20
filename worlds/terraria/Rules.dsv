@@ -69,7 +69,7 @@ Pretty in Pink;                     Achievement | Grindy;
 Marathon Medalist;                  Achievement | Grindy;
 
 // Surface Chests
-Gold or Wooden Chest;               Chest(10);
+Gold or Wooden Chest;               Chest(100);
 Spear;                              Chest Item | Melee;
 Blowpipe;                           Chest Item | Ranged;
 Wooden Boomerang;                   Chest Item | Melee;
@@ -97,7 +97,7 @@ Supreme Helper Minion!;             Achievement | Fishing;                      
 Aquatic Heart;                      Calamity;
 
 // Water Chests
-Water Chest;                        Chest(3);                                   Ocean;
+Water Chest;                        Chest(100);                                 Ocean;
 Breathing Reed;                     Chest Item;                                 Ocean;
 Flipper;                            Chest Item;                                 Ocean;
 Trident;                            Chest Item | Melee;                         Ocean;
@@ -114,7 +114,7 @@ Codebreaker Base;                   Calamity;
 Clumsy Slime;                       Npc;                                        Sky and Floating Islands;
 
 // Floating Island Chests
-Floating Island Chest;              Chest(3);                                   Sky and Floating Islands;
+Floating Island Chest;              Chest(100);                                 Sky and Floating Islands;
 Starfury;                           Chest Item | Melee;                         Sky and Floating Islands;
 Shiny Red Balloon;                  Chest Item;                                 Sky and Floating Islands;
 Lucky Horseshoe;                    Chest Item;                                 Sky and Floating Islands;
@@ -174,7 +174,7 @@ Flinx Fur Coat;                     Summoning | Armor Minions(1);               
 Flinx Staff;                        Summoning;                                  Snow Biome;
 
 // Frozen Chests
-Frozen Chest;                       Chest(5);                                   Snow Biome;
+Frozen Chest;                       Chest(100);                                 Snow Biome;
 Ice Skates;                         Chest Item;                                 Snow Biome;
 Flurry Boots;                       Chest Item;                                 Snow Biome;
 Blizzard in a Bottle;               Chest Item;                                 Snow Biome;
@@ -192,7 +192,7 @@ Cool Slime;                         Npc;                                        
 Fossil Armor;                       ;                                           Desert Biome;
 
 // Desert Chests
-Sandstone Chest;                    Chest(5);                                   Desert Biome;
+Sandstone Chest;                    Chest(100);                                 Desert Biome;
 Dunerider Boots;                    Chest Item;                                 Desert Biome;
 Sandstorm in a Bottle;              Chest Item;                                 Desert Biome;
 Magic Conch;                        Chest Item;                                 Desert Biome;
@@ -223,7 +223,7 @@ Thorn Chakram;                      Melee;                                      
 Amazon;                             Melee;                                      Stinger & Jungle Spores & Vine;
 
 // Jungle Chests
-Ivy or Mahogany Chest;              Chest(5);                                   Jungle;
+Ivy or Mahogany Chest;              Chest(100);                                 Jungle;
 Anklet of the Wind;                 Chest Item;                                 Jungle;
 Feral Claws;                        Chest Item | Melee | Summoning;             Jungle;
 Staff of Regrowth;                  Chest Item;                                 Jungle;
@@ -245,7 +245,7 @@ Demon Scythe;                       ;                                           
 
 // Shadow Chests
 Shadow Key;                         ;                                           (@biome_locks & Underworld) | (~@biome_locks & Dungeon);
-Shadow Chest;                       Chest(5);                                   Shadow Key;
+Shadow Chest;                       Chest(100);                                 Shadow Key;
 Sunfury;                            Chest Item | Melee;                         Shadow Key;
 Flower of Fire;                     Chest Item | Magic;                         Shadow Key;
 Flamelash;                          Chest Item | Magic;                         Shadow Key;
@@ -262,20 +262,20 @@ Completely Awesome;                 Achievement;                                
 Illegal Gun Parts;                  ;                                           Arms Dealer | Flamethrower;
 
 // Shadow Orbs
-Shadow/Crimson Orb;                 Orb(6);                                     Evil Biome;
-Musket;                             Orb Item | Ranged;                          Evil Biome;
-Shadow Orb;                         Orb Item;                                   Evil Biome;
-Vilethorn;                          Orb Item | Magic;                           Evil Biome;
-Ball O' Hurt;                       Orb Item | Melee;                           Evil Biome;
-Band of Starpower;                  Orb Item | Magic;                           Evil Biome;
+Shadow/Crimson Orb;                 Orb(20);                                    Evil Biome;
+Musket;                             Orb Item | Corruption | Ranged;             Evil Biome;
+Shadow Orb;                         Orb Item | Corruption;                      Evil Biome;
+Vilethorn;                          Orb Item | Corruption | Magic;              Evil Biome;
+Ball O' Hurt;                       Orb Item | Corruption | Melee;              Evil Biome;
+Band of Starpower;                  Orb Item | Corruption | Magic;              Evil Biome;
 Mana Regeneration Band;             ;                                           Band of Regeneration & Band of Starpower;
 Magic Cuffs;                        ;                                           Mana Regeneration Band & Shackle;
 Celestial Cuffs;                    ;                                           Magic Cuffs & Celestial Magnet;
-The Undertaker;                     Orb Item | Ranged;                          Evil Biome;
-Crimson Heart;                      Orb Item;                                   Evil Biome;
-Panic Necklace;                     Orb Item;                                   Evil Biome;
-Crimson Rod;                        Orb Item | Magic;                           Evil Biome;
-The Rotted Fork;                    Orb Item | Melee;                           Evil Biome;
+The Undertaker;                     Orb Item | Crimson | Ranged;                Evil Biome;
+Crimson Heart;                      Orb Item | Crimson;                         Evil Biome;
+Panic Necklace;                     Orb Item | Crimson;                         Evil Biome;
+Crimson Rod;                        Orb Item | Crimson | Magic;                 Evil Biome;
+The Rotted Fork;                    Orb Item | Crimson | Melee;                 Evil Biome;
 
 // Abyss
 Ink Bomb;                           Calamity;
@@ -453,7 +453,7 @@ Spinal Tap;                         Summoning;                                  
 Cascade;                            Melee;                                      Dungeon & Underworld;
 
 //Dungeon Chests
-Dungeon Chest;                      Chest(7);                                   Dungeon;
+Dungeon Chest;                      Chest(100);                                 Dungeon;
 Handgun;                            Chest Item | Ranged;                        Dungeon;
 Phoenix Blaster;                    Ranged;                                     Handgun & Hellstone Bar;
 Aqua Scepter;                       Chest Item | Magic;                         Dungeon;

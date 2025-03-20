@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Choice, DeathLink, PerGameCommonOptions, Toggle
+from Options import Choice, DeathLink, PerGameCommonOptions, Toggle, Range
 
 
 class Calamity(Toggle):
@@ -43,13 +43,28 @@ class Goal(Choice):
     default = 0
 
 
+class ToggleEvil(Choice):
+    """
+    Toggle how corruption/crimson items are distributed in the world.
+    Corruption: Allows only corruption items in the item pool, excluding crimson items.
+    Crimson: Allows only crimson items in the item pool, excluding corruption items.
+    Both: Allows both corruption and crimson items in the item pool.
+
+    Defaults to both.
+    """
+    display_name = "Toggle Evil Biome"
+    option_corruption = 0
+    option_crimson = 1
+    option_both = 2
+
+
 class ReceiveDangerousEventsAsItems(Choice):
     """
     Toggle which events will be received as manual trigger items instead.
     All: Hardmode, All invasions, Blood Moon, Solar Eclipse.
     Hardmode Only: The only event out of the above list that will not activate when received is Hardmode.
     None: All events activate once received.
-    Hardmode events will not activate automatically until Hardmode itself is active.
+    Hardmode events will not activate until Hardmode itself is active.
     """
     display_name = "Receive Dangerous Events As Items"
     option_all = 2
@@ -76,12 +91,86 @@ class RandomizeChestLoot(Toggle):
     default = True
 
 
-class RandomizeShadowOrbLoot(Toggle):
+class ToggleChestSlotsSurface(Range):
     """
-    Shadow orb/Crimson heart items are added into the item pool and breaking orbs grant checks.
+    Select how many Gold or Wooden Chest checks to add (if chests are randomized).
+    """
+    display_name = "Gold or Wooden Chest Slots"
+    default = 20
+    range_end = 50
+
+
+class ToggleChestSlotsWater(Range):
+    """
+    Select how many Water Chest checks to add (if chests are randomized).
+    """
+    display_name = "Water Chest Slots"
+    default = 6
+    range_end = 50
+
+
+class ToggleChestSlotsSky(Range):
+    """
+    Select how many Floating Island Chest checks to add (if chests are randomized).
+    """
+    display_name = "Floating Island Chest Slots"
+    default = 3
+    range_end = 50
+
+
+class ToggleChestSlotsFrozen(Range):
+    """
+    Select how many Frozen Chest checks to add (if chests are randomized).
+    """
+    display_name = "Gold or Wooden Chest Slots"
+    default = 7
+    range_end = 50
+
+
+class ToggleChestSlotsDesert(Range):
+    """
+    Select how many Sandstone/Pyramid Chest checks to add (if chests are randomized).
+    """
+    display_name = "Gold or Wooden Chest Slots"
+    default = 9
+    range_end = 50
+
+
+class ToggleChestSlotsJungle(Range):
+    """
+    Select how many Ivy/Mahogany Chest checks to add (if chests are randomized).
+    """
+    display_name = "Gold or Wooden Chest Slots"
+    default = 7
+    range_end = 50
+
+
+class ToggleChestSlotsUnderworld(Range):
+    """
+    Select how many Shadow Chest checks to add (if chests are randomized).
+    """
+    display_name = "Gold or Wooden Chest Slots"
+    default = 5
+    range_end = 50
+
+
+class ToggleChestSlotsDungeon(Range):
+    """
+    Select how many Dungeon Chest checks to add (if chests are randomized).
+    """
+    display_name = "Gold or Wooden Chest Slots"
+    default = 7
+    range_end = 50
+
+
+class RandomizeShadowOrbLoot(Range):
+    """
+    If above zero, shadow orb/Crimson heart items are added into the item pool and breaking orbs grants checks.
+    Defaults to ten (five items per evil biome).
     """
     display_name = "Randomize Shadow Orb Loot"
-    default = True
+    default = 10
+    range_end = 20
 
 
 class RandomizeGrapplingHooks(Toggle):
@@ -90,14 +179,14 @@ class RandomizeGrapplingHooks(Toggle):
     """
 
     display_name = "Randomize Grappling Hook"
-    default = False
+    default = True
 
 
 class EarlyAchievements(Toggle):
     """Adds checks upon collecting early Pre-Hardmode achievements. Adds many sphere 1 checks."""
 
     display_name = "Early Pre-Hardmode achievements"
-    default = True
+    default = False
 
 
 class NormalAchievements(Toggle):
@@ -107,7 +196,7 @@ class NormalAchievements(Toggle):
     """
 
     display_name = "Normal achievements"
-    default = True
+    default = False
 
 
 class GrindyAchievements(Toggle):
@@ -178,14 +267,32 @@ class RequireOptimalGear(Toggle):
     default = True
 
 
+class EpicNumber(Range):
+    """
+    A funny little thing! I wonder what it may do.
+    """
+    display_name = 'Epic Number'
+    default = 50
+    range_end = 100
+
+
 @dataclass
 class TerrariaOptions(PerGameCommonOptions):
     calamity: Calamity
     getfixedboi: Getfixedboi
     goal: Goal
+    toggle_evil: ToggleEvil
     events_as_items: ReceiveDangerousEventsAsItems
     biome_locks: BiomeLocks
     chest_loot: RandomizeChestLoot
+    chest_surface: ToggleChestSlotsSurface
+    chest_water: ToggleChestSlotsWater
+    chest_sky: ToggleChestSlotsSky
+    chest_frozen: ToggleChestSlotsFrozen
+    chest_desert: ToggleChestSlotsDesert
+    chest_jungle: ToggleChestSlotsJungle
+    chest_underworld: ToggleChestSlotsUnderworld
+    chest_dungeon: ToggleChestSlotsDungeon
     orb_loot: RandomizeShadowOrbLoot
     grappling_hook: RandomizeGrapplingHooks
     early_achievements: EarlyAchievements
@@ -197,4 +304,5 @@ class TerrariaOptions(PerGameCommonOptions):
     require_boots_jump_hook: RequireBootsJumpAndHook
     require_wings: RequireWings
     require_optimal_gear: RequireOptimalGear
+    epic_number: EpicNumber
     death_link: DeathLink
