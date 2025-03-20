@@ -581,12 +581,13 @@ def read_data() -> Tuple[
                 return quant_to_return
 
             quant = get_loc_quantity()
-            if quant > 0:
-                create_new_rule(f"{name} 1", flags, operator, conditions)
-                for i in range(1, quant):
-                    create_new_rule(f"{name} {i + 1}", flags, operator, conditions)
-            else:
-                create_new_rule(name, flags, operator, conditions)
+            # if quant > 0:
+            #    create_new_rule(f"{name} 1", flags, operator, conditions)
+            #    for i in range(1, quant):
+            #        create_new_rule(f"{name} {i + 1}", flags, operator, conditions)
+            #else:
+            #    create_new_rule(name, flags, operator, conditions)
+            create_new_rule(name, flags, operator, conditions)
 
             for flag in flags:
                 if flag not in {

@@ -68,6 +68,7 @@ class TerrariaWorld(World):
     location_names = location_names
     item_name_to_id = {}
     location_name_to_id = {}
+    mult_loc_to_rule = {}
 
     calamity = False
     getfixedboi = False
@@ -85,6 +86,9 @@ class TerrariaWorld(World):
                 or ("Achievement" in flags and self.any_achievements_enabled)
                 or ("Chest" in flags and self.options.chest_loot)
                 or ("Orb" in flags and self.options.orb_loot))
+
+    def is_mult_location(self, flags):
+        return "Chest" in flags or "Orb" in flags
 
     def is_item(self, flags):
         allowed_as_rule = ("Item" in flags
@@ -116,6 +120,13 @@ class TerrariaWorld(World):
         return not self.is_disallowed_enumerable_location(flags) and not self.is_location(flags) and not self.is_item(
             flags)
 
+    def get_rule(self, rule_name):
+        if (base_loc_name := self.mult_loc_to_rule.get(rule_name)) is not None:
+            index = rule_indices.get(base_loc_name)
+        else:
+            index = rule_indices.get(rule_name)
+        return rules[index] if index is not None else None
+
     def any_achievements_enabled(self):
         return (self.options.normal_achievements.value
                 or self.options.early_achievements.value
@@ -136,7 +147,7 @@ class TerrariaWorld(World):
         ter_goals = {}
         goal_items = set()
         for location in goal_locations:
-            flags = rules[rule_indices[location]].flags
+            flags = self.get_rule(location).flags
             if not self.options.calamity.value and "Calamity" in flags:
                 logging.warning(
                     f"Terraria goal `{Goal.name_lookup[goal_id]}`, which requires Calamity, was selected with Calamity disabled; enabling Calamity"
@@ -219,10 +230,22 @@ class TerrariaWorld(World):
 
             if self.is_location(rule.flags):
                 # Location
-                location_count += 1
-                self.location_name_to_id[rule.name] = next_id
-                next_id += 1
-                locations.append(rule.name)
+                if self.is_mult_location(rule.flags):
+                    counter = 1
+                    quant = self.options.epic_number.value
+                    while counter <= quant:
+                        new_name = f"{rule.name} {counter}"
+                        location_count += 1
+                        self.location_name_to_id[new_name] = next_id
+                        next_id += 1
+                        locations.append(new_name)
+                        self.mult_loc_to_rule[new_name] = rule.name
+                        counter += 1
+                else:
+                    location_count += 1
+                    self.location_name_to_id[rule.name] = next_id
+                    next_id += 1
+                    locations.append(rule.name)
 
             if self.is_item(rule.flags) and not (
                     "Achievement" in rule.flags and rule.name not in goal_locations
@@ -251,7 +274,10 @@ class TerrariaWorld(World):
             if self.calamity or "Calamity" not in rewards[reward]
         ]
         while fill_checks == 1 and item_count < location_count and ordered_rewards:
-            items.append(ordered_rewards.pop(0))
+            reward = ordered_rewards.pop(0)
+            items.append(reward)
+            self.item_name_to_id[reward] = next_id
+            next_id += 1
             item_count += 1
 
         random_rewards = [
@@ -261,11 +287,17 @@ class TerrariaWorld(World):
         ]
         self.multiworld.random.shuffle(random_rewards)
         while fill_checks == 1 and item_count < location_count and random_rewards:
-            items.append(random_rewards.pop(0))
+            reward = (random_rewards.pop(0))
+            items.append(reward)
+            self.item_name_to_id[reward] = next_id
+            next_id += 1
             item_count += 1
 
         while item_count < location_count:
-            items.append("Reward: Coins")
+            reward = "Reward: Coins"
+            items.append(reward)
+            self.item_name_to_id[reward] = next_id
+            next_id += 1
             item_count += 1
 
         self.ter_items = items
@@ -297,8 +329,7 @@ class TerrariaWorld(World):
 
     def create_items(self) -> None:
         for item in self.ter_items:
-            if (rule_index := rule_indices.get(item)) is not None:
-                rule = rules[rule_index]
+            if (rule := self.get_rule(item)) is not None:
                 if self.is_item(rule.flags):
                     name = Checks.get_default_item_name(item, rule.flags)
                 else:
@@ -311,7 +342,7 @@ class TerrariaWorld(World):
         locked_items = {}
 
         for location in self.ter_locations:
-            rule = rules[rule_indices[location]]
+            rule = self.get_rule(location)
             if self.is_event(rule.flags):
                 if location in progression:
                     classification = ItemClassification.progression
@@ -337,7 +368,7 @@ class TerrariaWorld(World):
             else:
                 cond_name = condition.condition
 
-            rule = rules[rule_indices[cond_name]]
+            rule = self.get_rule(cond_name)
             if self.is_item(rule.flags):
                 name = Checks.get_default_item_name(cond_name, rule.flags)
             else:
@@ -345,7 +376,7 @@ class TerrariaWorld(World):
 
             return condition.sign == state.has(name, self.player, item_count)
         elif condition.type == COND_LOC:
-            rule = rules[rule_indices[condition.condition]]
+            rule = self.get_rule(condition.condition)
             return condition.sign == self.check_conditions(
                 state, rule.operator, rule.conditions
             )
@@ -403,9 +434,10 @@ class TerrariaWorld(World):
                 adequate_accessories = False
 
                 def power_met(group, level):
-                    flags = rules[rule_indices[group]].flags
+                    rule = self.get_rule(group)
+                    flags = rule.flags
                     if (level >= condition.argument
-                            and self.check_conditions(state, True, rules[rule_indices[group]].conditions)
+                            and self.check_conditions(state, True, rule.conditions)
                             and self.class_acceptable(flags)):
                         return True
 
@@ -501,7 +533,7 @@ class TerrariaWorld(World):
                 cond_name = get_cond_name(condition)
                 prog = cond_name in progression
                 progression.add(loc_to_item[cond_name])
-                rule = rules[rule_indices[cond_name]]
+                rule = self.get_rule(cond_name)
                 if (
                         not prog
                         and self.is_event(rule.flags)
@@ -511,21 +543,21 @@ class TerrariaWorld(World):
                     )
             elif condition.type == COND_LOC:
                 self.mark_progression(
-                    rules[rule_indices[condition.condition]].conditions
+                    self.get_rule(condition.condition).conditions
                 )
             elif condition.type == COND_FN:
                 if condition.condition == "gear_power":
                     def minimum_progression_group(item_group_list):  # In truth, it returns the first valid group
                         # in the set.
                         for item_group, level in item_group_list.items():
-                            flags = rules[rule_indices[item_group]].flags
+                            flags = self.get_rule(item_group).flags
                             if (level >= condition.argument
                                     and self.class_acceptable(flags)):
                                 return item_group
 
-                    self.mark_progression(rules[rule_indices[minimum_progression_group(weapons)]].conditions)
-                    self.mark_progression(rules[rule_indices[minimum_progression_group(armour)]].conditions)
-                    self.mark_progression(rules[rule_indices[minimum_progression_group(accessories)]].conditions)
+                    self.mark_progression(self.get_rule(minimum_progression_group(weapons)).conditions)
+                    self.mark_progression(self.get_rule(minimum_progression_group(armour)).conditions)
+                    self.mark_progression(self.get_rule(minimum_progression_group(accessories)).conditions)
             elif condition.type == COND_GROUP:
                 _, conditions = condition.condition
                 self.mark_progression(conditions)
@@ -533,7 +565,7 @@ class TerrariaWorld(World):
     def set_rules(self) -> None:
         for location in self.ter_locations:
             def check(state: CollectionState, location=location):
-                rule = rules[rule_indices[location]]
+                rule = self.get_rule(location)
                 return self.check_conditions(state, rule.operator, rule.conditions)
 
             self.multiworld.get_location(location, self.player).access_rule = check
