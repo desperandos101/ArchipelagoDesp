@@ -215,6 +215,9 @@ def get_cond_name(condition):
         return condition.condition
 
 
+
+
+
 def validate_conditions(
         rule: str,
         rule_indices: dict,

@@ -17,8 +17,8 @@ Progressive Dungeon;                Item;
 Dungeon;                            ;                                           Progressive Dungeon(1);
 Underworld;                         Biome Lock;
 Spider Nest;                        Biome Lock;
-Marble;                             Biome Lock;
-Granite;                            Biome Lock;
+Marble Biome;                             Biome Lock;
+Granite Biome;                            Biome Lock;
 
 // Immediately accessible
 Work Bench;
@@ -223,16 +223,16 @@ Spore Bat;                          Common Enemy;                               
 Shroomerang;                        Common Enemy Item | Melee;                  Spore Bat;
 
 // Marble/Granite Chests
-Marble Chest;                       Chest(100);                                 Marble;
-Granite Chest;                      Chest(100);                                 Granite;
+Marble Chest;                       Chest(100);                                 Marble Biome;
+Granite Chest;                      Chest(100);                                 Granite Biome;
 
 // Marble/Granite Enemies
-Hoplite;                            Common Enemy;                               Marble;
+Hoplite;                            Common Enemy;                               Marble Biome;
 Gladius;                            Common Enemy Item | Melee;                  Hoplite;
 Gladiator set;                      Common Enemy Item;                          Hoplite;
-Granite Golem;                      Common Enemy;                               Granite;
-Granite Elemental;                  Common Enemy;                               Granite;
-Night Vision Helmet;                Common Enemy Item;                          Granite;
+Granite Golem;                      Common Enemy;                               Granite Biome;
+Granite Elemental;                  Common Enemy;                               Granite Biome;
+Night Vision Helmet;                Common Enemy Item;                          Granite Biome;
 
 // Spider Nest
 Jeepers Creepers;                   Achievement;                                Spider Nest;
@@ -709,7 +709,7 @@ Star Cloak;                         Miniboss Enemy Item;                        
 Cross Necklace;                     Miniboss Enemy Item;                        Mimic;
 
 // Hardmode Marble
-Medusa;                             Rare Enemy;                                 HM & Marble;
+Medusa;                             Rare Enemy;                                 HM & Marble Biome;
 Medusa Head;                        Rare Enemy Item | Magic;                    Medusa;
 Pocket Mirror;                      Rare Enemy Item;                            Medusa | Blindfold | (@calamity & Crystal Shard & Soul of Night);
 

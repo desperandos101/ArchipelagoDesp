@@ -73,6 +73,8 @@ class TerrariaWorld(World):
     require_optimal_gear = False
 
     multi_loc_dict = {}
+    multi_loc_slot_dicts = {}
+    hardmode_items = []
 
     ter_items: List[str]
     ter_locations: List[str]
@@ -112,14 +114,16 @@ class TerrariaWorld(World):
         return False
 
     def multi_is_overflow(self, name):
-        loc_name = ''.join(i for i in name if not i.isdigit()).strip()
-        loc_num = int(''.join(i for i in name if i.isdigit()))
+        loc_name = self.get_multi_loc_name(name)
+        loc_num = self.get_multi_loc_num(name)
         allowed_quant = self.multi_loc_dict[loc_name]
         return loc_num > allowed_quant
 
     def get_multi_loc_num(self, name):
         num_str = ''.join(i for i in name if i.isdigit())
         return int(num_str) if num_str != "" else 0
+    def get_multi_loc_name(self, name):
+        return ''.join(i for i in name if not i.isdigit()).strip()
 
     def is_disallowed_multi_location(self, flags):
         return (("Orb" in flags and not self.options.orb_loot.value) or
@@ -267,6 +271,12 @@ class TerrariaWorld(World):
                     or ("Invasion Enemy" in rule.flags and quant > self.options.enemy_invasion_drops.value)
                     or ("Miniboss Enemy" in rule.flags and quant > self.options.enemy_miniboss_drops.value)):
                 continue
+            if self.is_multi_location(rule.flags):
+                base_name = self.get_multi_loc_name(rule.name)
+                if quant > 0:
+                    if self.multi_loc_slot_dicts.get(base_name) is None:
+                        self.multi_loc_slot_dicts[base_name] = []
+                    self.multi_loc_slot_dicts[base_name].append(rule.name)
 
             if self.is_location(rule.flags):
                 # Location
@@ -280,8 +290,10 @@ class TerrariaWorld(World):
                     "Achievement" not in rule.flags and rule.name not in goal_locations
             ):
                 # Item
-                    items.append(rule.name)
-                    item_count += 1
+                items.append(rule.name)
+                item_count += 1
+                if rule_indices[rule.name] > rule_indices["Wall of Flesh"]:
+                    self.hardmode_items.append(rule.name)
             elif (
                     self.is_event(rule.flags)
             ):
@@ -610,4 +622,5 @@ class TerrariaWorld(World):
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
+            "hardmode_items": self.hardmode_items
         }
