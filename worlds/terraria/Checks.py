@@ -161,6 +161,15 @@ COND_LOC = 1
 COND_FN = 2
 COND_GROUP = 3
 
+quant_locs = [
+    "Chest",
+    "Orb",
+    "Common Enemy",
+    "Rare Enemy",
+    "Invasion Enemy",
+    "Miniboss Enemy"
+]
+
 
 class Condition:
     def __init__(
@@ -204,6 +213,7 @@ def get_cond_name(condition):
         return condition.condition[0]
     else:
         return condition.condition
+
 
 def validate_conditions(
         rule: str,
@@ -569,19 +579,25 @@ def read_data() -> Tuple[
                 rules.append(new_rule)
 
             def get_loc_quantity():
-                loc_types_with_quantity = ["Chest", "Orb"]
-                quant_to_return = 0
-                type_found = False
-                for loc_type in loc_types_with_quantity:
-                    if (quantity := flags.get(loc_type)) is not None:
-                        quant_to_return = quantity
-                        if type_found:
-                            raise Exception(f"rule '{name}' on line '{line + 1}' has multiple location flags")
-                        type_found = True
-                return quant_to_return
+                flag_list = flags.keys()
+                for loc in quant_locs:
+                    if loc in flag_list:
+                        return 100
+                return 0
 
+            # loc_types_with_quantity = ["Chest", "Orb"]
+            # quant_to_return = 0
+            # type_found = False
+            # for loc_type in loc_types_with_quantity:
+            #     if (quantity := flags.get(loc_type)) is not None:
+            #         quant_to_return = quantity
+            #         if type_found:
+            #             raise Exception(f"rule '{name}' on line '{line + 1}' has multiple location flags")
+            #         type_found = True
+            # return quant_to_return
             quant = get_loc_quantity()
             if quant > 0:
+                create_new_rule(name, [], operator, conditions)
                 create_new_rule(f"{name} 1", flags, operator, conditions)
                 for i in range(1, quant):
                     create_new_rule(f"{name} {i + 1}", flags, operator, conditions)
@@ -599,6 +615,14 @@ def read_data() -> Tuple[
                     "Chest Item",
                     "Orb",
                     "Orb Item",
+                    "Common Enemy",
+                    "Common Enemy Item",
+                    "Rare Enemy",
+                    "Rare Enemy Item",
+                    "Invasion Enemy",
+                    "Invasion Enemy Item",
+                    "Miniboss Enemy",
+                    "Miniboss Enemy Item",
                     "Grindy",
                     "Fishing",
                     "Npc",
@@ -633,6 +657,10 @@ def read_data() -> Tuple[
             if ("Item" in flags
                     or "Chest Item" in flags
                     or "Orb Item" in flags
+                    or "Common Enemy Item" in flags
+                    or "Rare Enemy Item" in flags
+                    or "Invasion Enemy Item" in flags
+                    or "Miniboss Enemy Item" in flags
                     or "Biome Lock" in flags
                     or "Not Biome Lock" in flags
                     or "Grappling Hook" in flags):
@@ -794,7 +822,14 @@ def read_data() -> Tuple[
     location_name_to_id = {}
 
     for rule in rules:
-        if "Location" in rule.flags or "Achievement" in rule.flags or "Chest" in rule.flags or "Orb" in rule.flags:
+        if ("Location" in rule.flags
+                or "Achievement" in rule.flags
+                or "Chest" in rule.flags
+                or "Orb" in rule.flags
+                or "Common Enemy" in rule.flags
+                or "Rare Enemy" in rule.flags
+                or "Invasion Enemy" in rule.flags
+                or "Miniboss Enemy" in rule.flags):
             if rule.name in location_name_to_id:
                 raise Exception(f"location `{rule.name}` shadows a previous location")
             location_name_to_id[rule.name] = next_id

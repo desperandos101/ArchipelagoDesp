@@ -21,6 +21,7 @@ from .Checks import (
     COND_LOC,
     COND_FN,
     COND_GROUP,
+    quant_locs,
     npcs,
     pickaxes,
     hammers,
@@ -84,12 +85,20 @@ class TerrariaWorld(World):
         return ("Location" in flags
                 or ("Achievement" in flags and self.any_achievements_enabled)
                 or ("Chest" in flags and self.options.chest_loot)
-                or ("Orb" in flags and self.options.orb_loot.value))
+                or ("Orb" in flags and self.options.orb_loot.value)
+                or ("Common Enemy" in flags and self.options.enemy_common_drops.value > 0)
+                or ("Rare Enemy" in flags and self.options.enemy_rare_drops.value > 0)
+                or ("Invasion Enemy" in flags and self.options.enemy_invasion_drops.value > 0)
+                or ("Miniboss Enemy" in flags and self.options.enemy_miniboss_drops.value > 0))
 
     def is_item(self, flags):
         allowed_as_rule = ("Item" in flags
                            or ("Chest Item" in flags and self.options.chest_loot)
                            or ("Orb Item" in flags and self.options.orb_loot.value)
+                           or ("Common Enemy Item" in flags and self.options.enemy_common_drops.value > 0)
+                           or ("Rare Enemy Item" in flags and self.options.enemy_rare_drops.value > 0)
+                           or ("Invasion Enemy Item" in flags and self.options.enemy_invasion_drops.value > 0)
+                           or ("Miniboss Enemy Item" in flags and self.options.enemy_miniboss_drops.value > 0)
                            or ("Biome Lock" in flags and self.options.biome_locks)
                            or ("Not Biome Lock" in flags and not self.options.biome_locks)
                            or ("Grappling Hook" in flags and self.options.grappling_hook))
@@ -97,7 +106,10 @@ class TerrariaWorld(World):
         return allowed_as_rule and allowed_as_class_item
 
     def is_multi_location(self, flags):
-        return "Orb" in flags or "Chest" in flags
+        for flag in quant_locs:
+            if flag in flags:
+                return True
+        return False
 
     def multi_is_overflow(self, name):
         loc_name = ''.join(i for i in name if not i.isdigit()).strip()
@@ -105,10 +117,17 @@ class TerrariaWorld(World):
         allowed_quant = self.multi_loc_dict[loc_name]
         return loc_num > allowed_quant
 
+    def get_multi_loc_num(self, name):
+        num_str = ''.join(i for i in name if i.isdigit())
+        return int(num_str) if num_str != "" else 0
 
     def is_disallowed_multi_location(self, flags):
-        return ("Orb" in flags and not self.options.orb_loot.value) or (
-                    "Chest" in flags and not self.options.chest_loot)
+        return (("Orb" in flags and not self.options.orb_loot.value) or
+                ("Chest" in flags and not self.options.chest_loot) or
+                ("Common Enemy" in flags and not self.options.enemy_common_drops.value > 0)
+                or ("Rare Enemy" in flags and not self.options.enemy_rare_drops.value > 0)
+                or ("Invasion Enemy" in flags and not self.options.enemy_invasion_drops.value > 0)
+                or ("Miniboss Enemy" in flags and not self.options.enemy_miniboss_drops.value > 0))
 
     def class_acceptable(self, flags):
         if ("Melee" not in flags
@@ -123,7 +142,7 @@ class TerrariaWorld(World):
                 or ("Summoning" in flags and self.options.class_preference.value == 4))
 
     def is_event(self, flags):
-        return not self.is_disallowed_multi_location(flags) and not self.is_location(flags) and not self.is_item(flags)
+        return not self.is_location(flags) and not self.is_item(flags)
 
     def any_achievements_enabled(self):
         return (self.options.normal_achievements.value
@@ -141,6 +160,10 @@ class TerrariaWorld(World):
     def generate_early(self) -> None:
         self.multi_loc_dict = {
             "Gold or Wooden Chest": self.options.chest_surface.value,
+            "Mushroom Chest": self.options.chest_mushroom.value,
+            "Web Covered Chest": self.options.chest_web.value,
+            "Marble Chest": self.options.chest_marble.value,
+            "Granite Chest": self.options.chest_granite.value,
             "Water Chest": self.options.chest_water.value,
             "Floating Island Chest": self.options.chest_sky.value,
             "Frozen Chest": self.options.chest_frozen.value,
@@ -148,7 +171,6 @@ class TerrariaWorld(World):
             "Ivy or Mahogany Chest": self.options.chest_jungle.value,
             "Shadow Chest": self.options.chest_underworld.value,
             "Dungeon Chest": self.options.chest_dungeon.value,
-
             "Shadow/Crimson Orb": self.options.orb_loot.value
         }
         goal_id = self.options.goal.value
@@ -230,13 +252,20 @@ class TerrariaWorld(World):
             for condition in rule.conditions:
                 if isinstance(condition.condition, tuple) and type(condition.condition[0]) is str:
                     progressive_item = condition.condition[0]
-                    item_count = condition.condition[1]
-                    current_item_count = items.count(progressive_item)
-                    while current_item_count < item_count:
+                    prog_item_count = condition.condition[1]
+                    for i in range(prog_item_count):
                         items.append(progressive_item)
-                        current_item_count += 1
+                        item_count += 1
 
             if ("Chest" in rule.flags or "Orb" in rule.flags) and self.multi_is_overflow(rule.name):
+                continue
+
+            quant = self.get_multi_loc_num(rule.name)
+
+            if (("Common Enemy" in rule.flags and quant > self.options.enemy_common_drops.value)
+                    or ("Rare Enemy" in rule.flags and quant > self.options.enemy_rare_drops.value)
+                    or ("Invasion Enemy" in rule.flags and quant > self.options.enemy_invasion_drops.value)
+                    or ("Miniboss Enemy" in rule.flags and quant > self.options.enemy_miniboss_drops.value)):
                 continue
 
             if self.is_location(rule.flags):
@@ -247,13 +276,12 @@ class TerrariaWorld(World):
                 # Event
                 locations.append(rule.name)
 
-            if self.is_item(rule.flags) and not (
-                    "Achievement" in rule.flags and rule.name not in goal_locations
+            if self.is_item(rule.flags) and (
+                    "Achievement" not in rule.flags and rule.name not in goal_locations
             ):
                 # Item
-                item_count += 1
-                if rule.name not in goal_locations:
                     items.append(rule.name)
+                    item_count += 1
             elif (
                     self.is_event(rule.flags)
             ):
@@ -280,7 +308,7 @@ class TerrariaWorld(World):
             items.append(random_rewards.pop(0))
             item_count += 1
 
-        while item_count < location_count:
+        while item_count < location_count - 1:
             items.append("Reward: Coins")
             item_count += 1
 
@@ -344,6 +372,7 @@ class TerrariaWorld(World):
             self.multiworld.get_location(location, self.player).place_locked_item(item)
 
     def check_condition(self, state, condition: Condition) -> bool:
+
         if condition.type == COND_ITEM:
 
             item_count = 1
@@ -358,7 +387,6 @@ class TerrariaWorld(World):
                 name = Checks.get_default_item_name(cond_name, rule.flags)
             else:
                 name = cond_name
-
             return condition.sign == state.has(name, self.player, item_count)
         elif condition.type == COND_LOC:
             rule = rules[rule_indices[condition.condition]]
@@ -568,6 +596,15 @@ class TerrariaWorld(World):
             "events_as_items": int(self.options.events_as_items.value),
             "biome_locks": bool(self.options.biome_locks.value),
             "chest_loot": bool(self.options.chest_loot.value),
+            "enemy_common_drops": self.options.enemy_common_drops.value,
+            "enemy_common_count": self.options.enemy_common_count.value,
+            "enemy_rare_drops": self.options.enemy_rare_drops.value,
+            "enemy_rare_count": self.options.enemy_rare_count.value,
+            "enemy_invasion_drops": self.options.enemy_invasion_drops.value,
+            "enemy_invasion_count": self.options.enemy_invasion_count.value,
+            "enemy_miniboss_drops": self.options.enemy_miniboss_drops.value,
+            "enemy_miniboss_drops_all": self.options.enemy_miniboss_drops_all.value,
+            "enemy_miniboss_count": self.options.enemy_miniboss_count.value,
             "grappling_hook_rando": bool(self.options.grappling_hook.value),
             "early_achievements": self.options.early_achievements.value,
             "normal_achievements": self.options.normal_achievements.value,

@@ -45,10 +45,10 @@ class Goal(Choice):
 
 class ToggleEvil(Choice):
     """
-    Toggle how corruption/crimson items are distributed in the world.
-    Corruption: Allows only corruption items in the item pool, excluding crimson items.
-    Crimson: Allows only crimson items in the item pool, excluding corruption items.
-    Both: Allows both corruption and crimson items in the item pool.
+    Toggle how corruption/crimson locations and items are handled.
+    Corruption: Allows only corruption locations/items.
+    Crimson: Allows only crimson locations/items.
+    Both: Allows both corruption and crimson locations/items.
 
     Defaults to both.
     """
@@ -75,8 +75,8 @@ class ReceiveDangerousEventsAsItems(Choice):
 
 class BiomeLocks(Toggle):
     """
-    Adds biomes to the item pool, which prevents you from acquiring certain loot until you obtain their respective biome.
-    This option will automatically disable if there are not enough locations for each biome.
+    Adds biomes to the item pool, which prevents you from acquiring certain loot until you obtain their respective
+    biome. This option will automatically disable if there are not enough locations for each biome.
     """
     display_name = "Biome Locks"
     default = True
@@ -97,7 +97,7 @@ class ToggleChestSlotsSurface(Range):
     """
     display_name = "Gold or Wooden Chest Slots"
     default = 20
-    range_end = 50
+    range_end = 100
 
 
 class ToggleChestSlotsWater(Range):
@@ -106,7 +106,7 @@ class ToggleChestSlotsWater(Range):
     """
     display_name = "Water Chest Slots"
     default = 6
-    range_end = 50
+    range_end = 100
 
 
 class ToggleChestSlotsSky(Range):
@@ -115,8 +115,39 @@ class ToggleChestSlotsSky(Range):
     """
     display_name = "Floating Island Chest Slots"
     default = 3
-    range_end = 50
+    range_end = 100
 
+class ToggleChestSlotsMushroom(Range):
+    """
+    Select how many Mushroom Chest checks to add (if chests are randomized).
+    """
+    display_name = "Mushroom Chest Slots"
+    default = 3
+    range_end = 100
+
+class ToggleChestSlotsSpider(Range):
+    """
+    Select how many Web Covered Chest checks to add (if chests are randomized).
+    """
+    display_name = "Web Covered Chest Slots"
+    default = 1
+    range_end = 100
+
+class ToggleChestSlotsMarble(Range):
+    """
+    Select how many Marble Chest checks to add (if chests are randomized).
+    """
+    display_name = "Marble Chest Slots"
+    default = 1
+    range_end = 100
+
+class ToggleChestSlotsGranite(Range):
+    """
+    Select how many Granite Chest checks to add (if chests are randomized).
+    """
+    display_name = "Granite Chest Slots"
+    default = 1
+    range_end = 100
 
 class ToggleChestSlotsFrozen(Range):
     """
@@ -124,7 +155,7 @@ class ToggleChestSlotsFrozen(Range):
     """
     display_name = "Gold or Wooden Chest Slots"
     default = 7
-    range_end = 50
+    range_end = 100
 
 
 class ToggleChestSlotsDesert(Range):
@@ -133,7 +164,7 @@ class ToggleChestSlotsDesert(Range):
     """
     display_name = "Gold or Wooden Chest Slots"
     default = 9
-    range_end = 50
+    range_end = 100
 
 
 class ToggleChestSlotsJungle(Range):
@@ -142,7 +173,7 @@ class ToggleChestSlotsJungle(Range):
     """
     display_name = "Gold or Wooden Chest Slots"
     default = 7
-    range_end = 50
+    range_end = 100
 
 
 class ToggleChestSlotsUnderworld(Range):
@@ -151,7 +182,7 @@ class ToggleChestSlotsUnderworld(Range):
     """
     display_name = "Gold or Wooden Chest Slots"
     default = 5
-    range_end = 50
+    range_end = 100
 
 
 class ToggleChestSlotsDungeon(Range):
@@ -160,7 +191,7 @@ class ToggleChestSlotsDungeon(Range):
     """
     display_name = "Gold or Wooden Chest Slots"
     default = 7
-    range_end = 50
+    range_end = 100
 
 
 class RandomizeShadowOrbLoot(Range):
@@ -170,12 +201,119 @@ class RandomizeShadowOrbLoot(Range):
     """
     display_name = "Randomize Shadow Orb Loot"
     default = 10
-    range_end = 20
+    range_end = 100
 
 
-class RandomizeGrapplingHooks(Toggle):
+class ToggleEnemyBossDrops(Range):
     """
-    The ability to use grappling hooks is added to the item pool.
+    Specify how many items defeating a boss/invasion should reward you.
+    """
+    display_name = "Toggle Boss Enemy Drops"
+    default = 1
+    range_start = 1
+    range_end = 10
+
+
+class ToggleEnemyCommonDrops(Range):
+    """
+    Killing an amount of a specific common non-invasion enemy grants a check.
+    Their non-consumable drops (weapons, accessories, etc.) are added to the item pool.
+
+    Specify how many checks to add to each common enemy variety, or set to 0 to disable common enemy randomization.
+    """
+    display_name = "Toggle Common Enemy Drops"
+    default = 1
+    range_end = 100
+
+
+class ToggleEnemyCommonKillCount(Range):
+    """
+    Specify how many kills of a specific common enemy are required to grant a check.
+    """
+    display_name = "Toggle Common Enemy Kill Count Requirement"
+    default = 10
+    range_start = 1
+    range_end = 1000
+
+
+class ToggleEnemyRareDrops(Range):
+    """
+    Killing an amount of a specific rare non-invasion enemy (Tim, Doctor Bones, etc.) grants a check.
+    Their non-consumable drops are added to the item pool.
+
+    Specify how many checks to add to each rare enemy variety, or set to 0 to disable rare enemy randomization.
+    """
+    display_name = "Toggle Rare Enemy Drops"
+    default = 0
+    range_end = 100
+
+
+class ToggleEnemyRareKillCount(Range):
+    """
+    Specify how many kills of a specific rare enemy (including particularly rare invasion/event enemies) are required to grant a check.
+    """
+    display_name = "Toggle Rare Enemy Kill Count Requirement"
+    default = 1
+    range_start = 1
+    range_end = 100
+
+
+class ToggleEnemyInvasionDrops(Range):
+    """
+    Killing an amount of an invasion/event enemy (Goblin Warrior, Blood Zombie, etc.) grants a check.
+    Their non-consumable drops are added to the item pool.
+
+    Specify how many checks to add to each invasion enemy variety, or set to 0 to disable invasion enemy randomization.
+    """
+    display_name = "Toggle Invasion Enemy Drops"
+    default = 1
+    range_end = 100
+
+
+class ToggleEnemyInvasionKillCount(Range):
+    """
+    Specify how many kills of a specific invasion enemy are required to grant a check.
+    """
+    display_name = "Toggle Invasion Enemy Kill Count Requirement"
+    default = 50
+    range_start = 1
+    range_end = 1000
+
+
+class ToggleEnemyMinibossDrops(Range):
+    """
+    Killing an amount of miniboss enemies (Wandering Eye Fish, Mimics, etc.) grants a check.
+    Their non-consumable drops are added to the item pool.
+
+    Specify how many checks to add to each boss enemy variety, or set to 0 to disable boss enemy randomization.
+    """
+    display_name = "Toggle Miniboss Enemy Drops"
+    default = 1
+    range_end = 100
+
+
+class ToggleEnemyMinibossDropsAll(Toggle):
+    """
+    When the required amount of kills is reached for a miniboss enemy to send an item, all items are sent at once.
+    """
+
+    display_name = "Send All Boss Enemy Items At Once"
+    default = True
+
+
+class ToggleEnemyMinibossKillCount(Range):
+    """
+    Specify how many kills of a specific miniboss enemy are required to grant a check.
+    """
+    display_name = "Toggle Miniboss Enemy Kill Count Requirement"
+    default = 1
+    range_start = 1
+    range_end = 10
+
+
+class RandomizeGrapplingHookAbility(Toggle):
+    """
+    You are unable to use grappling hooks until you receive a hook item.
     """
 
     display_name = "Randomize Grappling Hook"
@@ -288,13 +426,26 @@ class TerrariaOptions(PerGameCommonOptions):
     chest_surface: ToggleChestSlotsSurface
     chest_water: ToggleChestSlotsWater
     chest_sky: ToggleChestSlotsSky
+    chest_mushroom: ToggleChestSlotsMushroom
+    chest_web: ToggleChestSlotsSpider
+    chest_marble: ToggleChestSlotsMarble
+    chest_granite: ToggleChestSlotsGranite
     chest_frozen: ToggleChestSlotsFrozen
     chest_desert: ToggleChestSlotsDesert
     chest_jungle: ToggleChestSlotsJungle
     chest_underworld: ToggleChestSlotsUnderworld
     chest_dungeon: ToggleChestSlotsDungeon
     orb_loot: RandomizeShadowOrbLoot
-    grappling_hook: RandomizeGrapplingHooks
+    enemy_common_drops: ToggleEnemyCommonDrops
+    enemy_common_count: ToggleEnemyCommonKillCount
+    enemy_rare_drops: ToggleEnemyRareDrops
+    enemy_rare_count: ToggleEnemyRareKillCount
+    enemy_invasion_drops: ToggleEnemyInvasionDrops
+    enemy_invasion_count: ToggleEnemyInvasionKillCount
+    enemy_miniboss_drops: ToggleEnemyMinibossDrops
+    enemy_miniboss_drops_all: ToggleEnemyMinibossDropsAll
+    enemy_miniboss_count: ToggleEnemyMinibossKillCount
+    grappling_hook: RandomizeGrapplingHookAbility
     early_achievements: EarlyAchievements
     normal_achievements: NormalAchievements
     grindy_achievements: GrindyAchievements

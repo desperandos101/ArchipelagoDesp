@@ -16,6 +16,9 @@ Mushroom Biome;                     Biome Lock;
 Progressive Dungeon;                Item;
 Dungeon;                            ;                                           Progressive Dungeon(1);
 Underworld;                         Biome Lock;
+Spider Nest;                        Biome Lock;
+Marble;                             Biome Lock;
+Granite;                            Biome Lock;
 
 // Immediately accessible
 Work Bench;
@@ -40,7 +43,6 @@ Dye Trader;                         Npc;                                        
 Dye Hard;                           Achievement;                                Dye Trader;
 Demolitionist;                      Npc;                                        Merchant;
 Lucky Break;                        Achievement | Early;
-Shackle;
 Star Power;                         Achievement | Early;
 You Can Do It!;                     Achievement | Early;
 Wulfrum Battery;                    Calamity;
@@ -83,6 +85,18 @@ Radar;                              Chest Item;
 Step Stool;                         Chest Item;
 Finch Staff;                        Chest Item | Summoning;
 
+// Surface Enemies
+Green Slime;                        Common Enemy;
+Blue Slime;                         Common Enemy;
+Purple Slime;                       Common Enemy;
+Pinky;                              Rare Enemy;
+Slime Staff;                        Common Enemy Item | Summoning;              Green Slime | Blue Slime;
+Zombie;                             Common Enemy;
+Shackle;                            Common Enemy Item;                          Zombie;
+Spiffo Plush;                       Common Enemy Item;                          Zombie;
+Demon Eye;                          Common Enemy;
+Goblin Scout;                       Rare Enemy;                                 Basic Mobility;
+
 // Ocean and Fishing
 Angler;                             Npc;                                        Ocean;
 Fisherman's Pocket Guide;           ;                                           Angler | Weather Radio;
@@ -105,6 +119,14 @@ Inner Tube;                         Chest Item;                                 
 Water Walking Boots;                Chest Item;                                 Ocean;
 Beach Ball;                         Chest Item;                                 Ocean;
 
+// Water Enemies
+Jellyfish;                          Common Enemy;                               Ocean;
+Jellyfish Necklace;                 Common Enemy Item;                          Jellyfish;
+Shark;                              Common Enemy;                               Ocean;
+Diving Helmet;                      Common Enemy Item;                          Shark;
+Piranha;                            Common Enemy;                               Ocean;
+Robot Hat;                          Common Enemy Item;                          Piranha;
+
 // Sky exploration
 Into Orbit;                         Achievement | Early;
 Mysterious Circuitry;               Calamity;
@@ -120,13 +142,14 @@ Shiny Red Balloon;                  Chest Item;                                 
 Lucky Horseshoe;                    Chest Item;                                 Sky and Floating Islands;
 Celestial Magnet;                   Chest Item;                                 Sky and Floating Islands;
 
+// Floating Island Enemies
+Harpy;                              Common Enemy;                               Sky and Floating Islands;
+
 // Underground
 Watch Your Step!;                   Achievement | Early;
 Throwing Lines;                     Achievement | Early;
 Vehicular Manslaughter;             Achievement | Early;
 Ancient Bone Dust;                  Calamity;
-Depth Meter;
-Compass;
 Hey! Listen!;                       Achievement | Early;
 I Am Loot!;                         Achievement;
 Heart Breaker;                      Achievement;
@@ -139,14 +162,15 @@ Gold Hammer;                        Hammer(55);                                 
 Gold Pickaxe;                       Pickaxe(55);                                Work Bench;
 Gold Watch;
 Like a Boss;                        Achievement;
-Jeepers Creepers;                   Achievement;
-Stylist;                            Npc;
-Funkytown;                          Achievement;
-Shroomerang;                        ;                                           Mushroom Biome;
 Deceiver of Fools;                  Achievement | Grindy;
-Metal Detector;
 Dead Men Tell No Tales;             Achievement;
 Bulldozer;                          Achievement | Grindy;
+
+// Underground Enemies
+Giant Worm;                         Rare Enemy;
+Whoopie Cushion;                    Rare Enemy Item;                            Giant Worm;
+Yellow Slime;                       Common Enemy;
+Red Slime;                          Common Enemy;
 
 // Cavern
 Obsidian;
@@ -169,9 +193,57 @@ Shoe Spikes;                        Chest Item;
 Flare Gun;                          Chest Item;
 Extractinator;                      Chest Item;
 
-// Underground Ice
-Flinx Fur Coat;                     Summoning | Armor Minions(1);               Snow Biome;
-Flinx Staff;                        Summoning;                                  Snow Biome;
+// Cavern Enemies
+Black Slime;                        Common Enemy;
+Mother Slime;                       Common Enemy;
+Skeleton;                           Common Enemy;
+Bone Sword;                         Common Enemy Item | Melee;                  Skeleton;
+Cave Bat;                           Common Enemy;
+Chain Knife;                        Common Enemy Item | Melee;                  Cave Bat;
+Crawdads, Shellies, and Salamanders;Common Enemy;
+Rally;                              Common Enemy Item | Melee;                  Crawdads, Shellies, and Salamanders;
+Undead Miner;                       Rare Enemy;
+Bone Pickaxe;                       Rare Enemy Item | Pickaxe(55);              Undead Miner;
+Mining Clothes;                     Rare Enemy Item;                            Undead Miner;
+Tim;                                Rare Enemy;
+Wizard Hat;                         Rare Enemy Item | Magic;                    Tim;
+Nymph;                              Rare Enemy;
+Metal Detector;                     Rare Enemy Item;                            Nymph;
+
+// Mushroom
+Funkytown;                          Achievement;                                Mushroom Biome;
+
+// Mushroom Chests
+Mushroom Chest;                     Chest(100);                                 Mushroom Biome;
+Mushroom set;                       Chest Item;                                 Mushroom Chest;
+Shroom Minecart;                    Chest Item;                                 Mushroom Chest;
+
+// Mushroom Enemies
+Spore Bat;                          Common Enemy;                               Mushroom Biome;
+Shroomerang;                        Common Enemy Item | Melee;                  Spore Bat;
+
+// Marble/Granite Chests
+Marble Chest;                       Chest(100);                                 Marble;
+Granite Chest;                      Chest(100);                                 Granite;
+
+// Marble/Granite Enemies
+Hoplite;                            Common Enemy;                               Marble;
+Gladius;                            Common Enemy Item | Melee;                  Hoplite;
+Gladiator set;                      Common Enemy Item;                          Hoplite;
+Granite Golem;                      Common Enemy;                               Granite;
+Granite Elemental;                  Common Enemy;                               Granite;
+Night Vision Helmet;                Common Enemy Item;                          Granite;
+
+// Spider Nest
+Jeepers Creepers;                   Achievement;                                Spider Nest;
+Stylist;                            Npc;                                        Spider Nest;
+
+// Spider Nest Chests
+Web Covered Chest;                  Chest(100);                                 Spider Nest;
+Web Slinger;                        Chest Item;                                 Web Covered Chest;
+
+// Spider Nest Enemies
+Wall Creeper;                       Common Enemy;                               Spider Nest;
 
 // Frozen Chests
 Frozen Chest;                       Chest(100);                                 Snow Biome;
@@ -182,6 +254,16 @@ Ice Blade;                          Chest Item | Melee;                         
 Snowball Cannon;                    Chest Item | Ranged;                        Snow Biome;
 Ice Boomerang;                      Chest Item | Melee;                         Snow Biome;
 Fish;                               Chest Item;                                 Snow Biome;
+
+// Snow Enemies
+Ice Slime;                          Common Enemy;                               Snow Biome;
+Frozen Zombie;                      Common Enemy;                               Snow Biome;
+Ice Bat;                            Common Enemy;                               Snow Biome;
+Snow Flinx;                         Common Enemy;                               Snow Biome;
+Flinx Fur Coat;                     Summoning | Armor Minions(1);               Snow Flinx;
+Flinx Staff;                        Summoning;                                  Snow Flinx;
+Spiked Ice Slime;                   Common Enemy;                               Snow Biome;
+Undead Viking;                      Common Enemy;                               Snow Biome;
 
 // Underground Desert
 Stormlion Mandible;                 Calamity;
@@ -203,6 +285,13 @@ Thunder Zapper;                     Chest Item | Magic;                         
 Bast Statue;                        Chest Item;                                 Desert Biome;
 Scarab Fishing Rod;                 Chest Item;                                 Desert Biome;
 
+// Desert Enemies
+Vulture;                            Common Enemy;                               Desert Biome;
+Antlion;                            Common Enemy;                               Desert Biome;
+Antlion Charger;                    Common Enemy;                               Desert Biome;
+Antlion Swarmer;                    Common Enemy;                               Desert Biome;
+Mandible Blade;                     Common Enemy Item | Melee;                  Antlion Charger | Antlion Swarmer;
+
 // Sunken Sea
 Sea Prism;                          Calamity;
 Navyplate;                          Calamity;                                   Sea Prism & Obsidian;
@@ -212,7 +301,6 @@ Stinger;                            ;                                           
 Jungle Spores;                      ;                                           Jungle;
 Vine;                               ;                                           Jungle;
 Nature's Gift;                      ;                                           Jungle;
-Bezoar;                             ;                                           Jungle;
 Summoning Potion;                   Minions(1);                                 Jungle;
 
 // Craftable Jungle Gear
@@ -232,16 +320,25 @@ Flower Boots;                       Chest Item;                                 
 Fiberglass Fishing Pole;            Chest Item;                                 Jungle;
 Seaweed;                            Chest Item;                                 Jungle;
 
+// Jungle Enemies
+Jungle Slime;                       Common Enemy;                               Jungle;
+Jungle Bat;                         Common Enemy;                               Jungle;
+Snatcher;                           Common Enemy;                               Jungle;
+Doctor Bones;                       Rare Enemy;                                 Jungle;
+Archaeologist's Hat;                Rare Enemy Item;                            Doctor Bones;
+Hornet;                             Common Enemy;                               Jungle;
+Man Eater;                          Common Enemy;                               Jungle;
+Spiked Jungle Slime;                Common Enemy;                               Jungle;
+Bezoar;                             Common Enemy Item;                          Jungle;
+
+
 // The Aether
 A Shimmer In The Dark;              Achievement;
 
 // Underworld
 It's Getting Hot in Here;           Achievement;                                Underworld;
 Rock Bottom;                        Achievement;                                Underworld;
-Obsidian Rose;                      ;                                           Underworld;
 Havocplate;                         Calamity;                                   Underworld;
-Magma Stone;                        ;                                           Underworld;
-Demon Scythe;                       ;                                           Underworld;
 
 // Shadow Chests
 Shadow Key;                         ;                                           (@biome_locks & Underworld) | (~@biome_locks & Dungeon);
@@ -251,6 +348,22 @@ Flower of Fire;                     Chest Item | Magic;                         
 Flamelash;                          Chest Item | Magic;                         Shadow Key;
 Dark Lance;                         Chest Item | Melee;                         Shadow Key;
 Hellwing Bow;                       Chest Item | Ranged;                        Shadow Key;
+
+// Underworld Enemies
+Hellbat;                            Common Enemy;                               Underworld;
+Magma Stone;                        Common Enemy Item;                          Hellbat;
+Lava Slime;                         Common Enemy;                               Underworld;
+Fire Imp;                           Common Enemy;                               Underworld;
+Obsidian Rose;                      Common Enemy Item;                          Fire Imp;
+Plumber's Hat;                      Common Enemy Item;                          Fire Imp;
+Demon;                              Common Enemy;                               Underworld;
+Demon Scythe;                       Common Enemy Item | Magic;                  Demon;
+Bone Serpent;                       Common Enemy;                               Underworld;
+
+// General Enemy Drops
+Compass;                            Common Enemy Item;                          Mother Slime | Crawdads, Shellies, and Salamanders | Piranha | Snow Flinx | Undead Viking;
+Depth Meter;                        Common Enemy Item;                          Cave Bat | Crawdads, Shellies, and Salamanders | Ice Bat | Jungle Bat;
+Bat Bat;                            Common Enemy Item | Melee;                  Cave Bat | Hellbat | Ice Bat | Jungle Bat;
 
 // Evil
 Smashing, Poppet!;                  Achievement;                                Evil Biome;
@@ -277,16 +390,32 @@ Panic Necklace;                     Orb Item | Crimson;                         
 Crimson Rod;                        Orb Item | Crimson | Magic;                 Evil Biome;
 The Rotted Fork;                    Orb Item | Crimson | Melee;                 Evil Biome;
 
+// Evil Enemies
+Eater of Souls;                     Corruption | Common Enemy;                  Evil Biome;
+Devourer;                           Corruption | Rare Enemy;                    Evil Biome;
+Crimera;                            Crimson | Common Enemy;                     Evil Biome;
+Face Monster;                       Crimson | Common Enemy;                     Evil Biome;
+Blood Crawler;                      Crimson | Common Enemy;                     Evil Biome;
+Tentacle Spike;                     Common Enemy Item | Melee;                  Evil Biome;
+Monster Meat;                       Common Enemy Item;                          Evil Biome;
+
 // Abyss
 Ink Bomb;                           Calamity;
 
 // Blood Moon
 Blood Moon;                         Item;
+Blood Zombie;                       Invasion Enemy;                             Blood Moon;
+Drippler;                           Invasion Enemy;                             Blood Moon;
+Shark Tooth Necklace;               Invasion Enemy Item | Ranged;               Blood Zombie | Drippler;
+Money Trough;                       Invasion Enemy Item;                        Blood Zombie | Drippler;
+Wandering Eye Fish;                 Miniboss Enemy;                             Blood Moon;
+Zombie Merman;                      Miniboss Enemy;                             Blood Moon;
+Vampire Frog Staff;                 Miniboss Enemy Item | Summoning;            Blood Moon;
+Blood Rain Bow;                     Miniboss Enemy Item | Ranged;               Blood Moon;
+Chum Caster;                        Miniboss Enemy Item;                        Blood Moon;
 Bloodbath;                          Achievement;                                Blood Moon;
 Blood Orb;                          Calamity;                                   Blood Moon;
-Shark Tooth Necklace;               Ranged;                                     Blood Moon;
-Vampire Frog Staff;                 Summoning;                                  Blood Moon;
-Blood Rain Bow;                     Ranged;                                     Blood Moon;
+
 Til Death...;                       Achievement | Grindy;                       Blood Moon;
 Quiet Neighborhood;                 Achievement | Early;
 Surly Slime;                        Npc;                                        Blood Moon;
@@ -377,6 +506,12 @@ Brimstone Slag;                     Calamity;                                   
 // Goblin Army
 Goblin Army;                        Item;
 Goblin Army Clear;                  Location;                                   Basic Mobility & @gear_power(1) & Goblin Army;
+Goblin Peon;                        Invasion Enemy;                             Goblin Army Clear;
+Goblin Thief;                       Invasion Enemy;                             Goblin Army Clear;
+Goblin Warrior;                     Invasion Enemy;                             Goblin Army Clear;
+Goblin Sorcerer;                    Invasion Enemy;                             Goblin Army Clear;
+Goblin Archer;                      Invasion Enemy;                             Goblin Army Clear;
+Harpoon;                            Invasion Enemy Item | Ranged;               Goblin Army Clear;
 Goblin Tinkerer;                    Item | Npc;
 Tinkerer's Workshop;                ;                                           Goblin Tinkerer;
 Mana Flower;                        ;                                           (Tinkerer's Workshop & Nature's Gift) | (@calamity & Ethereal Talisman);
@@ -391,7 +526,7 @@ GPS;                                ;                                           
 Goblin Tech;                        ;                                           Tinkerer's Workshop & DPS Meter & Stopwatch & Metal Detector;
 Fish Finder;                        ;                                           Tinkerer's Workshop & Fisherman's Pocket Guide & Weather Radio & Sextant;
 Boots of the Hero;                  Achievement | Grindy;                       Terraspark Boots;
-Diving Gear;                        ;                                           Tinkerer's Workshop;
+Diving Gear;                        ;                                           (Flipper & Diving Helmet) & Tinkerer's Workshop;
 
 // Queen Bee
 Where's My Honey?;                  Achievement;                                Jungle;
@@ -435,8 +570,6 @@ Clothier;                           Item | Npc;
 Dungeon Heist;                      Achievement;                                Dungeon;
 Bone;                               ;                                           Dungeon | (@calamity & (#Skeletron | (@getfixedboi & #Ravager) | Mirage Mirror));
 Mirage Mirror;                      Calamity;                                   (Tinkerer's Workshop & Bone) | Abyssal Mirror;
-Tally Counter;                      ;                                           Dungeon;
-R.E.K. 3000;                        ;                                           Tinkerer's Workshop & Radar & Tally Counter & Lifeform Analyzer;
 PDA;                                ;                                           Tinkerer's Workshop & GPS & R.E.K. 3000 & Goblin Tech & Fish Finder;
 Cell Phone;                         ;                                           (Tinkerer's Workshop & Magic Mirror & PDA) | (@getfixedboi & @calamity & #Polterghast);
 Black Mirror;                       Achievement | Grindy;                       Cell Phone;
@@ -450,7 +583,7 @@ Elder Slime;                        Npc;                                        
 Water Bolt;                         Magic;                                      Dungeon;
 Necro Armor;                        Ranged;                                     Dungeon;
 Spinal Tap;                         Summoning;                                  Dungeon;
-Cascade;                            Melee;                                      Dungeon & Underworld;
+Cascade;                            Common Enemy Item | Melee;                  Dungeon & Underworld;
 
 //Dungeon Chests
 Dungeon Chest;                      Chest(100);                                 Dungeon;
@@ -463,6 +596,14 @@ Cobalt Shield;                      Chest Item;                                 
 Obsidian Shield;                    ;                                           Tinkerer's Workshop & Cobalt Shield & Obsidian Skull;
 Muramasa;                           Chest Item | Melee;                         Dungeon;
 Valor;                              Chest Item | Melee;                         Dungeon;
+
+// Dungeon Enemies
+Angry Bones;                        Common Enemy;                               Dungeon;
+Dark Caster;                        Common Enemy;                               Dungeon;
+Cursed Skull;                       Common Enemy;                               Dungeon;
+Dungeon Slime;                      Rare Enemy;                                 Dungeon;
+Tally Counter;                      Common Enemy Item;                          Dungeon;
+R.E.K. 3000;                        ;                                           Tinkerer's Workshop & Radar & Tally Counter & Lifeform Analyzer;
 
 // Deerclops
 Deerclops;                          Location;                                   Basic Mobility & @gear_power(1) & Snow Biome;
@@ -492,43 +633,23 @@ Pre-WoF Summoning Accessories;      Summoning | Accessory Power(3);             
 // Wall of Flesh
 Wall of Flesh;                      Location | Item(Hardmode) | Goal;           Guide & Underworld & Basic Mobility & @gear_power(3);
 # wall_of_flesh
+HM;                                 ;                                           Wall of Flesh & Basic Mobility & @gear_power(3);
 Pwnhammer;                          Hammer(80);                                 #Wall of Flesh;
 Emblem;                             ;                                           #Wall of Flesh | Avenger Emblem | (@calamity & (Mechanical Glove | Celestial Emblem | Statis' Blessing));
-Fast Clock;                         ;                                           Wall of Flesh | Trifold Map | (@calamity & Wire & Pixie Dust & Soul of Light);
 Wizard;                             Item | Npc;
-Titan Glove;                        ;                                           Wall of Flesh | Power Glove;
-Power Glove;                        ;                                           Tinkerer's Workshop & Titan Glove & Feral Claws;
-Magic Quiver;                       ;                                           Wall of Flesh | (@calamity & Elemental Quiver);
-Hallowed Seeds;                     ;                                           (Wall of Flesh & Dryad) | Holy Water;
-Armor Polish;                       ;                                           Wall of Flesh | Vitamins | (@calamity & Bone & Ancient Bone Dust);
-Adhesive Bandage;                   ;                                           @calamity | Wall of Flesh;
-Medicated Bandage;                  ;                                           Tinkerer's Workshop & Bezoar & Adhesive Bandage;
-Megaphone;                          ;                                           Wall of Flesh | Nazar | (@calamity & Wire & Cobalt Bar);
-Pocket Mirror;                      ;                                           Wall of Flesh | Blindfold | (@calamity & Crystal Shard & Soul of Night);
-Trifold Map;                        ;                                           Wall of Flesh | Fast Clock | (@calamity & Soul of Light & Soul of Night);
-The Plan;                           ;                                           Tinkerer's Workshop & Trifold Map & Fast Clock;
-Tax Collector;                      Npc;                                        (Purification Powder & Wall of Flesh) | @getfixedboi;
-Spider Fangs;                       ;                                           Wall of Flesh;
+Hallowed Seeds;                     ;                                           (HM & Dryad) | Holy Water;
+Tax Collector;                      Npc;                                        (Purification Powder & HM) | @getfixedboi;
+Spider Fangs;                       ;                                           HM;
 Spider Armor;                       Armor Minions(3);                           Spider Fangs;
 Spider Staff;                       Summoning;                                  Spider Fangs;
-Cross Necklace;                     ;                                           Wall of Flesh;
-Altar;                              ;                                           Wall of Flesh & @hammer(80);
+Altar;                              ;                                           HM & @hammer(80);
 Begone, Evil!;                      Achievement;                                Altar;
-Cobalt Ore;                         ;                                           (((~@calamity & Altar) | (@calamity & Wall of Flesh)) & @pickaxe(100)) | Wall of Flesh | Mythril Ore | Cobalt Bar;
+Cobalt Ore;                         ;                                           (((~@calamity & Altar) | (@calamity & HM)) & @pickaxe(100)) | HM | Mythril Ore | Cobalt Bar;
 Extra Shiny!;                       Achievement;                                Cobalt Ore | Mythril Ore | Adamantite Ore | Chlorophyte Ore;
-Cobalt Bar;                         ;                                           Cobalt Ore | (@calamity & Lunic Eye) | Wall of Flesh;
+Cobalt Bar;                         ;                                           Cobalt Ore | (@calamity & Lunic Eye) | HM;
 Cobalt Pickaxe;                     Pickaxe(110);                               Cobalt Bar;
-Blindfold;                          ;                                           @calamity | Wall of Flesh | Pocket Mirror;
-Reflective Shades;                  ;                                           Tinkerer's Workshop & Blindfold & Pocket Mirror;
-Vitamins;                           ;                                           (Wall of Flesh & Evil Biome) | Armor Polish | (@calamity & Alchemy Table & Blood Orb);
-Armor Bracing;                      ;                                           Tinkerer's Workshop & Vitamins & Armor Polish;
-Nazar;                              ;                                           (Wall of Flesh & Dungeon) | Megaphone | (@calamity & Soul of Night);
-Countercurse Mantra;                ;                                           Tinkerer's Workshop & Nazar & Megaphone;
-Ankh Charm;                         ;                                           Tinkerer's Workshop & Reflective Shades & Armor Bracing & Medicated Bandage & Countercurse Mantra & The Plan;
-Ankh Shield;                        ;                                           Tinkerer's Workshop & Obsidian Shield & Ankh Charm;
-Ankhumulation Complete;             Achievement | Grindy;                       Ankh Shield;
-Soul of Night;                      ;                                           (Wall of Flesh & Evil Biome) | (@calamity & (Altar | (@getfixedboi & #Duke Fishron)));
-Hallow;                             ;                                           Wall of Flesh;
+Soul of Night;                      ;                                           (HM & Evil Biome) | (@calamity & (Altar | (@getfixedboi & #Duke Fishron)));
+Hallow;                             ;                                           HM;
 Pixie Dust;                         ;                                           Hallow | Meteor Staff | Holy Water;
 Holy Water;                         ;                                           (Pixie Dust & Hallowed Seeds) | (@calamity & Statis' Blessing);
 Unicorn Horn;                       ;                                           Hallow;
@@ -537,46 +658,209 @@ Axe of Purity;                      Calamity;                                   
 Fabsol's Vodka;                     Calamity;                                   (Pixie Dust & Crystal Shard & Unicorn Horn) | (@getfixedboi & #Empress of Light);
 Soul of Light;                      ;                                           Hallow | (@calamity & (#Queen Slime | (@getfixedboi & #Duke Fishron))) | Light Disc | Meteor Staff;
 Meteor Staff;                       ;                                           (Hardmode Anvil & Meteorite Bar & Pixie Dust & Soul of Light) | Asteroid Staff;
-Blessed Apple;                      ;                                           Hallow;
-Rod of Discord;                     ;                                           Hallow;
-Gelatin World Tour;                 Achievement | Grindy;                       Dungeon & Wall of Flesh & Hallow & #King Slime;
-Soul of Flight;                     ;                                           Wall of Flesh & Sky and Floating Islands;
-Head in the Clouds;                 Achievement;                                @grindy | (Soul of Flight & ((Hardmode Anvil & (Soul of Light | Soul of Night | Pixie Dust | Wall of Flesh | Solar Eclipse | @mech_boss(1) | Plantera | Spectre Bar | #Golem)) | (Shroomite Bar & Autohammer) | #Mourning Wood | #Pumpking)) | Steampunker | (Wall of Flesh & Plantera & Witch Doctor) | (Solar Eclipse & Plantera) | #Everscream | #Old One's Army Tier 3 | #Empress of Light | #Duke Fishron | (Fragment & Luminite Bar & Ancient Manipulator);
-Bunny;                              Npc;                                        Zoologist & Wall of Flesh; // Extremely simplified
-Forbidden Fragment;                 ;                                           Sandstorm & Wall of Flesh;
-Astral Infection;                   Calamity;                                   Wall of Flesh | Astrum Aureus;
+Gelatin World Tour;                 Achievement | Grindy;                       Dungeon & HM & Hallow & #King Slime;
+
+Bunny;                              Npc;                                        Zoologist & HM; // Extremely simplified
+Forbidden Fragment;                 ;                                           Sandstorm & HM;
+Astral Infection;                   Calamity;                                   HM | Astrum Aureus;
 Stardust;                           Calamity;                                   Astral Infection | #Astrum Aureus | #Astrum Deus | Eye of Magnus | Meld Construct;
 Lunic Eye;                          Calamity;                                   (Cobalt Bar & Stardust) | Eye of Magnus;
-Trapper Bulb;                       Calamity;                                   Wall of Flesh;
+Trapper Bulb;                       Calamity;                                   HM;
 Titan Heart;                        Calamity;                                   Astral Infection;
-Essence of Sunlight;                Calamity;                                   Wall of Flesh | Golem;
-Essence of Eleum;                   Calamity;                                   Wall of Flesh | Cryogen | #Cryogen | (@getfixedboi & Duke Fishron);
-Essence of Havoc;                   Calamity;                                   Wall of Flesh | #Calamitas Clone | #Brimstone Elemental | Ruin Medallion;
-Truffle;                            Item | Npc;                                 Wall of Flesh & Mushroom Biome;
+Essence of Sunlight;                Calamity;                                   HM | Golem;
+Essence of Eleum;                   Calamity;                                   HM | Cryogen | #Cryogen | (@getfixedboi & Duke Fishron);
+Essence of Havoc;                   Calamity;                                   HM | #Calamitas Clone | #Brimstone Elemental | Ruin Medallion;
+Truffle;                            Item | Npc;                                 HM & Mushroom Biome;
 It Can Talk?!;                      Achievement;                                Truffle;
-Hardmode Giant Clam;                Calamity | Location | Item;                 #Giant Clam & Wall of Flesh;
+Hardmode Giant Clam;                Calamity | Location | Item;                 #Giant Clam & HM;
 
-// Hardmode Blood Moon
-Hardmode Blood Moon;                ;                                           Wall of Flesh & Blood Moon;
-KO Cannon;                          Melee;                                      Hardmode Blood Moon;
-Drippler Crippler;                  Melee;                                      Hardmode Blood Moon;
-Blood Thorn;                        Magic;                                      Hardmode Blood Moon;
-Dreadnautilus;                      Calamity | Location;                        Hardmode Blood Moon;
-Don't Dread on Me;                  Not Calamity | Achievement;                 Hardmode Blood Moon;
+// Hardmode Surface Enemies
+Possessed Armor;                    Common Enemy;                               HM;
+Wandering Eye;                      Common Enemy;                               HM;
+Wraith;                             Common Enemy;                               HM;
+Werewolf;                           Rare Enemy;                                 HM;
+Moon Charm;                         Rare Enemy Item;                            HM;
+
+// Hardmode Sky Enemies
+HM Sky;                             ;                                           HM & Sky and Floating Islands;
+Wyvern;                             Rare Enemy;                                 HM Sky;
+Soul of Flight;                     ;                                           Wyvern;
+Head in the Clouds;                 Achievement;                                @grindy | (Soul of Flight & ((Hardmode Anvil & (Soul of Light | Soul of Night | Pixie Dust | HM | Solar Eclipse | @mech_boss(1) | Plantera | Spectre Bar | #Golem)) | (Shroomite Bar & Autohammer) | #Mourning Wood | #Pumpking)) | Steampunker | (HM & Plantera & Witch Doctor) | (Solar Eclipse & Plantera) | #Everscream | #Old One's Army Tier 3 | #Empress of Light | #Duke Fishron | (Fragment & Luminite Bar & Ancient Manipulator);
+
+// Hardmode Underground Enemies
+Toxic Sludge;                       Common Enemy;                               HM;
+Armored Skeleton;                   Common Enemy;                               HM;
+Beam Sword;                         Common Enemy Item | Melee;                  Armored Skeleton;
+Skeleton Archer;                    Common Enemy;                               HM;
+Magic Quiver;                       Common Enemy Item | Ranged;                 Skeleton Archer | (@calamity & Elemental Quiver);
+Marrow;                             Common Enemy Item | Ranged;                 Skeleton Archer;
+Giant Bat;                          Common Enemy;                               HM;
+Rock Golem;                         Rare Enemy;                                 HM;
+Rock Golem Head;                    Rare Enemy Item;                            Rock Golem;
+Rune Wizard;                        Rare Enemy;                                 HM;
+Rune Set;                           Rare Enemy Item | Magic;                    Rune Wizard;
+Mimic;                              Miniboss Enemy;                             HM;
+Dual Hook;                          Miniboss Enemy Item;                        Mimic;
+Magic Dagger;                       Miniboss Enemy Item | Magic;                Mimic;
+Philosopher's Stone;                Miniboss Enemy Item;                        Mimic;
+Titan Glove;                        Miniboss Enemy Item | Melee;                Mimic;
+Power Glove;                        ;                                           Tinkerer's Workshop & Titan Glove & Feral Claws;
+Star Cloak;                         Miniboss Enemy Item;                        Mimic;
+Cross Necklace;                     Miniboss Enemy Item;                        Mimic;
+
+// Hardmode Marble
+Medusa;                             Rare Enemy;                                 HM & Marble;
+Medusa Head;                        Rare Enemy Item | Magic;                    Medusa;
+Pocket Mirror;                      Rare Enemy Item;                            Medusa | Blindfold | (@calamity & Crystal Shard & Soul of Night);
+
+// Hallow Enemies
+Pixie;                              Common Enemy;                               Hallow;
+Unicorn;                            Common Enemy;                               Hallow;
+Blessed Apple;                      Common Enemy Item;                          Hallow;
+Unicorn on a Stick;                 Common Enemy Item;                          Hallow;
+Rainbow Slime;                      Rare Enemy;                                 Hallow;
+Gastropod;                          Common Enemy;                               Hallow;
+Illuminant Slime;                   Common Enemy;                               Hallow;
+Illuminant Bat;                     Common Enemy;                               Hallow;
+Chaos Elemental;                    Common Enemy;                               Hallow;
+Rod of Discord;                     Common Enemy Item;                          Chaos Elemental;
+Hallowed Mimic;                     Miniboss Enemy;                             Hallow;
+Daedalus Stormbow;                  Miniboss Enemy Item | Ranged;               Hallowed Mimic;
+Flying Knife;                       Miniboss Enemy Item | Melee;                Hallowed Mimic;
+Crystal Vile Shard;                 Miniboss Enemy Item | Magic;                Hallowed Mimic;
+Illuminant Hook;                    Miniboss Enemy Item;                        Hallowed Mimic;
+
+// Hardmode Water Enemies
+Angler Fish;                        Common Enemy;                               HM;
+Arapaima;                           Common Enemy;                               HM & Jungle;
+
+// Hardmode Snow Enemies
+HM Snow;                            ;                                           Snow Biome & HM;
+Ice Elemental;                      Common Enemy;                               HM Snow;
+Wolf;                               Common Enemy;                               HM Snow;
+Ice Golem;                          Miniboss Enemy;                             HM Snow;
+Frost Staff;                        Common Enemy Item | Magic;                  Ice Elemental;
+Ice Sickle;                         Common Enemy Item | Melee;                  Ice Elemental;
+Lilith's Necklace;                  Common Enemy Item;                          Wolf;
+Amarok;                             Common Enemy Item | Melee;                  HM Snow;
+Ice Tortoise;                       Common Enemy;                               HM Snow;
+Frozen Turtle Shell;                Common Enemy Item;                          Ice Tortoise;
+Pigron;                             Common Enemy;                               HM Snow;
+Ham Bat;                            Common Enemy Item | Melee;                  Pigron;
+Ice Mimic;                          Miniboss Enemy;                             HM Snow;
+Frostbrand;                         Miniboss Enemy Item | Melee;                Ice Mimic;
+Ice Bow;                            Miniboss Enemy Item | Ranged;               Ice Mimic;
+Flower of Frost;                    Miniboss Enemy Item | Magic;                Ice Mimic;
+Toy Sled;                           Miniboss Enemy Item;                        Ice Mimic;
+
+// Hardmode Desert Enemies
+HM Desert;                          ;                                           HM & Desert Biome;
+Mummy;                              Common Enemy;                               HM Desert;
+Basilisk;                           Common Enemy;                               HM Desert;
+Ancient Horn;                       Common Enemy Item;                          Basilisk;
+Lamia;                              Common Enemy;                               HM Desert;
+Ghoul;                              Common Enemy;                               HM Desert;
+Desert Spirit or Sand Poacher;      Common Enemy;                               HM Desert;
+Desert Spirit Lamp;                 Common Enemy Item | Magic;                  Desert Spirit or Sand Poacher & Evil Biome;
+Djinn's Curse;                      Common Enemy Item;                          Desert Spirit or Sand Poacher & Evil Biome;
+
+// Hardmode Jungle Enemies
+HM Jungle;                          ;                                           HM & Jungle;
+Derpling;                           Common Enemy;                               HM Jungle;
+Giant Tortoise;                     Common Enemy;                               HM Jungle;
+Giant Flying Fox;                   Common Enemy;                               HM Jungle;
+Angry Trapper;                      Common Enemy;                               HM Jungle;
+Uzi;                                Common Enemy Item;                          Angry Trapper;
+Jungle Creeper;                     Common Enemy;                               HM Jungle;
+Moss Hornet;                        Common Enemy;                               HM Jungle;
+Moth;                               Rare Enemy;                                 HM Jungle;
+
+// Hardmode Evil Enemies
+HM Evil;                            ;                                           HM & Evil Biome;
+Corruptor;                          Corruption | Common Enemy;                  HM Evil;
+Corrupt Slime;                      Corruption | Common Enemy;                  HM Evil;
+Slimer;                             Corruption | Common Enemy;                  HM Evil;
+World Feeder;                       Corruption | Common Enemy;                  HM Evil;
+Cursed Hammer;                      Corruption | Rare Enemy;                    HM Evil;
+Clinger;                            Corruption | Common Enemy;                  HM Evil;
+Corrupt Mimic;                      Corruption | Miniboss Enemy;                HM Evil;
+Dart Rifle;                         Corruption | Miniboss Enemy Item | Ranged;  Corrupt Mimic;
+Worm Hook;                          Corruption | Miniboss Enemy Item;           Corrupt Mimic;
+Chain Guillotines;                  Corruption | Miniboss Enemy Item | Melee;   Corrupt Mimic;
+Clinger Staff;                      Corruption | Miniboss Enemy Item | Magic;   Corrupt Mimic;
+Putrid Scent;                       Corruption | Miniboss Enemy Item;           Corrupt Mimic;
+Herpling;                           Crimson | Common Enemy;                     HM Evil;
+Crimslime;                          Crimson | Common Enemy;                     HM Evil;
+Blood Jelly;                        Crimson | Common Enemy;                     HM Evil & Ocean;
+Blood Feeder;                       Crimson | Common Enemy;                     HM Evil & Ocean;
+Crimson Axe;                        Crimson | Rare Enemy;                       HM Evil;
+Ichor Sticker;                      Crimson | Common Enemy;                     HM Evil;
+Floaty Gross;                       Crimson | Common Enemy;                     HM Evil;
+Crimson Mimic;                      Crimson | Miniboss Enemy;                   HM Evil;
+Life Drain;                         Crimson | Miniboss Enemy Item | Magic;      Crimson Mimic;
+Dart Pistol;                        Crimson | Miniboss Enemy Item | Ranged;     Crimson Mimic;
+Fetid Baghnaks;                     Crimson | Miniboss Enemy Item | Melee;      Crimson Mimic;
+Flesh Knuckles;                     Crimson | Miniboss Enemy Item | Melee;      Crimson Mimic;
+Tendon Hook;                        Crimson | Miniboss Enemy Item;              Crimson Mimic;
+Meat Grinder;                       Common Enemy Item;                          HM Evil;
+
+// Hardmode General Drops
+Fast Clock;                         Common Enemy Item;                          HM | Trifold Map | (@calamity & Wire & Pixie Dust & Soul of Light);
+Armor Polish;                       Common Enemy Item;                          HM | Vitamins | (@calamity & Bone & Ancient Bone Dust);
+Adhesive Bandage;                   Common Enemy Item;                          @calamity | HM;
+Medicated Bandage;                  ;                                           Tinkerer's Workshop & Bezoar & Adhesive Bandage;
+Megaphone;                          Common Enemy Item;                          HM | Nazar | (@calamity & Wire & Cobalt Bar);
+Trifold Map;                        Common Enemy Item;                          HM | Fast Clock | (@calamity & Soul of Light & Soul of Night);
+The Plan;                           ;                                           Tinkerer's Workshop & Trifold Map & Fast Clock;
+Blindfold;                          Common Enemy Item;                          @calamity | HM | Pocket Mirror;
+Reflective Shades;                  ;                                           Tinkerer's Workshop & Blindfold & Pocket Mirror;
+Vitamins;                           Common Enemy Item;                          (HM & Evil Biome) | Armor Polish | (@calamity & Alchemy Table & Blood Orb);
+Armor Bracing;                      ;                                           Tinkerer's Workshop & Vitamins & Armor Polish;
+Nazar;                              Common Enemy Item;                          (HM & Dungeon) | Megaphone | (@calamity & Soul of Night);
+Countercurse Mantra;                ;                                           Tinkerer's Workshop & Nazar & Megaphone;
+Ankh Charm;                         ;                                           Tinkerer's Workshop & Reflective Shades & Armor Bracing & Medicated Bandage & Countercurse Mantra & The Plan;
+Ankh Shield;                        ;                                           Tinkerer's Workshop & Obsidian Shield & Ankh Charm;
+Ankhumulation Complete;             Achievement | Grindy;                       Ankh Shield;
+
+
+// HM Blood Moon
+HM Blood Moon;                      ;                                           HM & Blood Moon;
+Clown;                              Miniboss Enemy;                             HM Blood Moon;
+Bananarang;                         Miniboss Enemy Item | Melee;                Clown;
+KO Cannon;                          Miniboss Enemy Item | Melee;                Clown;
+Blood Eel;                          Miniboss Enemy;                             HM Blood Moon & Advanced Mobility;
+Hemogoblin Shark;                   Miniboss Enemy;                             HM Blood Moon & Advanced Mobility;
+Drippler Crippler;                  Miniboss Enemy Item | Melee;                Blood Eel;
+Blood Thorn;                        Miniboss Enemy Item | Magic;                Hemogoblin Shark;
+Haemorrhaxe;                        Miniboss Enemy Item | Melee;                Blood Eel | Hemogoblin Shark;
+Dreadnautilus;                      Location;                                   HM Blood Moon;
 
 // Hardmode Goblins
-Hardmode Goblin Army;               ;                                           Goblin Army Clear | Wall of Flesh;
-The First Shadowflame;              Calamity | Minions(1);                      Hardmode Goblin Army;
-Shadowflame Hex Doll;               Magic;                                      Hardmode Goblin Army;
-Shadowflame Knife;                  Melee;                                      Hardmode Goblin Army;
-Shadowflame Bow;                    Ranged;                                     Hardmode Goblin Army;
+Hardmode Goblin Army;               ;                                           Goblin Army Clear | HM;
+Goblin Warlock;                     Miniboss Enemy;                             Hardmode Goblin Army;
+The First Shadowflame;              Calamity | Minions(1);                      Goblin Warlock;
+Shadowflame Hex Doll;               Miniboss Enemy Item | Magic;                Goblin Warlock;
+Shadowflame Knife;                  Miniboss Enemy Item | Melee;                Goblin Warlock;
+Shadowflame Bow;                    Miniboss Enemy Item | Ranged;               Goblin Warlock;
 
 // Advanced Mobility
 Advanced Mobility;                  ;                                           Basic Mobility & (Soul of Flight | ~@require_wings);
 
 // Pirate Invasion
 Pirate Invasion;                    Item;
-Pirate Invasion Clear;              Location;                                   Wall of Flesh & Advanced Mobility & Pirate Invasion;
+Pirate Invasion Clear;              Location;                                   HM & Advanced Mobility & Pirate Invasion;
+Pirate Deckhand;                    Invasion Enemy;                             Pirate Invasion Clear;
+Pirate Corsair;                     Invasion Enemy;                             Pirate Invasion Clear;
+Pirate Deadeye;                     Invasion Enemy;                             Pirate Invasion Clear;
+Pirate Crossbower;                  Invasion Enemy;                             Pirate Invasion Clear;
+Pirate Captain;                     Invasion Enemy;                             Pirate Invasion Clear;
+Flying Dutchman;                    Miniboss Enemy;                             Pirate Invasion Clear;
+Coin Gun;                           Invasion Enemy Item | Ranged;               Pirate Invasion Clear;
+Cutlass;                            Invasion Enemy Item | Melee;                Pirate Invasion Clear;
+Discount Card;                      Invasion Enemy Item;                        Pirate Invasion Clear;
+Gold Ring;                          Invasion Enemy Item;                        Pirate Invasion Clear;
+Lucky Coin;                         Invasion Enemy Item;                        Pirate Invasion Clear;
+Pirate Staff;                       Invasion Enemy Item | Summoning;            Pirate Invasion Clear;
 Pirate;                             Item | Npc;
 
 // Queen Slime
@@ -586,14 +870,14 @@ Diva Slime;                         Npc;                                        
 The Great Slime Mitosis;            Achievement;                                Nerdy Slime & Cool Slime & Elder Slime & Clumsy Slime & Diva Slime & Surly Slime & Mystic Slime & Squire Slime;
 
 // Aquatic Scourge
-Mythril Ore;                        ;                                           (((~@calamity & Altar) | (@calamity & @mech_boss(1))) & @pickaxe(110)) | (Wall of Flesh & (~@calamity | @mech_boss(1))) | Adamantite Ore | Mythril Bar;
-Mythril Bar;                        ;                                           Mythril Ore | (Wall of Flesh & (~@calamity | @mech_boss(1))) | (@calamity & Electrician's Glove);
+Mythril Ore;                        ;                                           (((~@calamity & Altar) | (@calamity & @mech_boss(1))) & @pickaxe(110)) | (HM & (~@calamity | @mech_boss(1))) | Adamantite Ore | Mythril Bar;
+Mythril Bar;                        ;                                           Mythril Ore | (HM & (~@calamity | @mech_boss(1))) | (@calamity & Electrician's Glove);
 Hardmode Anvil;                     ;                                           Mythril Bar;
 Mythril Pickaxe;                    Pickaxe(150);                               Hardmode Anvil & Mythril Bar;
 Electrician's Glove;                Calamity;                                   (Hardmode Anvil & Wire & Mythril Bar) | Nanotech;
-Adamantite Ore;                     ;                                           (((~@calamity & Altar) | (@calamity & @mech_boss(2))) & @pickaxe(150)) | (Wall of Flesh & (~@calamity | @mech_boss(2))) | (~@calamity & Chlorophyte Ore) | Adamantite Bar | (@calamity & Hallowed Ore);
+Adamantite Ore;                     ;                                           (((~@calamity & Altar) | (@calamity & @mech_boss(2))) & @pickaxe(150)) | (HM & (~@calamity | @mech_boss(2))) | (~@calamity & Chlorophyte Ore) | Adamantite Bar | (@calamity & Hallowed Ore);
 Hardmode Forge;                     ;                                           Hardmode Anvil & Adamantite Ore & Hellforge;
-Adamantite Bar;                     ;                                           (Hardmode Forge & Adamantite Ore) | (Wall of Flesh & (~@calamity | @mech_boss(2)));
+Adamantite Bar;                     ;                                           (Hardmode Forge & Adamantite Ore) | (HM & (~@calamity | @mech_boss(2)));
 Adamantite Pickaxe;                 Pickaxe(180);                               Hardmode Anvil & Adamantite Bar;
 Forbidden Armor;                    Armor Minions(2);                           Hardmode Anvil & Adamantite Bar & Forbidden Fragment;
 Aquatic Scourge;                    Calamity | Location | Item;
@@ -611,6 +895,11 @@ Cryogen;                            Calamity | Location | Item;                 
 Skeletron Prime;                    Location | Mech Boss;                       Advanced Mobility & ((~@getfixedboi & Mechanical Skull) | (@getfixedboi & Ocram's Razor));
 # mechanical_bosses
 
+// Post Mech Boss Enemies
+Yelets;                             Common Enemy Item | Melee;                  HM Jungle & @mech_boss(1);
+Red Devil;                          Common Enemy;                               HM & Underworld & @mech_boss(1);
+Unholy Trident;                     Common Enemy Item | Magic;                  Red Devil;
+
 // The Twins
 Soul of Sight;                      ;                                           #The Twins | Avenger Emblem | (@calamity & (Mechanical Glove | Celestial Emblem));
 Steampunker;                        Item | Npc;
@@ -619,11 +908,11 @@ Rainbow Rod;                        ;                                           
 Prismancer;                         Achievement;                                Rainbow Rod;
 Long Ranged Sensor Array;           Calamity;                                   Hardmode Anvil & Mysterious Circuitry & Dubious Plating & Mythril Bar & Wire & Decryption Computer & Codebreaker Base;
 Hydraulic Volt Crusher;             Calamity;                                   Hardmode Anvil & Mysterious Circuitry & Dubious Plating & Mythril Bar & Soul of Sight;
-Jungle Upgrade;                     Not Biome Lock;                             Wall of Flesh & Progressive Jungle(2);
-Life Fruit;                         ;                                           Jungle Upgrade | (@calamity & (Living Shard | Wall of Flesh | (@getfixedboi & #Plantera)));
+Jungle Upgrade;                     Not Biome Lock;                             HM & Progressive Jungle(2);
+Life Fruit;                         ;                                           Jungle Upgrade | (@calamity & (Living Shard | HM | (@getfixedboi & #Plantera)));
 Get a Life;                         Achievement;                                Life Fruit;
 Topped Off;                         Achievement;                                Life Fruit;
-Old One's Army Tier 2;              Location | Item(Post-OOA Tier 2);           #Old One's Army Tier 1 & ((Wall of Flesh & @mech_boss(1)) | #Old One's Army Tier 3);
+Old One's Army Tier 2;              Location | Item(Post-OOA Tier 2);           #Old One's Army Tier 1 & ((HM & @mech_boss(1)) | #Old One's Army Tier 3);
 
 // Brimstone Elemental
 Infernal Suevite;                   Calamity;                                   @pickaxe(150) | Brimstone Elemental;
@@ -666,8 +955,17 @@ Chlorophyte Warhammer;              Hammer(90);                                 
 
 //Solar Eclipse
 Progressive Eclipse;                Item;
-Solar Eclipse;                      ;                                           Wall of Flesh & Progressive Eclipse(1);
-Neptune's Shell;                    ;                                           Solar Eclipse;
+Solar Eclipse;                      ;                                           HM & Progressive Eclipse(1) & Advanced Mobility;
+Eyezor;                             Invasion Enemy;                             Solar Eclipse;
+Frankenstein;                       Invasion Enemy;                             Solar Eclipse;
+Swamp Thing;                        Invasion Enemy;                             Solar Eclipse;
+Vampire;                            Invasion Enemy;                             Solar Eclipse;
+Creature from the Deep;             Invasion Enemy;                             Solar Eclipse;
+Fritz;                              Invasion Enemy;                             Solar Eclipse;
+The Possessed;                      Invasion Enemy;                             Solar Eclipse;
+Eye Spring;                         Invasion Enemy Item;                        Eyezor;
+Moon Stone;                         Invasion Enemy Item;                        Vampire;
+Neptune's Shell;                    Invasion Enemy Item;                        Creature from the Deep;
 Kill the Sun;                       Achievement;                                Solar Eclipse;
 
 // Calamitas Clone
@@ -685,17 +983,17 @@ Fathom Swarmer Armor;               Calamity | Armor Minions(2);                
 The Axe;                            Hammer(100);                                #Plantera;
 Seedler;                            ;                                           #Plantera;
 Living Shard;                       Calamity;                                   #Plantera;
-Tiki Armor;                         Armor Minions(4);                           Witch Doctor & Wall of Flesh;
-Hercules Beetle;                    ;                                           Witch Doctor & Wall of Flesh;
+Tiki Armor;                         Armor Minions(4);                           Witch Doctor & HM;
+Hercules Beetle;                    ;                                           Witch Doctor & HM;
 You and What Army?;                 Achievement;                                @minions(8);
 Cyborg;                             Item | Npc;
 To Infinity... and Beyond!;         Achievement;                                Cyborg;
-Autohammer;                         ;                                           Truffle;
+Autohammer;                         ;                                           Truffle & Mushroom Biome;
 Shroomite Bar;                      ;                                           Autohammer & Chlorophyte Bar;
 Shroomite Digging Claw;             Pickaxe(200);                               Hardmode Anvil & Shroomite Bar;
 Princess;                           Npc;                                        Guide & Merchant & Nurse & Demolitionist & Dye Trader & Zoologist & Angler & Painter & Stylist & Golfer & Arms Dealer & Dryad & Party Girl & Tavernkeep & Goblin Tinkerer & Witch Doctor & Clothier & Wizard & Truffle & Tax Collector & Pirate & Steampunker & Cyborg;
 Real Estate Agent;                  Achievement;                                Princess;
-Dungeon Upgrade;                    ;                                           Wall of Flesh & Progressive Dungeon(2);
+Dungeon Upgrade;                    ;                                           HM & Progressive Dungeon(2);
 Ectoplasm;                          ;                                           (@calamity & Plantera) | Dungeon Upgrade | Spectre Bar;
 Paladin's Shield;                   ;                                           Dungeon Upgrade;
 Core of Sunlight;                   Calamity;                                   (Hardmode Anvil & Essence of Sunlight & Ectoplasm) | Fleshy Geode | Necromantic Geode | Core of Calamity | Statis' Blessing;
@@ -721,12 +1019,15 @@ Beastial Pickaxe;                   Calamity | Pickaxe(200);                    
 
 // Temple
 Temple;                             Item;
-Lihzahrd Temple;                    ;                                           Wall of Flesh & Temple;
+Lihzahrd Temple;                    ;                                           HM & Temple;
 Temple Raider;                      Achievement;                                Lihzahrd Temple;
+Lihzahrd;                           Common Enemy;                               Lihzahrd Temple;
+Flying Snake;                       Common Enemy;                               Lihzahrd Temple;
+Lizard Egg;                         Common Enemy Item;                          Lihzahrd | Flying Snake;
 Lihzahrd Furniture;                 ;                                           Lihzahrd Temple;
 
 //Solar Eclipse 2
-Solar Eclipse Upgrade;              ;                                           Wall of Flesh & Progressive Eclipse(2) & Advanced Mobility;
+Solar Eclipse Upgrade;              ;                                           HM & Progressive Eclipse(2) & Advanced Mobility;
 Broken Hero Sword;                  ;                                           (Solar Eclipse Upgrade) | (@calamity & #Calamitas Clone);
 Terra Blade;                        ;                                           Hardmode Anvil & True Night's Edge & True Excalibur & Broken Hero Sword & (~@calamity | Living Shard);
 Sword of the Hero;                  Achievement;                                Terra Blade;
@@ -757,12 +1058,29 @@ Sigil of Calamitas;                 Calamity;                                   
 Life Alloy;                         Calamity;                                   (Hardmode Anvil & Cryonic Bar & Perennial Bar & Scoria Bar) | Necromantic Geode | Star-Tainted Generator | (@getfixedboi & #Yharon, Dragon of Rebirth);
 Advanced Display;                   Calamity;                                   Hardmode Anvil & Mysterious Circuitry & Dubious Plating & Life Alloy & Long Ranged Sensor Array;
 Star-Tainted Generator;             Calamity;                                   (Hardmode Anvil & Jelly-Charged Battery & Nuclear Fuel Rod & Starbuster Core & Life Alloy) | Nucleogenesis;
-Old One's Army Tier 3;              Location | Item(Post-OOA Tier 3);           #Old One's Army Tier 1 & Wall of Flesh & Cultists;
+Old One's Army Tier 3;              Location | Item(Post-OOA Tier 3);           #Old One's Army Tier 1 & HM & Cultists;
 
 // Martian Madness
 Martian Madness;                    Item;
-Martian Madness Clear;              Location;                                   Wall of Flesh & Martian Madness & Advanced Mobility;
-Influx Waver;                       ;                                           #Martian Madness Clear;
+Martian Madness Clear;              Location;                                   HM & Martian Madness & Advanced Mobility;
+Brain Scrambler;                    Invasion Enemy;                             Martian Madness Clear;
+Ray Gunner;                         Invasion Enemy;                             Martian Madness Clear;
+Martian Officer;                    Invasion Enemy;                             Martian Madness Clear;
+Gray Grunt;                         Invasion Enemy;                             Martian Madness Clear;
+Martian Engineer;                   Invasion Enemy;                             Martian Madness Clear;
+Gigazapper;                         Invasion Enemy;                             Martian Madness Clear;
+Scutlix Gunner;                     Invasion Enemy;                             Martian Madness Clear;
+Scutlix;                            Invasion Enemy;                             Martian Madness Clear;
+Martian Saucer;                     Miniboss Enemy;                             Martian Madness Clear;
+Laser Drill;                        Invasion Enemy Item;                        Martian Madness Clear;
+Charged Blaster Cannon;             Invasion Enemy Item | Magic;                Martian Madness Clear;
+Anti-Gravity Hook;                  Invasion Enemy Item;                        Martian Madness Clear;
+Laser Machinegun;                   Miniboss Enemy Item | Magic;                Martian Madness Clear;
+Xenopopper;                         Miniboss Enemy Item | Ranged;               Martian Madness Clear;
+Xeno Staff;                         Miniboss Enemy Item | Summoning;            Martian Madness Clear;
+Cosmic Car Key;                     Miniboss Enemy Item;                        Martian Madness Clear;
+Electrosphere Launcher;             Miniboss Enemy Item | Ranged;               Martian Madness Clear;
+Influx Waver;                       Miniboss Enemy Item | Melee;                #Martian Madness Clear;
 
 // The Plaguebringer Goliath
 Plague Cell Canister;               Calamity;                                   Cultists | Alchemical Flask | (@getfixedboi & #Queen Bee);
@@ -772,31 +1090,51 @@ Infected Armor Plating;             Calamity;                                   
 Plaguebringer Armor;                Calamity | Armor Minions(3);                Hardmode Anvil & Bee Armor & Alchemical Flask & Plague Cell Canister & Infected Armor Plating;
 
 // Duke Fishron
-Duke Fishron;                       Location;                                   (Bug Net & Wall of Flesh & Ocean & Advanced Mobility) | (@getfixedboi & @calamity & #Astrum Deus);
+Duke Fishron;                       Location;                                   (Bug Net & HM & Ocean & Advanced Mobility) | (@getfixedboi & @calamity & #Astrum Deus);
 
 // Pumpkin Moon
 Pumpkin Moon Medallion;             Item;
-Pumpkin Moon;                       ;                                           Wall of Flesh & Pumpkin Moon Medallion & Advanced Mobility;
+Pumpkin Moon;                       ;                                           HM & Pumpkin Moon Medallion & Advanced Mobility;
 Spooky Armor;                       Armor Minions(4);                           Pumpkin Moon;
-Mourning Wood;                      Location | Item;                            Pumpkin Moon;
-Necromantic Scroll;                 Minions(1);                                 #Mourning Wood;
-Papyrus Scarab;                     Minions(1);                                 (Tinkerer's Workshop & Hercules Beetle & Necromantic Scroll) | (@calamity & Statis' Blessing);
+Mourning Wood;                      Miniboss Enemy;                             Pumpkin Moon;
+Necromantic Scroll;                 Minions(1) | Miniboss Enemy Item | Summoning;#Mourning Wood;
+Papyrus Scarab;                     Minions(1) | Miniboss Enemy Item | Summoning;(Tinkerer's Workshop & Hercules Beetle & Necromantic Scroll) | (@calamity & Statis' Blessing);
 Statis' Blessing;                   Calamity;                                   (Hardmode Anvil & Papyrus Scarab & Pygmy Necklace & Emblem & Holy Water & Core of Sunlight) | Statis' Curse;
-Pumpking;                           Location | Item;                            Pumpkin Moon;
-The Horseman's Blade;               ;                                           #Pumpking;
+Pumpking;                           Miniboss Enemy;                             Pumpkin Moon;
+The Horseman's Blade;               Miniboss Enemy Item | Melee;                Pumpkin Moon;
 Baleful Harvest;                    Achievement;                                Pumpkin Moon;
+Stake Launcher;                     Miniboss Enemy Item | Ranged;               Pumpkin Moon;
+Spooky Hook;                        Miniboss Enemy Item;                        Pumpkin Moon;
+Cursed Sapling;                     Miniboss Enemy Item;                        Pumpkin Moon;
+Raven Staff;                        Miniboss Enemy Item | Summoning;            Pumpkin Moon;
+Bat Scepter;                        Miniboss Enemy Item | Magic;                Pumpkin Moon;
+Candy Corn Rifle;                   Miniboss Enemy Item | Ranged;               Pumpkin Moon;
+Jack 'O Lantern Launcher;           Miniboss Enemy Item | Ranged;               Pumpkin Moon;
+Spider Egg;                         Miniboss Enemy Item;                        Pumpkin Moon;
+Dark Harvest;                       Miniboss Enemy Item | Summoning;            Pumpkin Moon;
+
 
 // Frost Moon
 Naughty Present;                    Item;
-Frost Moon;                         ;                                           Wall of Flesh & Naughty Present & Advanced Mobility;
-Everscream;                         Location | Item;                            Frost Moon;
-Santa-NK1;                          Location | Item;                            Frost Moon;
-Ice Queen;                          Location | Item;                            Frost Moon;
+Frost Moon;                         ;                                           HM & Naughty Present & Advanced Mobility;
+Everscream;                         Miniboss Enemy;                             Frost Moon;
+Santa-NK1;                          Miniboss Enemy;                             Frost Moon;
+Ice Queen;                          Miniboss Enemy;                             Frost Moon;
 Ice Scream;                         Achievement;                                Frost Moon;
 Christmas;                          ;                                           Frost Moon;
+Christmas Tree Sword;               Miniboss Enemy Item | Melee;                Frost Moon;
+Razorpine;                          Miniboss Enemy Item | Magic;                Frost Moon;
+Christmas Hook;                     Miniboss Enemy Item;                        Frost Moon;
+Elf Melter;                         Miniboss Enemy Item | Ranged;               Frost Moon;
+Chain Gun;                          Miniboss Enemy Item | Ranged;               Frost Moon;
+Blizzard Staff;                     Miniboss Enemy Item | Magic;                Frost Moon;
+North Pole;                         Miniboss Enemy Item | Melee;                Frost Moon;
+Snowman Cannon;                     Miniboss Enemy Item | Ranged;               Frost Moon;
+Baby Grinch's Mischief Whistle;     Miniboss Enemy Item;                        Frost Moon;
+Reindeer Bells;                     Miniboss Enemy Item;                        Frost Moon;
 
 // Frost Legion
-Frost Legion;                       ;                                           (Wall of Flesh & Christmas) | (@calamity & Soul of Light & Soul of Night);
+Frost Legion;                       ;                                           (HM & Christmas) | (@calamity & Soul of Light & Soul of Night);
 Santa Claus;                        Item | Npc;
 
 // Ravager
@@ -805,12 +1143,12 @@ Fleshy Geode;                       Calamity;                                   
 
 // Empress of Light
 Prismatic Lacewing;                 Item;
-Empress of Light;                   Location | Item | Goal;                     (Wall of Flesh & Prismatic Lacewing & Advanced Mobility) | (@getfixedboi & @calamity & #Supreme Alchemist, Cirrus);
+Empress of Light;                   Location | Item | Goal;                     (HM & Prismatic Lacewing & Advanced Mobility) | (@getfixedboi & @calamity & #Supreme Alchemist, Cirrus);
 # empress_of_light
 
 // Lunatic Cultist
 Cultists;                           Item;
-Lunatic Cultist;                    Location | Goal;                            Wall of Flesh & Cultists & Advanced Mobility;
+Lunatic Cultist;                    Location | Goal;                            HM & Cultists & Advanced Mobility;
 Astrum Deus;                        Calamity | Location | Item | Goal;          Titan Heart;
 # lunatic_cultist
 # astrum_deus
@@ -854,7 +1192,7 @@ Star Wrath;                         ;                                           
 Exodium Cluster;                    Calamity;                                   Moon Lord | Uelibloom Ore; // No pick needed; can be fished
 Normality Relocator;                Calamity;                                   Ancient Manipulator & Rod of Discord & Exodium Cluster & Fragment;
 Unholy Essence;                     Calamity;                                   Moon Lord | #Providence, the Profaned Goddess | (Hallow & Providence, the Profaned Goddess) | (@getfixedboi & Plantera);
-Polterplasm;                        Calamity;                                   (Moon Lord & Wall of Flesh) | (Dungeon & (Polterghast | Moon Lord)) | #Polterghast;
+Polterplasm;                        Calamity;                                   (Moon Lord & HM) | (Dungeon & (Polterghast | Moon Lord)) | #Polterghast;
 Eldritch Soul Artifact;             Calamity;                                   Exodium Cluster & Navyplate & Polterplasm;
 
 // Profaned Guardians
@@ -926,7 +1264,7 @@ Yharon, Dragon of Rebirth;          Calamity | Location | Item | Goal;          
 # yharon_dragon_of_rebirth
 Yharon Soul Fragment;               Calamity;                                   #Yharon, Dragon of Rebirth | The Wand | Auric Bar;
 The Wand;                           Calamity;                                   (Cosmic Anvil & Wand of Sparking & Yharon Soul Fragment) | (@getfixedboi & #The Devourer of Gods);
-Auric Ore;                          Calamity;                                   (Yharon, Dragon of Rebirth & (@pickaxe(250) | Wall of Flesh)) | Auric Bar;
+Auric Ore;                          Calamity;                                   (Yharon, Dragon of Rebirth & (@pickaxe(250) | HM)) | Auric Bar;
 Auric Bar;                          Calamity;                                   (Cosmic Anvil & Auric Ore & Yharon Soul Fragment) | Shadowspec Bar;
 Auric Tesla Armor;                  Calamity | Armor Minions(6);                Cosmic Anvil & Silva Armor & Bloodflare Armor & Tarragon Armor & Auric Bar;
 Infinity +1 Sword;                  Achievement | Grindy | Item(Has Zenith) | Goal(zenith); Hardmode Anvil & Terra Blade & Meowmere & Star Wrath & Influx Waver & The Horseman's Blade & Seedler & Starfury & Bee Keeper & Enchanted Sword & Copper Shortsword & (~@calamity | Auric Bar);
