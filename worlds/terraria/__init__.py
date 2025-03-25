@@ -74,6 +74,7 @@ class TerrariaWorld(World):
 
     multi_loc_dict = {}
     multi_loc_slot_dicts = {}
+    enemy_items = []
     hardmode_items = []
 
     ter_items: List[str]
@@ -93,17 +94,20 @@ class TerrariaWorld(World):
                 or ("Invasion Enemy" in flags and self.options.enemy_invasion_drops.value > 0)
                 or ("Miniboss Enemy" in flags and self.options.enemy_miniboss_drops.value > 0))
 
+    def is_item_enemy(self, flags):
+        return (("Common Enemy Item" in flags and self.options.enemy_common_drops.value > 0)
+                or ("Rare Enemy Item" in flags and self.options.enemy_rare_drops.value > 0)
+                or ("Invasion Enemy Item" in flags and self.options.enemy_invasion_drops.value > 0)
+                or ("Miniboss Enemy Item" in flags and self.options.enemy_miniboss_drops.value > 0))
+
     def is_item(self, flags):
         allowed_as_rule = ("Item" in flags
                            or ("Chest Item" in flags and self.options.chest_loot)
                            or ("Orb Item" in flags and self.options.orb_loot.value)
-                           or ("Common Enemy Item" in flags and self.options.enemy_common_drops.value > 0)
-                           or ("Rare Enemy Item" in flags and self.options.enemy_rare_drops.value > 0)
-                           or ("Invasion Enemy Item" in flags and self.options.enemy_invasion_drops.value > 0)
-                           or ("Miniboss Enemy Item" in flags and self.options.enemy_miniboss_drops.value > 0)
                            or ("Biome Lock" in flags and self.options.biome_locks)
                            or ("Not Biome Lock" in flags and not self.options.biome_locks)
-                           or ("Grappling Hook" in flags and self.options.grappling_hook))
+                           or ("Grappling Hook" in flags and self.options.grappling_hook)
+                           or self.is_item_enemy(flags))
         allowed_as_class_item = self.class_acceptable(flags)
         return allowed_as_rule and allowed_as_class_item
 
@@ -122,6 +126,7 @@ class TerrariaWorld(World):
     def get_multi_loc_num(self, name):
         num_str = ''.join(i for i in name if i.isdigit())
         return int(num_str) if num_str != "" else 0
+
     def get_multi_loc_name(self, name):
         return ''.join(i for i in name if not i.isdigit()).strip()
 
@@ -292,6 +297,8 @@ class TerrariaWorld(World):
                 # Item
                 items.append(rule.name)
                 item_count += 1
+                if self.is_item_enemy(rule.flags):
+                    self.enemy_items.append(rule.name)
                 if rule_indices[rule.name] > rule_indices["Wall of Flesh"]:
                     self.hardmode_items.append(rule.name)
             elif (
@@ -622,6 +629,7 @@ class TerrariaWorld(World):
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
+            "enemy_items": self.enemy_items,
             "hardmode_items": self.hardmode_items,
             "multi_loc_slot_dicts": self.multi_loc_slot_dicts
         }

@@ -216,7 +216,7 @@ class ToggleEnemyBossDrops(Range):
 
 class ToggleEnemyCommonDrops(Range):
     """
-    Killing an amount of a specific common non-invasion enemy grants a check.
+    Reaching a target kill count for a specific common non-invasion enemy grants a check.
     Their non-consumable drops (weapons, accessories, etc.) are added to the item pool.
 
     Specify how many checks to add to each common enemy variety, or set to 0 to disable common enemy randomization.
@@ -238,7 +238,7 @@ class ToggleEnemyCommonKillCount(Range):
 
 class ToggleEnemyRareDrops(Range):
     """
-    Killing an amount of a specific rare non-invasion enemy (Tim, Doctor Bones, etc.) grants a check.
+    Reaching a target kill count for a specific rare non-invasion enemy (Tim, Doctor Bones, etc.) grants a check.
     Their non-consumable drops are added to the item pool.
 
     Specify how many checks to add to each rare enemy variety, or set to 0 to disable rare enemy randomization.
@@ -260,7 +260,7 @@ class ToggleEnemyRareKillCount(Range):
 
 class ToggleEnemyInvasionDrops(Range):
     """
-    Killing an amount of an invasion/event enemy (Goblin Warrior, Blood Zombie, etc.) grants a check.
+    Reaching a target kill count for an invasion/event enemy (Goblin Warrior, Blood Zombie, etc.) grants a check.
     Their non-consumable drops are added to the item pool.
 
     Specify how many checks to add to each invasion enemy variety, or set to 0 to disable invasion enemy randomization.
@@ -282,7 +282,7 @@ class ToggleEnemyInvasionKillCount(Range):
 
 class ToggleEnemyMinibossDrops(Range):
     """
-    Killing an amount of miniboss enemies (Wandering Eye Fish, Mimics, etc.) grants a check.
+    Reaching a target kill count for miniboss enemies (Wandering Eye Fish, Mimics, etc.) grants a check.
     Their non-consumable drops are added to the item pool.
 
     Specify how many checks to add to each boss enemy variety, or set to 0 to disable boss enemy randomization.
