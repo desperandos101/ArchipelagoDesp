@@ -622,5 +622,6 @@ class TerrariaWorld(World):
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
-            "hardmode_items": self.hardmode_items
+            "hardmode_items": self.hardmode_items,
+            "multi_loc_slot_dicts": self.multi_loc_slot_dicts
         }
