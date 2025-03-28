@@ -74,6 +74,8 @@ class TerrariaWorld(World):
 
     multi_loc_dict = {}
     multi_loc_slot_dicts = {}
+
+    enemy_to_kill_count = {}
     enemy_items = []
     hardmode_items = []
 
@@ -281,6 +283,25 @@ class TerrariaWorld(World):
                 if quant > 0:
                     if self.multi_loc_slot_dicts.get(base_name) is None:
                         self.multi_loc_slot_dicts[base_name] = []
+                        enemy_flag_set = set(rule.flags.keys()).intersection({"Common Enemy", "Rare Enemy", "Invasion Enemy", "Miniboss Enemy"})
+                        set_length = len(enemy_flag_set)
+                        if set_length > 1:
+                            raise Exception("Enemy Flag Set Length above 1")
+                        elif set_length == 1:
+                            enemy_type = list(enemy_flag_set)[0]
+                            kill_quant = 0
+                            if enemy_type == "Common Enemy":
+                                kill_quant = self.options.enemy_common_count.value
+                            elif enemy_type == "Rare Enemy":
+                                kill_quant = self.options.enemy_rare_count.value
+                            elif enemy_type == "Invasion Enemy":
+                                kill_quant = self.options.enemy_invasion_count.value
+                            elif enemy_type == "Miniboss Enemy":
+                                kill_quant = self.options.enemy_miniboss_count.value
+                            else:
+                                raise Exception("what?")
+                            self.enemy_to_kill_count[base_name] = kill_quant
+
                     self.multi_loc_slot_dicts[base_name].append(rule.name)
 
             if self.is_location(rule.flags):
@@ -615,15 +636,8 @@ class TerrariaWorld(World):
             "events_as_items": int(self.options.events_as_items.value),
             "biome_locks": bool(self.options.biome_locks.value),
             "chest_loot": bool(self.options.chest_loot.value),
-            "enemy_common_drops": self.options.enemy_common_drops.value,
-            "enemy_common_count": self.options.enemy_common_count.value,
-            "enemy_rare_drops": self.options.enemy_rare_drops.value,
-            "enemy_rare_count": self.options.enemy_rare_count.value,
-            "enemy_invasion_drops": self.options.enemy_invasion_drops.value,
-            "enemy_invasion_count": self.options.enemy_invasion_count.value,
-            "enemy_miniboss_drops": self.options.enemy_miniboss_drops.value,
+            "enemy_to_kill_count": self.enemy_to_kill_count,
             "enemy_miniboss_drops_all": self.options.enemy_miniboss_drops_all.value,
-            "enemy_miniboss_count": self.options.enemy_miniboss_count.value,
             "grappling_hook_rando": bool(self.options.grappling_hook.value),
             "early_achievements": self.options.early_achievements.value,
             "normal_achievements": self.options.normal_achievements.value,
