@@ -215,7 +215,9 @@ Funkytown;                          Achievement;                                
 
 // Mushroom Chests
 Mushroom Chest;                     Chest(100);                                 Mushroom Biome;
-Mushroom set;                       Chest Item;                                 Mushroom Chest;
+Mushroom Hat;                       Chest Item;                                 Mushroom Chest;
+Mushroom Vest;                      Chest Item;                                 Mushroom Chest;
+Mushroom Pants;                     Chest Item;                                 Mushroom Chest;
 Shroom Minecart;                    Chest Item;                                 Mushroom Chest;
 
 // Mushroom Enemies
@@ -229,7 +231,9 @@ Granite Chest;                      Chest(100);                                 
 // Marble/Granite Enemies
 Hoplite;                            Common Enemy;                               Marble Biome;
 Gladius;                            Common Enemy Item | Melee;                  Hoplite;
-Gladiator set;                      Common Enemy Item;                          Hoplite;
+Gladiator Helmet;                   Common Enemy Item;                          Hoplite;
+Gladiator Breastplate;              Common Enemy Item;                          Hoplite;
+Gladiator Leggings;                 Common Enemy Item;                          Hoplite;
 Granite Golem;                      Common Enemy;                               Granite Biome;
 Granite Elemental;                  Common Enemy;                               Granite Biome;
 Night Vision Helmet;                Common Enemy Item;                          Granite Biome;
@@ -698,7 +702,8 @@ Giant Bat;                          Common Enemy;                               
 Rock Golem;                         Rare Enemy;                                 HM;
 Rock Golem Head;                    Rare Enemy Item;                            Rock Golem;
 Rune Wizard;                        Rare Enemy;                                 HM;
-Rune Set;                           Rare Enemy Item | Magic;                    Rune Wizard;
+Rune Hat;                           Rare Enemy Item | Magic;                    Rune Wizard;
+Rune Robe;                          Rare Enemy Item | Magic;                    Rune Wizard;
 Mimic;                              Miniboss Enemy;                             HM;
 Dual Hook;                          Miniboss Enemy Item;                        Mimic;
 Magic Dagger;                       Miniboss Enemy Item | Magic;                Mimic;
