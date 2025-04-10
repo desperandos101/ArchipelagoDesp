@@ -108,6 +108,7 @@ class TerrariaWorld(World):
                            or ("Orb Item" in flags and self.options.orb_loot.value)
                            or ("Biome Lock" in flags and self.options.biome_locks)
                            or ("Not Biome Lock" in flags and not self.options.biome_locks)
+                           or ("Weather Lock" in flags and self.options.weather_locks.value)
                            or ("Grappling Hook" in flags and self.options.grappling_hook)
                            or self.is_item_enemy(flags))
         allowed_as_class_item = self.class_acceptable(flags)

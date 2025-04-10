@@ -20,6 +20,12 @@ Spider Nest;                        Biome Lock;
 Marble Biome;                             Biome Lock;
 Granite Biome;                            Biome Lock;
 
+// Weather Locks
+Rain;                               Weather Lock;
+Wind;                               Weather Lock;
+Blizzard;                           ;                                           Rain & Snow Biome;
+Sandstorm;                          ;                                           (~@calamity & Desert Biome & Wind) | Desert Scourge;
+
 // Immediately accessible
 Work Bench;
 Anvil;
@@ -96,6 +102,18 @@ Shackle;                            Common Enemy Item;                          
 Spiffo Plush;                       Common Enemy Item;                          Zombie;
 Demon Eye;                          Common Enemy;
 Goblin Scout;                       Rare Enemy;                                 Basic Mobility;
+
+// Rain Enemies
+Flying Fish;                        Common Enemy;                               Rain;
+Umbrella Slime;                     Common Enemy;                               Rain;
+Raincoat Zombie;                    Common Enemy;                               Rain;
+Rain Hat;                           Common Enemy Item;                          Raincoat Zombie;
+Rain Coat;                          Common Enemy Item;                          Raincoat Zombie;
+Umbrella Hat;                       Common Enemy Item;                          Umbrella Slime;
+Rain Song;                          Common Enemy Item;                          Flying Fish;
+
+// Wind Enemies
+Angry Dandelion;                    Common Enemy;                               Wind;
 
 // Ocean and Fishing
 Angler;                             Npc;                                        Ocean;
@@ -296,6 +314,9 @@ Antlion Charger;                    Common Enemy;                               
 Antlion Swarmer;                    Common Enemy;                               Desert Biome;
 Mandible Blade;                     Common Enemy Item | Melee;                  Antlion Charger | Antlion Swarmer;
 
+// Sandstorm Enemies
+Angry Tumbler;                      Common Enemy;                               Sandstorm;
+
 // Sunken Sea
 Sea Prism;                          Calamity;
 Navyplate;                          Calamity;                                   Sea Prism & Obsidian;
@@ -460,7 +481,6 @@ Pearl Shard;                        Calamity;                                   
 Sea Remains;                        Calamity;                                   Pearl Shard;
 Reefclaw Hamaxe;                    Calamity | Hammer(60);                      Sea Remains;
 Victide Armor;                      Calamity | Armor Minions(1);                Sea Remains;
-Sandstorm;                          ;                                           (~@calamity & Desert Biome) | Desert Scourge;
 Voltaic Jelly;                      Calamity | Minions(1);                      Desert Scourge | Jelly-Charged Battery; // Jelly-Charged Battery doesn't stack. This is the case for all Calamity minion accessory upgrades.
 
 // Giant Clam
@@ -723,7 +743,7 @@ Pixie;                              Common Enemy;                               
 Unicorn;                            Common Enemy;                               Hallow;
 Blessed Apple;                      Common Enemy Item;                          Hallow;
 Unicorn on a Stick;                 Common Enemy Item;                          Hallow;
-Rainbow Slime;                      Rare Enemy;                                 Hallow;
+Rainbow Slime;                      Rare Enemy;                                 Hallow & Rain;
 Gastropod;                          Common Enemy;                               Hallow;
 Illuminant Slime;                   Common Enemy;                               Hallow;
 Illuminant Bat;                     Common Enemy;                               Hallow;
@@ -743,7 +763,7 @@ Arapaima;                           Common Enemy;                               
 HM Snow;                            ;                                           Snow Biome & HM;
 Ice Elemental;                      Common Enemy;                               HM Snow;
 Wolf;                               Common Enemy;                               HM Snow;
-Ice Golem;                          Miniboss Enemy;                             HM Snow;
+Ice Golem;                          Miniboss Enemy;                             HM Snow & Rain;
 Frost Staff;                        Common Enemy Item | Magic;                  Ice Elemental;
 Ice Sickle;                         Common Enemy Item | Melee;                  Ice Elemental;
 Lilith's Necklace;                  Common Enemy Item;                          Wolf;
@@ -768,6 +788,10 @@ Ghoul;                              Common Enemy;                               
 Desert Spirit or Sand Poacher;      Common Enemy;                               HM Desert;
 Desert Spirit Lamp;                 Common Enemy Item | Magic;                  Desert Spirit or Sand Poacher & Evil Biome;
 Djinn's Curse;                      Common Enemy Item;                          Desert Spirit or Sand Poacher & Evil Biome;
+
+// Hardmode Desert Sandstorm Enemies
+Sand Shark;                         Common Enemy;                               HM Desert & Wind;
+Sand Elemental;                     Miniboss Enemy;                             HM Desert & Wind;
 
 // Hardmode Jungle Enemies
 HM Jungle;                          ;                                           HM & Jungle;
@@ -1015,21 +1039,21 @@ Tactical Skeleton;                  Common Enemy;                               
 Giant Cursed Skull;                 Common Enemy;                               Dungeon Upgrade;
 Bone Lee;                           Common Enemy;                               Dungeon Upgrade;
 Dungeon Spirit;                     Common Enemy;                               Dungeon Upgrade;
-Keybrand;
-Wisp in a Bottle;
-Magnet Sphere;
-Shadowbeam Staff;
-Spectre Staff;
-Inferno Fork;
-Rocket Launcher;
-Rifle Scope;
-Sniper Rifle;
-SWAT Helmet;
-Tactical Shotgun;
-Black Belt;
-Tabi;
-Kraken;
-Morning Star;
+Keybrand;                           Common Enemy Item | Melee;                  Dungeon Upgrade;
+Wisp in a Bottle;                   Common Enemy Item;                          Dungeon Upgrade;
+Magnet Sphere;                      Common Enemy Item | Magic;                  Dungeon Upgrade;
+Shadowbeam Staff;                   Common Enemy Item | Magic;                  Dungeon Upgrade;
+Spectre Staff;                      Common Enemy Item | Magic;                  Dungeon Upgrade;
+Inferno Fork;                       Common Enemy Item | Magic;                  Dungeon Upgrade;
+Rocket Launcher;                    Common Enemy Item | Ranged;                 Dungeon Upgrade;
+Rifle Scope;                        Common Enemy Item | Ranged;                 Dungeon Upgrade;
+Sniper Rifle;                       Common Enemy Item | Ranged;                 Dungeon Upgrade;
+SWAT Helmet;                        Common Enemy Item;                          Dungeon Upgrade;
+Tactical Shotgun;                   Common Enemy Item;                          Dungeon Upgrade;
+Black Belt;                         Common Enemy Item;                          Dungeon Upgrade;
+Tabi;                               Common Enemy Item;                          Dungeon Upgrade;
+Kraken;                             Common Enemy Item | Melee;                  Dungeon Upgrade;
+Morning Star;                       Common Enemy Item | Summoning;              Dungeon Upgrade;
 Paladin's Shield;                   Miniboss Enemy Item;                        Dungeon Upgrade;
 Paladin's Hammer;                   Miniboss Enemy Item | Melee;                Dungeon Upgrade;
 Core of Sunlight;                   Calamity;                                   (Hardmode Anvil & Essence of Sunlight & Ectoplasm) | Fleshy Geode | Necromantic Geode | Core of Calamity | Statis' Blessing;

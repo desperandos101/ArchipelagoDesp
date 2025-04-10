@@ -82,6 +82,25 @@ class BiomeLocks(Toggle):
     default = True
 
 
+class WeatherLocks(Toggle):
+    """
+    Adds weather conditions "Rain" and "Wind" to the item pool.
+    These weather conditions, as well as Blizzards and Sandstorms respectively, will not occur until the item is received.
+    """
+    display_name = "Weather Locks"
+    default = True
+
+
+class ManualWeather(Toggle):
+    """
+    Specify whether the player should be able to activate weather events they have access to.
+    This option is unnecessary if you are playing on journey mode.
+    Additionally, note that if this option is set to True and Weather Locks is set to False,
+    you will immediately receive weather starting items.
+    """
+    display_name = "Manual Weather"
+    default = True
+
 class RandomizeChestLoot(Toggle):
     """
     Primary chest items are added into the item pool and replaced with checks.
@@ -422,6 +441,8 @@ class TerrariaOptions(PerGameCommonOptions):
     toggle_evil: ToggleEvil
     events_as_items: ReceiveDangerousEventsAsItems
     biome_locks: BiomeLocks
+    weather_locks: WeatherLocks
+    manual_weather: ManualWeather
     chest_loot: RandomizeChestLoot
     chest_surface: ToggleChestSlotsSurface
     chest_water: ToggleChestSlotsWater

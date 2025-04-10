@@ -642,6 +642,7 @@ def read_data() -> Tuple[
                     "Not Calamity Getfixedboi",
                     "Biome Lock",
                     "Not Biome Lock",
+                    "Weather Lock",
                     "Grappling Hook",
                     "Melee",
                     "Ranged",
@@ -666,6 +667,7 @@ def read_data() -> Tuple[
                     or "Miniboss Enemy Item" in flags
                     or "Biome Lock" in flags
                     or "Not Biome Lock" in flags
+                    or "Weather Lock" in flags
                     or "Grappling Hook" in flags):
                 item_name = get_default_item_name(name, flags)
                 if item_name in item_name_to_id:
