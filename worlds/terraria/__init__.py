@@ -371,4 +371,5 @@ class TerrariaWorld(World):
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
+            "receive_hardmode_as_item": self.options.receive_hardmode_as_item.value
         }
