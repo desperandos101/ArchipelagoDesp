@@ -634,7 +634,6 @@ class TerrariaWorld(World):
             # The rest of these are included for trackers
             "calamity": self.options.calamity.value,
             "getfixedboi": self.options.getfixedboi.value,
-            "events_as_items": int(self.options.events_as_items.value),
             "biome_locks": bool(self.options.biome_locks.value),
             "chest_loot": bool(self.options.chest_loot.value),
             "enemy_to_kill_count": self.enemy_to_kill_count,

@@ -58,21 +58,6 @@ class ToggleEvil(Choice):
     option_both = 2
 
 
-class ReceiveDangerousEventsAsItems(Choice):
-    """
-    Toggle which events will be received as manual trigger items instead.
-    All: Hardmode, All invasions, Blood Moon, Solar Eclipse.
-    Hardmode Only: The only event out of the above list that will not activate when received is Hardmode.
-    None: All events activate once received.
-    Hardmode events will not activate until Hardmode itself is active.
-    """
-    display_name = "Receive Dangerous Events As Items"
-    option_all = 2
-    option_hardmode = 1
-    option_none = 0
-    default = 2
-
-
 class BiomeLocks(Toggle):
     """
     Adds biomes to the item pool, which prevents you from acquiring certain loot until you obtain their respective
@@ -88,17 +73,6 @@ class WeatherLocks(Toggle):
     These weather conditions, as well as Blizzards and Sandstorms respectively, will not occur until the item is received.
     """
     display_name = "Weather Locks"
-    default = True
-
-
-class ManualWeather(Toggle):
-    """
-    Specify whether the player should be able to activate weather events they have access to.
-    This option is unnecessary if you are playing on journey mode.
-    Additionally, note that if this option is set to True and Weather Locks is set to False,
-    you will immediately receive weather starting items.
-    """
-    display_name = "Manual Weather"
     default = True
 
 class RandomizeChestLoot(Toggle):
@@ -439,10 +413,8 @@ class TerrariaOptions(PerGameCommonOptions):
     getfixedboi: Getfixedboi
     goal: Goal
     toggle_evil: ToggleEvil
-    events_as_items: ReceiveDangerousEventsAsItems
     biome_locks: BiomeLocks
     weather_locks: WeatherLocks
-    manual_weather: ManualWeather
     chest_loot: RandomizeChestLoot
     chest_surface: ToggleChestSlotsSurface
     chest_water: ToggleChestSlotsWater
