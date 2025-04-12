@@ -78,13 +78,6 @@ class FillExtraChecksWith(Choice):
     option_useful_items = 1
     default = 1
 
-class ReceiveHardmodeAsItem(Toggle):
-    """
-    If set to true, receiving Hardmode gives you an item that allows you to start Hardmode manually.
-    """
-
-    display_name = "Receive Hardmode as Item"
-    default = 1
 
 @dataclass
 class TerrariaOptions(PerGameCommonOptions):
@@ -96,5 +89,4 @@ class TerrariaOptions(PerGameCommonOptions):
     grindy_achievements: GrindyAchievements
     fishing_achievements: FishingAchievements
     fill_extra_checks_with: FillExtraChecksWith
-    receive_hardmode_as_item: ReceiveHardmodeAsItem
     death_link: DeathLink
