@@ -635,6 +635,7 @@ class TerrariaWorld(World):
             "calamity": self.options.calamity.value,
             "getfixedboi": self.options.getfixedboi.value,
             "biome_locks": bool(self.options.biome_locks.value),
+            "weather_locks": bool(self.options.weather_locks.value),
             "chest_loot": bool(self.options.chest_loot.value),
             "enemy_to_kill_count": self.enemy_to_kill_count,
             "enemy_miniboss_drops_all": self.options.enemy_miniboss_drops_all.value,

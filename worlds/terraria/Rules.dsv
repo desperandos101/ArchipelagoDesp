@@ -376,7 +376,7 @@ Hellwing Bow;                       Chest Item | Ranged;                        
 
 // Underworld Enemies
 Hellbat;                            Common Enemy;                               Underworld;
-Magma Stone;                        Common Enemy Item;                          Hellbat;
+Magma Stone;                        Common Enemy Item | Melee;                  Hellbat;
 Lava Slime;                         Common Enemy;                               Underworld;
 Fire Imp;                           Common Enemy;                               Underworld;
 Obsidian Rose;                      Common Enemy Item;                          Fire Imp;
