@@ -268,7 +268,7 @@ class ToggleEnemyInvasionKillCount(Range):
     Specify how many kills of a specific invasion enemy are required to grant a check.
     """
     display_name = "Toggle Invasion Enemy Kill Count Requirement"
-    default = 50
+    default = 20
     range_start = 1
     range_end = 1000
 
@@ -353,7 +353,7 @@ class FillExtraChecksWith(Choice):
     display_name = "Fill Extra Checks With"
     option_coins = 0
     option_useful_items = 1
-    default = 1
+    default = 0
 
 
 class ClassPreference(Choice):
