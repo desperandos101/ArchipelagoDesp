@@ -1208,7 +1208,7 @@ Empress of Light;                   Location | Item | Goal;                     
 
 // Lunatic Cultist
 Cultists;                           Item;
-Lunatic Cultist;                    Location | Goal;                            HM & Cultists & Advanced Mobility;
+Lunatic Cultist;                    Location | Goal;                            HM & Cultists & Dungeon & Advanced Mobility;
 Astrum Deus;                        Calamity | Location | Item | Goal;          Titan Heart;
 # lunatic_cultist
 # astrum_deus

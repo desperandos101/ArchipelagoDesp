@@ -189,6 +189,7 @@ class TerrariaWorld(World):
         goal, goal_locations = goals[goal_id]
         ter_goals = {}
         goal_items = set()
+        progressive_item_to_count = {}
         for location in goal_locations:
             flags = rules[rule_indices[location]].flags
             if not self.options.calamity.value and "Calamity" in flags:
@@ -261,14 +262,6 @@ class TerrariaWorld(World):
             ) and rule.name not in goal_locations:
                 continue
 
-            for condition in rule.conditions:
-                if isinstance(condition.condition, tuple) and type(condition.condition[0]) is str:
-                    progressive_item = condition.condition[0]
-                    prog_item_count = condition.condition[1]
-                    for i in range(prog_item_count):
-                        items.append(progressive_item)
-                        item_count += 1
-
             if ("Chest" in rule.flags or "Orb" in rule.flags) and self.multi_is_overflow(rule.name):
                 continue
 
@@ -304,7 +297,13 @@ class TerrariaWorld(World):
                             self.enemy_to_kill_count[base_name] = kill_quant
 
                     self.multi_loc_slot_dicts[base_name].append(rule.name)
-
+            for condition in rule.conditions:
+                if isinstance(condition.condition, tuple) and type(condition.condition[0]) is str:
+                    progressive_item = condition.condition[0]
+                    prog_count = progressive_item_to_count.get(progressive_item) or 0
+                    prog_count_new = condition.condition[1]
+                    if prog_count < prog_count_new:
+                        progressive_item_to_count[progressive_item] = prog_count_new
             if self.is_location(rule.flags):
                 # Location
                 location_count += 1
@@ -328,6 +327,13 @@ class TerrariaWorld(World):
             ):
                 # Event
                 items.append(rule.name)
+
+        # Progressive Items
+        for prog_item in progressive_item_to_count.keys():
+            prog_item_count = progressive_item_to_count[prog_item]
+            for i in range(prog_item_count - 1):
+                items.append(prog_item)
+                item_count += 1
 
         fill_checks = self.options.fill_extra_checks_with.value
         ordered_rewards = [
