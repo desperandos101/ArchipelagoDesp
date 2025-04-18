@@ -189,6 +189,9 @@ class TerrariaWorld(World):
         goal, goal_locations = goals[goal_id]
         ter_goals = {}
         goal_items = set()
+
+        progressive_item_to_count = {}
+
         for location in goal_locations:
             flags = rules[rule_indices[location]].flags
             if not self.options.calamity.value and "Calamity" in flags:
@@ -264,10 +267,10 @@ class TerrariaWorld(World):
             for condition in rule.conditions:
                 if isinstance(condition.condition, tuple) and type(condition.condition[0]) is str:
                     progressive_item = condition.condition[0]
-                    prog_item_count = condition.condition[1]
-                    for i in range(prog_item_count):
-                        items.append(progressive_item)
-                        item_count += 1
+                    prog_item_count = progressive_item_to_count.get(progressive_item) or 0
+                    prog_item_count_new = condition.condition[1]
+                    if prog_item_count_new > prog_item_count:
+                        progressive_item_to_count[progressive_item] = prog_item_count_new
 
             if ("Chest" in rule.flags or "Orb" in rule.flags) and self.multi_is_overflow(rule.name):
                 continue
@@ -328,6 +331,12 @@ class TerrariaWorld(World):
             ):
                 # Event
                 items.append(rule.name)
+
+        for progressive_item in progressive_item_to_count.keys():
+            progressive_item_count = progressive_item_to_count[progressive_item]
+            for i in range(progressive_item_count - 1):
+                items.append(progressive_item)
+                item_count += 1
 
         fill_checks = self.options.fill_extra_checks_with.value
         ordered_rewards = [
