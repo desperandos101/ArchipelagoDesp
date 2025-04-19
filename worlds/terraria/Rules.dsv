@@ -590,7 +590,7 @@ Pre-Skeletron Summoning Accessories;Summoning | Accessory Power(2);             
 
 // Skeletron
 Skeletron;                          Location;                                   Basic Mobility & @gear_power(2);
-Clothier;                           Item | Npc;
+Clothier;                           Npc;                                        Dungeon;
 Dungeon Heist;                      Achievement;                                Dungeon;
 Bone;                               ;                                           Dungeon | (@calamity & (#Skeletron | (@getfixedboi & #Ravager) | Mirage Mirror));
 Mirage Mirror;                      Calamity;                                   (Tinkerer's Workshop & Bone) | Abyssal Mirror;
