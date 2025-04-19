@@ -158,7 +158,7 @@ Floating Island Chest;              Chest(100);                                 
 Starfury;                           Chest Item | Melee;                         Sky and Floating Islands;
 Shiny Red Balloon;                  Chest Item;                                 Sky and Floating Islands;
 Lucky Horseshoe;                    Chest Item;                                 Sky and Floating Islands;
-Celestial Magnet;                   Chest Item;                                 Sky and Floating Islands;
+Celestial Magnet;                   Chest Item | Magic;                         Sky and Floating Islands;
 
 // Floating Island Enemies
 Harpy;                              Common Enemy;                               Sky and Floating Islands;
