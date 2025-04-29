@@ -42,7 +42,12 @@ class Goal(Choice):
     option_boss_rush = 15
     default = 0
 
-
+class JourneyMode(Toggle):
+    """
+    If enabled, items the player get instantly in journey mode aren't added to the pool.
+    """
+    display_name = "Journey Mode"
+    default = False
 class ToggleEvil(Choice):
     """
     Toggle how corruption/crimson locations and items are handled.
@@ -353,7 +358,7 @@ class FillExtraChecksWith(Choice):
     display_name = "Fill Extra Checks With"
     option_coins = 0
     option_useful_items = 1
-    default = 1
+    default = 0
 
 
 class ClassPreference(Choice):
@@ -412,6 +417,7 @@ class TerrariaOptions(PerGameCommonOptions):
     calamity: Calamity
     getfixedboi: Getfixedboi
     goal: Goal
+    journey_mode: JourneyMode
     toggle_evil: ToggleEvil
     biome_locks: BiomeLocks
     weather_locks: WeatherLocks

@@ -17,8 +17,8 @@ Progressive Dungeon;                Item;
 Dungeon;                            ;                                           Progressive Dungeon(1);
 Underworld;                         Biome Lock;
 Spider Nest;                        Biome Lock;
-Marble Biome;                             Biome Lock;
-Granite Biome;                            Biome Lock;
+Marble Biome;                       Biome Lock;
+Granite Biome;                      Biome Lock;
 
 // Weather Locks
 Rain;                               Weather Lock;
@@ -89,7 +89,7 @@ Guide to Plant Fiber Cordage;       Chest Item;
 Wand of Sparking;                   Chest Item | Magic;
 Radar;                              Chest Item;
 Step Stool;                         Chest Item;
-Finch Staff;                        Chest Item | Summoning;
+Finch Staff;                        Chest Item | Summoning | Journey;
 
 // Surface Enemies
 Green Slime;                        Common Enemy;
@@ -99,7 +99,7 @@ Pinky;                              Rare Enemy;
 Slime Staff;                        Common Enemy Item | Summoning;              Green Slime | Blue Slime;
 Zombie;                             Common Enemy;
 Shackle;                            Common Enemy Item;                          Zombie;
-Spiffo Plush;                       Common Enemy Item;                          Zombie;
+Spiffo Plush;                       Common Enemy Item | Vanity;                 Zombie;
 Demon Eye;                          Common Enemy;
 Goblin Scout;                       Rare Enemy;                                 Basic Mobility;
 
@@ -107,10 +107,10 @@ Goblin Scout;                       Rare Enemy;                                 
 Flying Fish;                        Common Enemy;                               Rain;
 Umbrella Slime;                     Common Enemy;                               Rain;
 Raincoat Zombie;                    Common Enemy;                               Rain;
-Rain Hat;                           Common Enemy Item;                          Raincoat Zombie;
-Rain Coat;                          Common Enemy Item;                          Raincoat Zombie;
-Umbrella Hat;                       Common Enemy Item;                          Umbrella Slime;
-Rain Song;                          Common Enemy Item;                          Flying Fish;
+Rain Hat;                           Common Enemy Item | Vanity;                 Raincoat Zombie;
+Rain Coat;                          Common Enemy Item | Vanity;                 Raincoat Zombie;
+Umbrella Hat;                       Common Enemy Item | Vanity;                 Umbrella Slime;
+Rain Song;                          Common Enemy Item | Vanity;                 Flying Fish;
 
 // Wind Enemies
 Angry Dandelion;                    Common Enemy;                               Wind;
@@ -135,7 +135,7 @@ Flipper;                            Chest Item;                                 
 Trident;                            Chest Item | Melee;                         Ocean;
 Inner Tube;                         Chest Item;                                 Ocean;
 Water Walking Boots;                Chest Item;                                 Ocean;
-Beach Ball;                         Chest Item;                                 Ocean;
+Beach Ball;                         Chest Item | Vanity;                        Ocean;
 
 // Water Enemies
 Jellyfish;                          Common Enemy;                               Ocean;
@@ -143,7 +143,7 @@ Jellyfish Necklace;                 Common Enemy Item;                          
 Shark;                              Common Enemy;                               Ocean;
 Diving Helmet;                      Common Enemy Item;                          Shark;
 Piranha;                            Common Enemy;                               Ocean;
-Robot Hat;                          Common Enemy Item;                          Piranha;
+Robot Hat;                          Common Enemy Item | Vanity;                 Piranha;
 
 // Sky exploration
 Into Orbit;                         Achievement | Early;
@@ -186,7 +186,7 @@ Bulldozer;                          Achievement | Grindy;
 
 // Underground Enemies
 Giant Worm;                         Rare Enemy;
-Whoopie Cushion;                    Rare Enemy Item;                            Giant Worm;
+Whoopie Cushion;                    Rare Enemy Item | Vanity;                   Giant Worm;
 Yellow Slime;                       Common Enemy;
 Red Slime;                          Common Enemy;
 
@@ -205,7 +205,7 @@ Hermes Boots;                       Chest Item;
 Cloud in a Bottle;                  Chest Item;
 Lava Charm;                         Chest Item;
 Band of Regeneration;               Chest Item;
-Magic Mirror;                       Chest Item;
+Magic Mirror;                       Chest Item | Journey;
 Mace;                               Chest Item | Melee;
 Shoe Spikes;                        Chest Item;
 Flare Gun;                          Chest Item;
@@ -222,7 +222,8 @@ Crawdads, Shellies, and Salamanders;Common Enemy;
 Rally;                              Common Enemy Item | Melee;                  Crawdads, Shellies, and Salamanders;
 Undead Miner;                       Rare Enemy;
 Bone Pickaxe;                       Rare Enemy Item | Pickaxe(55);              Undead Miner;
-Mining Clothes;                     Rare Enemy Item;                            Undead Miner;
+Mining Shirt;                       Rare Enemy Item;                            Undead Miner;
+Mining Pants;                       Rare Enemy Item;                            Undead Miner;
 Tim;                                Rare Enemy;
 Wizard Hat;                         Rare Enemy Item | Magic;                    Tim;
 Nymph;                              Rare Enemy;
@@ -233,10 +234,10 @@ Funkytown;                          Achievement;                                
 
 // Mushroom Chests
 Mushroom Chest;                     Chest(100);                                 Mushroom Biome;
-Mushroom Hat;                       Chest Item;                                 Mushroom Chest;
-Mushroom Vest;                      Chest Item;                                 Mushroom Chest;
-Mushroom Pants;                     Chest Item;                                 Mushroom Chest;
-Shroom Minecart;                    Chest Item;                                 Mushroom Chest;
+Mushroom Hat;                       Chest Item | Vanity;                        Mushroom Chest;
+Mushroom Vest;                      Chest Item | Vanity;                        Mushroom Chest;
+Mushroom Pants;                     Chest Item | Vanity;                        Mushroom Chest;
+Shroom Minecart;                    Chest Item | Vanity;                        Mushroom Chest;
 
 // Mushroom Enemies
 Spore Bat;                          Common Enemy;                               Mushroom Biome;
@@ -275,7 +276,7 @@ Blizzard in a Bottle;               Chest Item;                                 
 Ice Blade;                          Chest Item | Melee;                         Snow Biome;
 Snowball Cannon;                    Chest Item | Ranged;                        Snow Biome;
 Ice Boomerang;                      Chest Item | Melee;                         Snow Biome;
-Fish;                               Chest Item;                                 Snow Biome;
+Fish;                               Chest Item | Vanity;                        Snow Biome;
 
 // Snow Enemies
 Ice Slime;                          Common Enemy;                               Snow Biome;
@@ -312,6 +313,7 @@ Vulture;                            Common Enemy;                               
 Antlion;                            Common Enemy;                               Desert Biome;
 Antlion Charger;                    Common Enemy;                               Desert Biome;
 Antlion Swarmer;                    Common Enemy;                               Desert Biome;
+Tomb Crawler;                       Common Enemy;                               Desert Biome;
 Mandible Blade;                     Common Enemy Item | Melee;                  Antlion Charger | Antlion Swarmer;
 
 // Sandstorm Enemies
@@ -343,14 +345,14 @@ Staff of Regrowth;                  Chest Item;                                 
 Boomstick;                          Chest Item | Ranged;                        Jungle;
 Flower Boots;                       Chest Item;                                 Jungle;
 Fiberglass Fishing Pole;            Chest Item;                                 Jungle;
-Seaweed;                            Chest Item;                                 Jungle;
+Seaweed;                            Chest Item | Vanity;                        Jungle;
 
 // Jungle Enemies
 Jungle Slime;                       Common Enemy;                               Jungle;
 Jungle Bat;                         Common Enemy;                               Jungle;
 Snatcher;                           Common Enemy;                               Jungle;
 Doctor Bones;                       Rare Enemy;                                 Jungle;
-Archaeologist's Hat;                Rare Enemy Item;                            Doctor Bones;
+Archaeologist's Hat;                Rare Enemy Item | Vanity;                   Doctor Bones;
 Hornet;                             Common Enemy;                               Jungle;
 Man Eater;                          Common Enemy;                               Jungle;
 Spiked Jungle Slime;                Common Enemy;                               Jungle;
@@ -380,7 +382,7 @@ Magma Stone;                        Common Enemy Item | Melee;                  
 Lava Slime;                         Common Enemy;                               Underworld;
 Fire Imp;                           Common Enemy;                               Underworld;
 Obsidian Rose;                      Common Enemy Item;                          Fire Imp;
-Plumber's Hat;                      Common Enemy Item;                          Fire Imp;
+Plumber's Hat;                      Common Enemy Item | Vanity;                 Fire Imp;
 Demon;                              Common Enemy;                               Underworld;
 Demon Scythe;                       Common Enemy Item | Magic;                  Demon;
 Bone Serpent;                       Common Enemy;                               Underworld;
@@ -422,7 +424,7 @@ Crimera;                            Crimson | Common Enemy;                     
 Face Monster;                       Crimson | Common Enemy;                     Evil Biome;
 Blood Crawler;                      Crimson | Common Enemy;                     Evil Biome;
 Tentacle Spike;                     Common Enemy Item | Melee;                  Evil Biome;
-Monster Meat;                       Common Enemy Item;                          Evil Biome;
+Monster Meat;                       Common Enemy Item | Vanity;                 Evil Biome;
 
 // Abyss
 Ink Bomb;                           Calamity;
@@ -741,7 +743,7 @@ Pocket Mirror;                      Rare Enemy Item;                            
 // Hallow Enemies
 Pixie;                              Common Enemy;                               Hallow;
 Unicorn;                            Common Enemy;                               Hallow;
-Blessed Apple;                      Common Enemy Item;                          Hallow;
+Blessed Apple;                      Common Enemy Item | Vanity;                 Hallow;
 Unicorn on a Stick;                 Common Enemy Item;                          Hallow;
 Rainbow Slime;                      Rare Enemy;                                 Hallow & Rain;
 Gastropod;                          Common Enemy;                               Hallow;
@@ -776,7 +778,7 @@ Ice Mimic;                          Miniboss Enemy;                             
 Frostbrand;                         Miniboss Enemy Item | Melee;                Ice Mimic;
 Ice Bow;                            Miniboss Enemy Item | Ranged;               Ice Mimic;
 Flower of Frost;                    Miniboss Enemy Item | Magic;                Ice Mimic;
-Toy Sled;                           Miniboss Enemy Item;                        Ice Mimic;
+Toy Sled;                           Miniboss Enemy Item | Vanity;               Ice Mimic;
 
 // Hardmode Desert Enemies
 HM Desert;                          ;                                           HM & Desert Biome;
@@ -992,7 +994,7 @@ Vampire;                            Invasion Enemy;                             
 Creature from the Deep;             Invasion Enemy;                             Solar Eclipse;
 Fritz;                              Invasion Enemy;                             Solar Eclipse;
 The Possessed;                      Invasion Enemy;                             Solar Eclipse;
-Eye Spring;                         Invasion Enemy Item;                        Eyezor;
+Eye Spring;                         Invasion Enemy Item | Vanity;               Eyezor;
 Moon Stone;                         Invasion Enemy Item;                        Vampire;
 Neptune's Shell;                    Invasion Enemy Item;                        Creature from the Deep;
 Kill the Sun;                       Achievement;                                Solar Eclipse;
@@ -1048,7 +1050,7 @@ Inferno Fork;                       Common Enemy Item | Magic;                  
 Rocket Launcher;                    Common Enemy Item | Ranged;                 Dungeon Upgrade;
 Rifle Scope;                        Common Enemy Item | Ranged;                 Dungeon Upgrade;
 Sniper Rifle;                       Common Enemy Item | Ranged;                 Dungeon Upgrade;
-SWAT Helmet;                        Common Enemy Item;                          Dungeon Upgrade;
+SWAT Helmet;                        Common Enemy Item | Vanity;                 Dungeon Upgrade;
 Tactical Shotgun;                   Common Enemy Item;                          Dungeon Upgrade;
 Black Belt;                         Common Enemy Item;                          Dungeon Upgrade;
 Tabi;                               Common Enemy Item;                          Dungeon Upgrade;
@@ -1083,7 +1085,7 @@ Lihzahrd Temple;                    ;                                           
 Temple Raider;                      Achievement;                                Lihzahrd Temple;
 Lihzahrd;                           Common Enemy;                               Lihzahrd Temple;
 Flying Snake;                       Common Enemy;                               Lihzahrd Temple;
-Lizard Egg;                         Common Enemy Item;                          Lihzahrd | Flying Snake;
+Lizard Egg;                         Common Enemy Item | Vanity;                 Lihzahrd | Flying Snake;
 Lihzahrd Furniture;                 ;                                           Lihzahrd Temple;
 
 //Solar Eclipse 2
@@ -1165,12 +1167,12 @@ The Horseman's Blade;               Miniboss Enemy Item | Melee;                
 Baleful Harvest;                    Achievement;                                Pumpkin Moon;
 Stake Launcher;                     Miniboss Enemy Item | Ranged;               Pumpkin Moon;
 Spooky Hook;                        Miniboss Enemy Item;                        Pumpkin Moon;
-Cursed Sapling;                     Miniboss Enemy Item;                        Pumpkin Moon;
+Cursed Sapling;                     Miniboss Enemy Item | Vanity;               Pumpkin Moon;
 Raven Staff;                        Miniboss Enemy Item | Summoning;            Pumpkin Moon;
 Bat Scepter;                        Miniboss Enemy Item | Magic;                Pumpkin Moon;
 Candy Corn Rifle;                   Miniboss Enemy Item | Ranged;               Pumpkin Moon;
 Jack 'O Lantern Launcher;           Miniboss Enemy Item | Ranged;               Pumpkin Moon;
-Spider Egg;                         Miniboss Enemy Item;                        Pumpkin Moon;
+Spider Egg;                         Miniboss Enemy Item | Vanity;               Pumpkin Moon;
 Dark Harvest;                       Miniboss Enemy Item | Summoning;            Pumpkin Moon;
 
 
@@ -1190,7 +1192,7 @@ Chain Gun;                          Miniboss Enemy Item | Ranged;               
 Blizzard Staff;                     Miniboss Enemy Item | Magic;                Frost Moon;
 North Pole;                         Miniboss Enemy Item | Melee;                Frost Moon;
 Snowman Cannon;                     Miniboss Enemy Item | Ranged;               Frost Moon;
-Baby Grinch's Mischief Whistle;     Miniboss Enemy Item;                        Frost Moon;
+Baby Grinch's Mischief Whistle;     Miniboss Enemy Item | Vanity;               Frost Moon;
 Reindeer Bells;                     Miniboss Enemy Item;                        Frost Moon;
 
 // Frost Legion

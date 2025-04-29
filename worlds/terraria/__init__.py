@@ -103,6 +103,9 @@ class TerrariaWorld(World):
                 or ("Miniboss Enemy Item" in flags and self.options.enemy_miniboss_drops.value > 0))
 
     def is_item(self, flags):
+        if (("Journey" in flags and self.options.journey_mode)
+                or not self.class_acceptable(flags)):
+            return False
         allowed_as_rule = ("Item" in flags
                            or ("Chest Item" in flags and self.options.chest_loot)
                            or ("Orb Item" in flags and self.options.orb_loot.value)
@@ -111,8 +114,7 @@ class TerrariaWorld(World):
                            or ("Weather Lock" in flags and self.options.weather_locks.value)
                            or ("Grappling Hook" in flags and self.options.grappling_hook)
                            or self.is_item_enemy(flags))
-        allowed_as_class_item = self.class_acceptable(flags)
-        return allowed_as_rule and allowed_as_class_item
+        return allowed_as_rule
 
     def is_multi_location(self, flags):
         for flag in quant_locs:
@@ -191,6 +193,7 @@ class TerrariaWorld(World):
         goal_items = set()
 
         progressive_item_to_count = {}
+        vanity = []
 
         for location in goal_locations:
             flags = rules[rule_indices[location]].flags
@@ -287,7 +290,8 @@ class TerrariaWorld(World):
                 if quant > 0:
                     if self.multi_loc_slot_dicts.get(base_name) is None:
                         self.multi_loc_slot_dicts[base_name] = []
-                        enemy_flag_set = set(rule.flags.keys()).intersection({"Common Enemy", "Rare Enemy", "Invasion Enemy", "Miniboss Enemy"})
+                        enemy_flag_set = set(rule.flags.keys()).intersection(
+                            {"Common Enemy", "Rare Enemy", "Invasion Enemy", "Miniboss Enemy"})
                         set_length = len(enemy_flag_set)
                         if set_length > 1:
                             raise Exception("Enemy Flag Set Length above 1")
@@ -319,6 +323,9 @@ class TerrariaWorld(World):
             if self.is_item(rule.flags) and (
                     "Achievement" not in rule.flags and rule.name not in goal_locations
             ):
+                if "Vanity" in rule.flags:
+                    vanity.append(rule.name)
+                    continue
                 # Item
                 items.append(rule.name)
                 item_count += 1
@@ -356,6 +363,11 @@ class TerrariaWorld(World):
         self.multiworld.random.shuffle(random_rewards)
         while fill_checks == 1 and item_count < location_count and random_rewards:
             items.append(random_rewards.pop(0))
+            item_count += 1
+
+        self.multiworld.random.shuffle(vanity)
+        while len(vanity) > 0 and item_count < location_count - 1:
+            items.append(vanity[0])
             item_count += 1
 
         while item_count < location_count - 1:
