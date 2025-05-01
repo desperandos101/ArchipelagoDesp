@@ -88,7 +88,7 @@ class TerrariaWorld(World):
 
     def is_location(self, flags):
         return ("Location" in flags
-                or ("Achievement" in flags and self.any_achievements_enabled)
+                or ("Achievement" in flags and self.any_achievements_enabled())
                 or ("Chest" in flags and self.options.chest_loot)
                 or ("Orb" in flags and self.options.orb_loot.value)
                 or ("Common Enemy" in flags and self.options.enemy_common_drops.value > 0)
@@ -226,7 +226,7 @@ class TerrariaWorld(World):
                     or "Hammer" in rule.flags
                     or "Mech Boss" in rule.flags
                     or "Final Boss" in rule.flags
-                    or (self.any_achievements_enabled
+                    or (self.any_achievements_enabled()
                         and ("Npc" in rule.flags
                              or "Minions" in rule.flags
                              or "Armor Minions" in rule.flags))
@@ -368,6 +368,7 @@ class TerrariaWorld(World):
         self.multiworld.random.shuffle(vanity)
         while len(vanity) > 0 and item_count < location_count - 1:
             items.append(vanity[0])
+            items.pop(0)
             item_count += 1
 
         while item_count < location_count - 1:
@@ -620,7 +621,7 @@ class TerrariaWorld(World):
                     rules[rule_indices[condition.condition]].conditions
                 )
             elif condition.type == COND_FN:
-                if condition.condition == "gear_power":
+                if condition.condition == "gear_power" and False:
                     def minimum_progression_group(item_group_list):  # In truth, it returns the first valid group
                         # in the set.
                         for item_group, level in item_group_list.items():
