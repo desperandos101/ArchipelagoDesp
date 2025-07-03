@@ -77,6 +77,7 @@ class TerrariaWorld(World):
 
     enemy_to_kill_count = {}
     enemy_items = []
+    shop_items = []
     hardmode_items = []
 
     ter_items: List[str]
@@ -94,7 +95,9 @@ class TerrariaWorld(World):
                 or ("Common Enemy" in flags and self.options.enemy_common_drops.value > 0)
                 or ("Rare Enemy" in flags and self.options.enemy_rare_drops.value > 0)
                 or ("Invasion Enemy" in flags and self.options.enemy_invasion_drops.value > 0)
-                or ("Miniboss Enemy" in flags and self.options.enemy_miniboss_drops.value > 0))
+                or ("Miniboss Enemy" in flags and self.options.enemy_miniboss_drops.value > 0)
+                or ("Shop" in flags and self.options.shop_loot > 0)
+                or (self.options.goal.value == self.options.goal.option_zenith and "Achievement" in flags and "Goal" in flags)) # i gotta do somethin about this
 
     def is_item_enemy(self, flags):
         return (("Common Enemy Item" in flags and self.options.enemy_common_drops.value > 0)
@@ -107,8 +110,11 @@ class TerrariaWorld(World):
                 or not self.class_acceptable(flags)):
             return False
         allowed_as_rule = ("Item" in flags
+                           or ("Npc Item" in flags and self.options.randomize_npcs.value)
+                           or ("Guide" in flags and self.options.randomize_guide.value)
                            or ("Chest Item" in flags and self.options.chest_loot)
                            or ("Orb Item" in flags and self.options.orb_loot.value)
+                           or ("Shop Item" in flags and self.options.shop_loot.value > 0)
                            or ("Biome Lock" in flags and self.options.biome_locks)
                            or ("Not Biome Lock" in flags and not self.options.biome_locks)
                            or ("Weather Lock" in flags and self.options.weather_locks.value)
@@ -283,7 +289,8 @@ class TerrariaWorld(World):
             if (("Common Enemy" in rule.flags and quant > self.options.enemy_common_drops.value)
                     or ("Rare Enemy" in rule.flags and quant > self.options.enemy_rare_drops.value)
                     or ("Invasion Enemy" in rule.flags and quant > self.options.enemy_invasion_drops.value)
-                    or ("Miniboss Enemy" in rule.flags and quant > self.options.enemy_miniboss_drops.value)):
+                    or ("Miniboss Enemy" in rule.flags and quant > self.options.enemy_miniboss_drops.value)
+                    or ("Shop" in rule.flags and quant > self.options.shop_loot.value)):
                 continue
             if self.is_multi_location(rule.flags):
                 base_name = self.get_multi_loc_name(rule.name)
@@ -331,6 +338,8 @@ class TerrariaWorld(World):
                 item_count += 1
                 if self.is_item_enemy(rule.flags):
                     self.enemy_items.append(rule.name)
+                elif "Shop Item" in rule.flags:
+                    self.shop_items.append(rule.name)
                 if rule_indices[rule.name] > rule_indices["Wall of Flesh"]:
                     self.hardmode_items.append(rule.name)
             elif (
@@ -368,7 +377,7 @@ class TerrariaWorld(World):
         self.multiworld.random.shuffle(vanity)
         while len(vanity) > 0 and item_count < location_count - 1:
             items.append(vanity[0])
-            items.pop(0)
+            vanity.pop(0)
             item_count += 1
 
         while item_count < location_count - 1:
@@ -658,6 +667,8 @@ class TerrariaWorld(World):
             "getfixedboi": self.options.getfixedboi.value,
             "biome_locks": bool(self.options.biome_locks.value),
             "weather_locks": bool(self.options.weather_locks.value),
+            "randomize_npcs": bool(self.options.randomize_npcs),
+            "randomize_guide": bool(self.options.randomize_guide.value),
             "chest_loot": bool(self.options.chest_loot.value),
             "enemy_to_kill_count": self.enemy_to_kill_count,
             "enemy_miniboss_drops_all": self.options.enemy_miniboss_drops_all.value,
@@ -667,6 +678,7 @@ class TerrariaWorld(World):
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
             "enemy_items": self.enemy_items,
+            "shop_items": self.shop_items,
             "hardmode_items": self.hardmode_items,
             "multi_loc_slot_dicts": self.multi_loc_slot_dicts
         }

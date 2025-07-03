@@ -1,3 +1,5 @@
+import copy
+
 from BaseClasses import Item, Location
 from typing import Tuple, Union, Set, List, Dict
 import string
@@ -161,14 +163,32 @@ COND_LOC = 1
 COND_FN = 2
 COND_GROUP = 3
 
-quant_locs = [
+item_flags = {
+    "Item",
+    "Chest Item",
+    "Orb Item",
+    "Common Enemy Item",
+    "Rare Enemy Item",
+    "Invasion Enemy Item",
+    "Miniboss Enemy Item",
+    "Npc Item",
+    "Guide",
+    "Shop Item",
+    "Biome Lock",
+    "Not Biome Lock",
+    "Weather Lock",
+    "Grappling Hook"
+}
+
+quant_locs = {
     "Chest",
     "Orb",
     "Common Enemy",
     "Rare Enemy",
     "Invasion Enemy",
-    "Miniboss Enemy"
-]
+    "Miniboss Enemy",
+    "Shop",
+}
 
 
 class Condition:
@@ -583,9 +603,8 @@ def read_data() -> Tuple[
 
             def get_loc_quantity():
                 flag_list = flags.keys()
-                for loc in quant_locs:
-                    if loc in flag_list:
-                        return 100
+                if not quant_locs.isdisjoint(flag_list):
+                    return 100
                 return 0
 
             # loc_types_with_quantity = ["Chest", "Orb"]
@@ -626,9 +645,13 @@ def read_data() -> Tuple[
                     "Invasion Enemy Item",
                     "Miniboss Enemy",
                     "Miniboss Enemy Item",
+                    "Shop",
+                    "Shop Item",
                     "Grindy",
                     "Fishing",
                     "Npc",
+                    "Npc Item",
+                    "Guide",
                     "Pickaxe",
                     "Hammer",
                     "Minions",
@@ -659,18 +682,7 @@ def read_data() -> Tuple[
                     raise Exception(
                         f"rule `{name}` on line `{line + 1}` has unrecognized flag `{flag}`"
                     )
-
-            if ("Item" in flags
-                    or "Chest Item" in flags
-                    or "Orb Item" in flags
-                    or "Common Enemy Item" in flags
-                    or "Rare Enemy Item" in flags
-                    or "Invasion Enemy Item" in flags
-                    or "Miniboss Enemy Item" in flags
-                    or "Biome Lock" in flags
-                    or "Not Biome Lock" in flags
-                    or "Weather Lock" in flags
-                    or "Grappling Hook" in flags):
+            if not item_flags.isdisjoint(flags.keys()):
                 item_name = get_default_item_name(name, flags)
                 if item_name in item_name_to_id:
                     raise Exception(
@@ -836,7 +848,8 @@ def read_data() -> Tuple[
                 or "Common Enemy" in rule.flags
                 or "Rare Enemy" in rule.flags
                 or "Invasion Enemy" in rule.flags
-                or "Miniboss Enemy" in rule.flags):
+                or "Miniboss Enemy" in rule.flags
+                or "Shop" in rule.flags):
             if rule.name in location_name_to_id:
                 raise Exception(f"location `{rule.name}` shadows a previous location")
             location_name_to_id[rule.name] = next_id
