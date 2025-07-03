@@ -86,7 +86,8 @@ class WeatherLocks(Toggle):
 
 class RandomizeNPCs(Toggle):
     """
-    Adds all remaining town NPCs into the item pool (barring Guide).
+    Adds all NPCs (barring the Guide) into the item pool. Fulfilling each NPC's housing criteria is now a location.
+    For example, the player must gather 50 silver coins to activate the "Merchant" location.
     """
     display_name = "Randomize NPCs"
     default = True

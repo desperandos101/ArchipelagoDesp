@@ -2,7 +2,7 @@
 
 // Starting gear
 Copper Shortsword;
-Guide;                              Npc | Guide;
+Guide;                              Guide;
 
 // Biome Locks
 Snow Biome;                         Biome Lock;
@@ -30,7 +30,7 @@ Sandstorm;                          ;                                           
 Work Bench;
 Anvil;
 Grappling Hook;                     Grappling Hook;
-Squire Slime;                       Npc;
+Squire Slime;                       Slime;
 Traveling Merchant;                 ;                                           @npc(2);
 Lifeform Analyzer;                  ;                                           Traveling Merchant;
 DPS Meter;                          ;                                           Traveling Merchant | (@calamity & Wire);
@@ -42,15 +42,15 @@ Matching Attire;                    Achievement | Early;
 Fashion Statement;                  Achievement | Early;
 Ooo! Shiny!;                        Achievement | Early;
 No Hobo;                            Achievement; // When NPC shuffling is added, this shouldn't be considered early
-Merchant;                           Npc | Npc Item;
+Merchant;                           Npc;
 Merchant's Shop;                    Shop(10);                                   Merchant;
 Bug Net;                            Shop Item;                                  @calamity | Merchant;
 Sickle;                             Shop Item;
 Heavy Metal;                        Achievement | Early;
-Dye Trader;                         Npc | Npc Item;                             @npc(4);
+Dye Trader;                         Npc;                                        @npc(4);
 Dye Trader's Shop;                  Shop(10);                                   Dye Trader;
 Dye Hard;                           Achievement;                                Dye Trader;
-Demolitionist;                      Npc | Npc Item;                             Merchant;
+Demolitionist;                      Npc;                                        Merchant;
 Demolitionist's Shop;               Shop(10);                                   Demolitionist;
 Lucky Break;                        Achievement | Early;
 Star Power;                         Achievement | Early;
@@ -70,17 +70,17 @@ Heliophobia;                        Achievement;
 Blighted Gel;                       Calamity;
 Evil Powder;
 Archaeologist;                      Achievement | Grindy;                       Jungle;
-Zoologist;                          Npc | Npc Item;
+Zoologist;                          Npc;
 Zoologist's Shop;                   Shop(10);                                   Zoologist;
 Squirrel Hook;                      Shop Item;                                  Zoologist;
 Leather Whip;                       Shop Item | Summoning;                      Zoologist;
 Mollusk Whistle;                    Shop Item;                                  Zoologist;
 Saddle;                             Shop Item;                                  Zoologist;
 Digging Molecart;                   Shop Item;                                  Zoologist;
-Cat;                                Npc;                                        Zoologist;
+Cat;                                Pet;                                        Zoologist;
 Feeling Petty;                      Achievement;                                Cat | Dog;
-Dog;                                Npc;                                        Zoologist;
-Painter;                            Npc | Npc Item;                             @npc(8);
+Dog;                                Pet;                                        Zoologist;
+Painter;                            Npc;                                        @npc(8);
 Painter's Shop;                     Shop(10);                                   Painter;
 A Rather Blustery Day;              Achievement | Grindy;
 Enchanted Sword;
@@ -127,7 +127,7 @@ Rain Song;                          Common Enemy Item | Vanity;                 
 Angry Dandelion;                    Common Enemy;                               Wind;
 
 // Ocean and Fishing
-Angler;                             Npc | Npc Item;                             Ocean;
+Angler;                             Npc;                                        Ocean;
 Fisherman's Pocket Guide;           ;                                           Angler | Weather Radio;
 Weather Radio;                      ;                                           Angler | Sextant;
 Sextant;                            ;                                           Angler | Fisherman's Pocket Guide;
@@ -162,7 +162,7 @@ Mysterious Circuitry;               Calamity;
 Dubious Plating;                    Calamity;
 Charging Station;                   Calamity;
 Codebreaker Base;                   Calamity;
-Clumsy Slime;                       Npc;                                        Sky and Floating Islands;
+Clumsy Slime;                       Slime;                                      Sky and Floating Islands;
 
 // Floating Island Chests
 Floating Island Chest;              Chest(100);                                 Sky and Floating Islands;
@@ -182,7 +182,7 @@ Ancient Bone Dust;                  Calamity;
 Hey! Listen!;                       Achievement | Early;
 I Am Loot!;                         Achievement;
 Heart Breaker;                      Achievement;
-Nurse;                              Npc | Npc Item;                             Merchant;
+Nurse;                              Npc;                                        Merchant;
 The Frequent Flyer;                 Not Calamity Getfixedboi | Achievement;     Nurse;
 Feast of Midas;                     Achievement;
 Hold on Tight!;                     Achievement | Early;                        Grappling Hook;
@@ -270,7 +270,7 @@ Night Vision Helmet;                Common Enemy Item;                          
 
 // Spider Nest
 Jeepers Creepers;                   Achievement;                                Spider Nest;
-Stylist;                            Npc | Npc Item;                             Spider Nest;
+Stylist;                            Npc;                                        Spider Nest;
 Stylist's Shop;                     Shop(10);                                   Stylist;
 
 // Spider Nest Chests
@@ -302,12 +302,12 @@ Undead Viking;                      Common Enemy;                               
 
 // Underground Desert
 Stormlion Mandible;                 Calamity;
-Golfer;                             Npc | Npc Item;                             Desert Biome;
+Golfer;                             Npc;                                        Desert Biome;
 Golfer's Shop;                      Shop(10);                                   Golfer;
-Party Girl;                         Npc | Npc Item;                             @npc(14);
+Party Girl;                         Npc;                                        @npc(14);
 Party Girl's Shop;                  Shop(10);                                   Party Girl;
 Jolly Jamboree;                     Achievement | Grindy;                       Party Girl;
-Cool Slime;                         Npc;                                        Party Girl;
+Cool Slime;                         Slime;                                      Party Girl;
 Fossil Armor;                       ;                                           Desert Biome;
 
 // Desert Chests
@@ -408,7 +408,7 @@ Bat Bat;                            Common Enemy Item | Melee;                  
 
 // Evil
 Smashing, Poppet!;                  Achievement;                                Evil Biome;
-Arms Dealer;                        Npc | Npc Item;                             Musket | The Undertaker | Boomstick | Handgun;
+Arms Dealer;                        Npc;                                        Musket | The Undertaker | Boomstick | Handgun;
 Arms Dealer's Shop;                 Shop(10);                                   Arms Dealer;
 Flintlock Pistol;                   Shop Item | Ranged;                         Arms Dealer;
 Minishark;                          Shop Item | Ranged;                         Arms Dealer;
@@ -460,7 +460,7 @@ Blood Orb;                          Calamity;                                   
 
 Til Death...;                       Achievement | Grindy;                       Blood Moon;
 Quiet Neighborhood;                 Achievement | Early;
-Surly Slime;                        Npc;                                        Blood Moon;
+Surly Slime;                        Slime;                                      Blood Moon;
 
 Trimarang;                          ;                                           Enchanted Boomerang & Shroomerang & Ice Boomerang;
 
@@ -490,7 +490,7 @@ King Slime;                         Location;                                   
 Sticky Situation;                   Not Getfixedboi | Achievement | Grindy;
 The Cavalry;                        Achievement;
 Solidifier;                         ;                                           #King Slime;
-Nerdy Slime;                        Npc;                                        #King Slime;
+Nerdy Slime;                        Slime;                                      #King Slime;
 
 // Desert Scourge
 Desert Scourge;                     Calamity | Location | Item;                 Desert Biome;
@@ -506,13 +506,13 @@ Amidias;                            Calamity;                                   
 
 // Eye of Cthulhu
 Eye of Cthulhu;                     Location;                                   Basic Mobility & @gear_power(1);
-Dryad;                              Item | Npc;
+Dryad;                              Npc;
 Dryad's Shop;                       Shop(10);                                   Dryad;
 Dirt Rod;                           Shop Item;                                  Dryad;
 Pumpkin Seeds;                      ;                                           Dryad;
 Pumpkin;                            ;                                           Pumpkin Seeds | Cactus;
 Purification Powder;                ;                                           (~@getfixedboi & Dryad) | Evil Powder;
-Mystic Slime;                       Npc;                                        Purification Powder;
+Mystic Slime;                       Slime;                                      Purification Powder;
 And Good Riddance!;                 Achievement | Grindy;                       Dryad;
 Acid Rain Tier 1;                   Calamity | Location | Item;                 Eye of Cthulhu | #Acid Rain Tier 2 | #Acid Rain Tier 3;
 
@@ -525,7 +525,7 @@ Evil Boss Part;                     ;                                           
 Evil Pickaxe;                       Pickaxe(65);                                Evil Boss Part;
 Evil Armor;                         ;                                           Evil Boss Part;
 Obsidian Armor;                     Armor Minions(1);                           Obsidian & Evil Boss Part;
-Tavernkeep;                         Item | Npc;
+Tavernkeep;                         Npc;
 Tavernkeep's Shop;                  Shop(10);                                   Tavernkeep;
 Old One's Army Tier 1;              Location | Item(Post-OOA Tier 1);           Basic Mobility & @gear_power(1) & Tavernkeep;
 Meteor;                             Item;
@@ -556,7 +556,7 @@ Goblin Warrior;                     Invasion Enemy;                             
 Goblin Sorcerer;                    Invasion Enemy;                             Goblin Army Clear;
 Goblin Archer;                      Invasion Enemy;                             Goblin Army Clear;
 Harpoon;                            Invasion Enemy Item | Ranged;               Goblin Army Clear;
-Goblin Tinkerer;                    Item | Npc;
+Goblin Tinkerer;                    Npc;
 Goblin Tinkerer's Shop;             Shop(10);                                   Goblin Tinkerer;
 Tinkerer's Workshop;                Shop Item;                                  Goblin Tinkerer;
 Rocket Boots;                       Shop Item;                                  Goblin Tinkerer;
@@ -584,7 +584,7 @@ Hive-Five;                          ;                                           
 Bee Armor;                          Armor Minions(2);                           Bee Wax;
 Hornet Staff;                       Summoning;                                  Bee Wax;
 Not the Bees!;                      Achievement;                                #Queen Bee & Bee Armor;
-Witch Doctor;                       Item | Npc;
+Witch Doctor;                       Npc;
 Witch Doctor's Shop;                Shop(10);                                   Witch Doctor;
 Pygmy Necklace;                     Minions(1) | Shop Item;                     Witch Doctor | (@calamity & Statis' Blessing);
 Blowgun;                            Shop Item | Ranged;                         Witch Doctor;
@@ -612,7 +612,7 @@ Pre-Skeletron Summoning Armor;      Summoning | Armor Power(3);                 
 Pre-Skeletron Summoning Accessories;Summoning | Accessory Power(2);             Feral Claws & Pygmy Necklace;
 
 // Skeletron
-Clothier;                           Item | Npc;
+Clothier;                           Npc;
 Clothier's Shop;                    Shop(10);                                   Clothier;
 Skeletron;                          Location;                                   Basic Mobility & Clothier & @gear_power(2); // Skeletron cannot be fought without the clothier if the dungeon is unlocked, hence this
 Dungeon Heist;                      Achievement;                                Dungeon;
@@ -623,13 +623,13 @@ Cell Phone;                         ;                                           
 Black Mirror;                       Achievement | Grindy;                       Cell Phone;
 Bewitching Table;                   Minions(1);                                 Dungeon | (Witch Doctor & Wizard) | Alchemy Table;
 Alchemy Table;                      ;                                           Dungeon | Bewitching Table;
-Mechanic;                           Npc | Npc Item;                             Dungeon;
+Mechanic;                           Npc;                                        Dungeon;
 Mechanic's Shop;                    Shop(10);                                   Mechanic;
 Mechanic's Rod;                     Shop Item;                                  Mechanic;
 Wire;                               ;                                           Mechanic | (@calamity & Electrician's Glove);
 Decryption Computer;                Calamity;                                   Mysterious Circuitry & Dubious Plating & Wire;
 Actuator;                           ;                                           Mechanic;
-Elder Slime;                        Npc;                                        Dungeon;
+Elder Slime;                        Slime;                                      Dungeon;
 Water Bolt;                         Magic;                                      Dungeon;
 Necro Armor;                        Ranged;                                     Dungeon;
 Spinal Tap;                         Summoning;                                  Dungeon;
@@ -686,13 +686,13 @@ Wall of Flesh;                      Location | Item(Hardmode) | Goal;           
 HM;                                 ;                                           Wall of Flesh & Basic Mobility & @gear_power(3);
 Pwnhammer;                          Hammer(80);                                 #Wall of Flesh;
 Emblem;                             ;                                           #Wall of Flesh | Avenger Emblem | (@calamity & (Mechanical Glove | Celestial Emblem | Statis' Blessing));
-Wizard;                             Item | Npc;                                 HM;
+Wizard;                             Npc;                                        HM;
 Wizard's Shop;                      Shop(10);                                   HM & Wizard;
 Ice Rod;                            Shop Item | Magic;                          HM & Wizard;
 Bell;                               Shop Item | Magic;                          HM & Wizard;
 Harp;                               Shop Item | Magic;                          HM & Wizard;
 Hallowed Seeds;                     ;                                           (HM & Dryad) | Holy Water;
-Tax Collector;                      Npc | Npc Item;                             (Purification Powder & HM) | @getfixedboi;
+Tax Collector;                      Npc;                                        (Purification Powder & HM) | @getfixedboi;
 Spider Fangs;                       ;                                           HM;
 Spider Armor;                       Armor Minions(3);                           Spider Fangs;
 Spider Staff;                       Summoning;                                  Spider Fangs;
@@ -714,7 +714,7 @@ Soul of Light;                      ;                                           
 Meteor Staff;                       ;                                           (Hardmode Anvil & Meteorite Bar & Pixie Dust & Soul of Light) | Asteroid Staff;
 Gelatin World Tour;                 Achievement | Grindy;                       Dungeon & HM & Hallow & #King Slime;
 
-Bunny;                              Npc;                                        Zoologist & HM; // Extremely simplified
+Bunny;                              Pet;                                        Zoologist & HM; // Extremely simplified
 Forbidden Fragment;                 ;                                           Sandstorm & HM;
 Astral Infection;                   Calamity;                                   HM | Astrum Aureus;
 Stardust;                           Calamity;                                   Astral Infection | #Astrum Aureus | #Astrum Deus | Eye of Magnus | Meld Construct;
@@ -724,7 +724,7 @@ Titan Heart;                        Calamity;                                   
 Essence of Sunlight;                Calamity;                                   HM | Golem;
 Essence of Eleum;                   Calamity;                                   HM | Cryogen | #Cryogen | (@getfixedboi & Duke Fishron);
 Essence of Havoc;                   Calamity;                                   HM | #Calamitas Clone | #Brimstone Elemental | Ruin Medallion;
-Truffle;                            Item | Npc;                                 HM & Mushroom Biome;
+Truffle;                            Npc;                                        HM & Mushroom Biome;
 Truffle's Shop;                     Shop(10);                                   HM & Mushroom Biome;
 It Can Talk?!;                      Achievement;                                Truffle;
 Hardmode Giant Clam;                Calamity | Location | Item;                 #Giant Clam & HM;
@@ -925,13 +925,13 @@ Discount Card;                      Invasion Enemy Item;                        
 Gold Ring;                          Invasion Enemy Item;                        Pirate Invasion Clear;
 Lucky Coin;                         Invasion Enemy Item;                        Pirate Invasion Clear;
 Pirate Staff;                       Invasion Enemy Item | Summoning;            Pirate Invasion Clear;
-Pirate;                             Item | Npc;                                 HM;
+Pirate;                             Npc;                                        HM;
 Pirate's Shop;                      Shop(10);                                   HM & Pirate;
 
 // Queen Slime
 Queen Slime;                        Location;                                   (Hallow & Advanced Mobility) | (@getfixedboi & @calamity & #Supreme Alchemist, Cirrus);
 Sparkle Slime Balloon;              ;                                           #Queen Slime;
-Diva Slime;                         Npc;                                        Sparkle Slime Balloon;
+Diva Slime;                         Slime;                                      Sparkle Slime Balloon;
 The Great Slime Mitosis;            Achievement;                                Nerdy Slime & Cool Slime & Elder Slime & Clumsy Slime & Diva Slime & Surly Slime & Mystic Slime & Squire Slime;
 
 // Aquatic Scourge
@@ -967,7 +967,7 @@ Unholy Trident;                     Common Enemy Item | Magic;                  
 
 // The Twins
 Soul of Sight;                      ;                                           #The Twins | Avenger Emblem | (@calamity & (Mechanical Glove | Celestial Emblem));
-Steampunker;                        Item | Npc;                                 HM;
+Steampunker;                        Npc;                                        HM;
 Steampunker's Shop;                 Shop(10);                                   HM & Steampunker;
 Mushroom Spear;                     Shop Item | Melee;                          Truffle & @mech_boss(1);
 Hammush;                            Shop Item | Melee;                          Truffle & @mech_boss(1);
@@ -1053,7 +1053,7 @@ Living Shard;                       Calamity;                                   
 Tiki Armor;                         Armor Minions(4);                           Witch Doctor & HM;
 Hercules Beetle;                    Shop Item | Summoning;                      Witch Doctor & HM;
 You and What Army?;                 Achievement;                                @minions(8);
-Cyborg;                             Item | Npc;
+Cyborg;                             Npc;
 Cyborg's Shop;                      Shop(10);                                   HM & Cyborg;
 Proximity Mine Launcher;            Shop Item | Ranged;                         HM & Cyborg;
 To Infinity... and Beyond!;         Achievement;                                HM & Cyborg;
@@ -1236,7 +1236,7 @@ Reindeer Bells;                     Miniboss Enemy Item;                        
 
 // Frost Legion
 Frost Legion;                       ;                                           (HM & Christmas) | (@calamity & Soul of Light & Soul of Night);
-Santa Claus;                        Item | Npc;                                 HM;
+Santa Claus;                        Npc;                                        HM;
 Santa Claus's Shop;                 Shop(10);                                   HM & Santa Claus;
 
 // Ravager

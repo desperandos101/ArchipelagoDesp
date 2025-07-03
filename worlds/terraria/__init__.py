@@ -87,9 +87,16 @@ class TerrariaWorld(World):
     goal_items: Set[str]
     goal_locations: Set[str]
 
+    def is_npc(self, flags):
+        return ("Npc" in flags
+                or "Guide" in flags
+                or "Slime" in flags
+                or "Pet" in flags)
+
     def is_location(self, flags):
         return ("Location" in flags
                 or ("Achievement" in flags and self.any_achievements_enabled())
+                or ("Npc" in flags and self.options.randomize_npcs.value)
                 or ("Chest" in flags and self.options.chest_loot)
                 or ("Orb" in flags and self.options.orb_loot.value)
                 or ("Common Enemy" in flags and self.options.enemy_common_drops.value > 0)
@@ -97,7 +104,8 @@ class TerrariaWorld(World):
                 or ("Invasion Enemy" in flags and self.options.enemy_invasion_drops.value > 0)
                 or ("Miniboss Enemy" in flags and self.options.enemy_miniboss_drops.value > 0)
                 or ("Shop" in flags and self.options.shop_loot > 0)
-                or (self.options.goal.value == self.options.goal.option_zenith and "Achievement" in flags and "Goal" in flags)) # i gotta do somethin about this
+                or (
+                            self.options.goal.value == self.options.goal.option_zenith and "Achievement" in flags and "Goal" in flags))  # i gotta do somethin about this
 
     def is_item_enemy(self, flags):
         return (("Common Enemy Item" in flags and self.options.enemy_common_drops.value > 0)
@@ -110,7 +118,7 @@ class TerrariaWorld(World):
                 or not self.class_acceptable(flags)):
             return False
         allowed_as_rule = ("Item" in flags
-                           or ("Npc Item" in flags and self.options.randomize_npcs.value)
+                           or ("Npc" in flags and self.options.randomize_npcs.value)
                            or ("Guide" in flags and self.options.randomize_guide.value)
                            or ("Chest Item" in flags and self.options.chest_loot)
                            or ("Orb Item" in flags and self.options.orb_loot.value)
@@ -233,7 +241,7 @@ class TerrariaWorld(World):
                     or "Mech Boss" in rule.flags
                     or "Final Boss" in rule.flags
                     or (self.any_achievements_enabled()
-                        and ("Npc" in rule.flags
+                        and (self.is_npc(rule.flags)
                              or "Minions" in rule.flags
                              or "Armor Minions" in rule.flags))
             ):

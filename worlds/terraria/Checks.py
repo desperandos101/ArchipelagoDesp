@@ -171,7 +171,7 @@ item_flags = {
     "Rare Enemy Item",
     "Invasion Enemy Item",
     "Miniboss Enemy Item",
-    "Npc Item",
+    "Npc",
     "Guide",
     "Shop Item",
     "Biome Lock",
@@ -188,6 +188,13 @@ quant_locs = {
     "Invasion Enemy",
     "Miniboss Enemy",
     "Shop",
+}
+
+npc_flags = {
+    "Npc",
+    "Guide",
+    "Slime",
+    "Pet"
 }
 
 
@@ -650,8 +657,9 @@ def read_data() -> Tuple[
                     "Grindy",
                     "Fishing",
                     "Npc",
-                    "Npc Item",
                     "Guide",
+                    "Slime",
+                    "Pet",
                     "Pickaxe",
                     "Hammer",
                     "Minions",
@@ -694,7 +702,7 @@ def read_data() -> Tuple[
             else:
                 loc_to_item[name] = name
 
-            if "Npc" in flags:
+            if "Npc" in flags or "Guide" in flags or "Slime" in flags or "Pet" in flags:
                 npcs.append(name)
 
             if (power := flags.get("Pickaxe")) is not None:
@@ -842,6 +850,7 @@ def read_data() -> Tuple[
 
     for rule in rules:
         if ("Location" in rule.flags
+                or "Npc" in rule.flags
                 or "Achievement" in rule.flags
                 or "Chest" in rule.flags
                 or "Orb" in rule.flags
