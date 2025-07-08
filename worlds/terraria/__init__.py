@@ -76,6 +76,8 @@ class TerrariaWorld(World):
     multi_loc_slot_dicts = {}
 
     enemy_to_kill_count = {}
+    all_items = []
+    chest_items = []
     enemy_items = []
     shop_items = []
     hardmode_items = []
@@ -344,7 +346,9 @@ class TerrariaWorld(World):
                 # Item
                 items.append(rule.name)
                 item_count += 1
-                if self.is_item_enemy(rule.flags):
+                if "Chest Item" in rule.flags:
+                    self.chest_items.append(rule.name)
+                elif self.is_item_enemy(rule.flags):
                     self.enemy_items.append(rule.name)
                 elif "Shop Item" in rule.flags:
                     self.shop_items.append(rule.name)
@@ -403,9 +407,16 @@ class TerrariaWorld(World):
         menu = Region("Menu", self.player, self.multiworld)
 
         for location in self.ter_locations:
+
+            loc_id = location_name_to_id.get(location)
+            if (rule_index := rule_indices.get(location)) is not None:
+                rule = rules[rule_index]
+                if self.is_event(rule.flags):
+                    loc_id = None
+
             menu.locations.append(
                 TerrariaLocation(
-                    self.player, location, location_name_to_id.get(location), menu
+                    self.player, location, loc_id, menu
                 )
             )
 
@@ -430,6 +441,7 @@ class TerrariaWorld(World):
             else:
                 name = item
 
+            self.all_items.append(name)
             self.multiworld.itempool.append(self.create_item(name))
 
         locked_items = {}
@@ -685,8 +697,10 @@ class TerrariaWorld(World):
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
+            "chest_items": self.chest_items,
             "enemy_items": self.enemy_items,
             "shop_items": self.shop_items,
             "hardmode_items": self.hardmode_items,
-            "multi_loc_slot_dicts": self.multi_loc_slot_dicts
+            "multi_loc_slot_dicts": self.multi_loc_slot_dicts,
+            "all_items": self.all_items if self.options.epic_number.value == 49 else []
         }

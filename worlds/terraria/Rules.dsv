@@ -614,7 +614,7 @@ Pre-Skeletron Summoning Accessories;Summoning | Accessory Power(2);             
 // Skeletron
 Clothier;                           Npc;
 Clothier's Shop;                    Shop(10);                                   Clothier;
-Skeletron;                          Location;                                   Basic Mobility & Clothier & @gear_power(2); // Skeletron cannot be fought without the clothier if the dungeon is unlocked, hence this
+Skeletron;                          Location;                                   Basic Mobility & @gear_power(2);
 Dungeon Heist;                      Achievement;                                Dungeon;
 Bone;                               ;                                           Dungeon | (@calamity & (#Skeletron | (@getfixedboi & #Ravager) | Mirage Mirror));
 Mirage Mirror;                      Calamity;                                   (Tinkerer's Workshop & Bone) | Abyssal Mirror;
@@ -692,7 +692,7 @@ Ice Rod;                            Shop Item | Magic;                          
 Bell;                               Shop Item | Magic;                          HM & Wizard;
 Harp;                               Shop Item | Magic;                          HM & Wizard;
 Hallowed Seeds;                     ;                                           (HM & Dryad) | Holy Water;
-Tax Collector;                      Npc;                                        (Purification Powder & HM) | @getfixedboi;
+Tax Collector;                      Npc;                                        (Purification Powder & HM & Underworld) | @getfixedboi;
 Spider Fangs;                       ;                                           HM;
 Spider Armor;                       Armor Minions(3);                           Spider Fangs;
 Spider Staff;                       Summoning;                                  Spider Fangs;
@@ -1037,7 +1037,7 @@ Kill the Sun;                       Achievement;                                
 
 // Calamitas Clone
 Calamitas Clone;                    Calamity | Location | Item | Goal;          Hardmode Anvil & Hellstone Bar & Essence of Havoc;
-Plantera;                           Location | Item | Goal;                     (Jungle Upgrade & Advanced Mobility) | (@calamity & Hardmode Anvil & Trapper Bulb);
+Plantera;                           Location | Goal;                            (Jungle Upgrade & Advanced Mobility) | (@calamity & Hardmode Anvil & Trapper Bulb);
 # calamitas_clone
 # plantera
 Ashes of Calamity;                  Calamity;                                   #Calamitas Clone | Sigil of Calamitas;
@@ -1245,7 +1245,7 @@ Fleshy Geode;                       Calamity;                                   
 
 // Empress of Light
 Prismatic Lacewing;                 Item;
-Empress of Light;                   Location | Item | Goal;                     (HM & Prismatic Lacewing & Advanced Mobility) | (@getfixedboi & @calamity & #Supreme Alchemist, Cirrus);
+Empress of Light;                   Location | Goal;                            (HM & Prismatic Lacewing & Advanced Mobility) | (@getfixedboi & @calamity & #Supreme Alchemist, Cirrus);
 # empress_of_light
 
 // Lunatic Cultist
@@ -1276,7 +1276,7 @@ Astral Pickaxe;                     Calamity | Pickaxe(220);                    
 Astral Armor;                       Calamity | Armor Minions(3);                Ancient Manipulator & Astral Bar & Meteorite Bar;
 
 // Moon Lord
-Moon Lord;                          Location | Item | Goal;                     #Lunar Events;
+Moon Lord;                          Location | Goal;                            #Lunar Events;
 # moon_lord
 Slayer of Worlds;                   Achievement;                                #Evil Boss & #The Destroyer & #Duke Fishron & #Eye of Cthulhu & #Golem & #King Slime & #Lunatic Cultist & #Moon Lord & #Plantera & #Queen Bee & #Skeletron & #Skeletron Prime & #The Twins & #Wall of Flesh;
 Luminite;                           ;                                           #Moon Lord | (@calamity & (Exodium Cluster | Asteroid Staff)) | Luminite Bar;
