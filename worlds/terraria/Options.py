@@ -42,12 +42,15 @@ class Goal(Choice):
     option_boss_rush = 15
     default = 0
 
+
 class JourneyMode(Toggle):
     """
     If enabled, items the player get instantly in journey mode aren't added to the pool.
     """
     display_name = "Journey Mode"
     default = False
+
+
 class ToggleEvil(Choice):
     """
     Toggle how corruption/crimson locations and items are handled.
@@ -79,6 +82,24 @@ class WeatherLocks(Toggle):
     """
     display_name = "Weather Locks"
     default = True
+
+
+class RandomizeNPCs(Toggle):
+    """
+    Adds all NPCs (barring the Guide) into the item pool. Fulfilling each NPC's housing criteria is now a location.
+    For example, the player must gather 50 silver coins to activate the "Merchant" location.
+    """
+    display_name = "Randomize NPCs"
+    default = True
+
+
+class RandomizeGuide(Toggle):
+    """
+    Adds the Guide into the item pool.
+    """
+    display_name = "Randomize Guide"
+    default = False
+
 
 class RandomizeChestLoot(Toggle):
     """
@@ -115,6 +136,7 @@ class ToggleChestSlotsSky(Range):
     default = 3
     range_end = 100
 
+
 class ToggleChestSlotsMushroom(Range):
     """
     Select how many Mushroom Chest checks to add (if chests are randomized).
@@ -122,6 +144,7 @@ class ToggleChestSlotsMushroom(Range):
     display_name = "Mushroom Chest Slots"
     default = 3
     range_end = 100
+
 
 class ToggleChestSlotsSpider(Range):
     """
@@ -131,6 +154,7 @@ class ToggleChestSlotsSpider(Range):
     default = 1
     range_end = 100
 
+
 class ToggleChestSlotsMarble(Range):
     """
     Select how many Marble Chest checks to add (if chests are randomized).
@@ -139,6 +163,7 @@ class ToggleChestSlotsMarble(Range):
     default = 1
     range_end = 100
 
+
 class ToggleChestSlotsGranite(Range):
     """
     Select how many Granite Chest checks to add (if chests are randomized).
@@ -146,6 +171,7 @@ class ToggleChestSlotsGranite(Range):
     display_name = "Granite Chest Slots"
     default = 1
     range_end = 100
+
 
 class ToggleChestSlotsFrozen(Range):
     """
@@ -194,7 +220,7 @@ class ToggleChestSlotsDungeon(Range):
 
 class RandomizeShadowOrbLoot(Range):
     """
-    If above zero, shadow orb/Crimson heart items are added into the item pool and breaking orbs grants checks.
+    If above zero, shadow orb/Crimson heart items are added into the item pool and breaking orbs grants the number of checks specified.
     Defaults to ten (five items per evil biome).
     """
     display_name = "Randomize Shadow Orb Loot"
@@ -306,6 +332,17 @@ class ToggleEnemyMinibossKillCount(Range):
     display_name = "Toggle Miniboss Enemy Kill Count Requirement"
     default = 1
     range_start = 1
+    range_end = 10
+
+
+class RandomizeShopLoot(Range):
+    """
+    If above zero, vendor weapons/accessories are added into the item pool, and each vendor sells the check amount specified.
+    Defaults to three.
+    """
+    display_name = "Randomize Shop Loot"
+    default = 3
+    range_start = 0
     range_end = 10
 
 
@@ -421,6 +458,8 @@ class TerrariaOptions(PerGameCommonOptions):
     toggle_evil: ToggleEvil
     biome_locks: BiomeLocks
     weather_locks: WeatherLocks
+    randomize_npcs: RandomizeNPCs
+    randomize_guide: RandomizeGuide
     chest_loot: RandomizeChestLoot
     chest_surface: ToggleChestSlotsSurface
     chest_water: ToggleChestSlotsWater
@@ -444,6 +483,7 @@ class TerrariaOptions(PerGameCommonOptions):
     enemy_miniboss_drops: ToggleEnemyMinibossDrops
     enemy_miniboss_drops_all: ToggleEnemyMinibossDropsAll
     enemy_miniboss_count: ToggleEnemyMinibossKillCount
+    shop_loot: RandomizeShopLoot
     grappling_hook: RandomizeGrapplingHookAbility
     early_achievements: EarlyAchievements
     normal_achievements: NormalAchievements
