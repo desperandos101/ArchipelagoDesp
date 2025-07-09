@@ -93,51 +93,56 @@ class TerrariaWorld(World):
             fishing = "Fishing" in rule.flags
 
             if (
-                (not self.options.getfixedboi.value and "Getfixedboi" in rule.flags)
-                or (self.options.getfixedboi.value and "Not Getfixedboi" in rule.flags)
-                or (not self.options.calamity.value and "Calamity" in rule.flags)
-                or (self.options.calamity.value and "Not Calamity" in rule.flags)
-                or (
-                    self.options.getfixedboi.value
-                    and self.options.calamity.value
-                    and "Not Calamity Getfixedboi" in rule.flags
-                )
-                or (not self.options.early_achievements.value and early)
-                or (
-                    not self.options.normal_achievements.value
-                    and "Achievement" in rule.flags
-                    and not early
-                    and not grindy
-                    and not fishing
-                )
-                or (not self.options.grindy_achievements.value and grindy)
-                or (not self.options.fishing_achievements.value and fishing)
+                    (not self.options.getfixedboi.value and "Getfixedboi" in rule.flags)
+                    or (self.options.getfixedboi.value and "Not Getfixedboi" in rule.flags)
+                    or (not self.options.calamity.value and "Calamity" in rule.flags)
+                    or (self.options.calamity.value and "Not Calamity" in rule.flags)
+                    or (
+                            self.options.getfixedboi.value
+                            and self.options.calamity.value
+                            and "Not Calamity Getfixedboi" in rule.flags
+                    )
+                    or (not self.options.early_achievements.value and early)
+                    or (
+                            not self.options.normal_achievements.value
+                            and "Achievement" in rule.flags
+                            and not early
+                            and not grindy
+                            and not fishing
+                    )
+                    or (not self.options.grindy_achievements.value and grindy)
+                    or (not self.options.fishing_achievements.value and fishing)
             ) and rule.name not in goal_locations:
                 continue
 
-            if "Location" in rule.flags or "Achievement" in rule.flags:
+            if "Location" in rule.flags or "Achievement" in rule.flags or (
+                    "Npc" in rule.flags and self.options.randomize_npcs.value == 1):
                 # Location
                 location_count += 1
                 locations.append(rule.name)
             elif (
-                "Achievement" not in rule.flags
-                and "Location" not in rule.flags
-                and "Item" not in rule.flags
+                    "Achievement" not in rule.flags
+                    and "Location" not in rule.flags
+                    and "Item" not in rule.flags
+                    and not ("Guide" in rule.flags and self.options.randomize_guide.value)
             ):
                 # Event
                 locations.append(rule.name)
 
-            if "Item" in rule.flags and not (
-                "Achievement" in rule.flags and rule.name not in goal_locations
+            if ("Item" in rule.flags
+                or ("Npc" in rule.flags and self.options.randomize_npcs.value == 1)
+                or ("Guide" in rule.flags and self.options.randomize_guide.value == 1)
+            ) and not (
+                    "Achievement" in rule.flags and rule.name not in goal_locations
             ):
                 # Item
                 item_count += 1
                 if rule.name not in goal_locations:
                     items.append(rule.name)
             elif (
-                "Achievement" not in rule.flags
-                and "Location" not in rule.flags
-                and "Item" not in rule.flags
+                    "Achievement" not in rule.flags
+                    and "Location" not in rule.flags
+                    and "Item" not in rule.flags
             ):
                 # Event
                 items.append(rule.name)
@@ -148,9 +153,9 @@ class TerrariaWorld(World):
             if self.options.calamity.value or "Calamity" not in rewards[reward]
         ]
         while (
-            self.options.fill_extra_checks_with.value == 1
-            and item_count < location_count
-            and ordered_rewards
+                self.options.fill_extra_checks_with.value == 1
+                and item_count < location_count
+                and ordered_rewards
         ):
             items.append(ordered_rewards.pop(0))
             item_count += 1
@@ -162,9 +167,9 @@ class TerrariaWorld(World):
         ]
         self.multiworld.random.shuffle(random_rewards)
         while (
-            self.options.fill_extra_checks_with.value == 1
-            and item_count < location_count
-            and random_rewards
+                self.options.fill_extra_checks_with.value == 1
+                and item_count < location_count
+                and random_rewards
         ):
             items.append(random_rewards.pop(0))
             item_count += 1
@@ -206,6 +211,9 @@ class TerrariaWorld(World):
                 rule = rules[rule_index]
                 if "Item" in rule.flags:
                     name = rule.flags.get("Item") or f"Post-{item}"
+                elif ("Npc" in rule.flags and self.options.randomize_npcs.value == 1) \
+                        or ("Guide" in rule.flags and self.options.randomize_guide.value == 1):
+                    name = item
                 else:
                     continue
             else:
@@ -217,7 +225,8 @@ class TerrariaWorld(World):
 
         for location in self.ter_locations:
             rule = rules[rule_indices[location]]
-            if "Location" not in rule.flags and "Achievement" not in rule.flags:
+            if "Location" not in rule.flags and "Achievement" not in rule.flags \
+                    and not ("Npc" in rule.flags and self.options.randomize_npcs.value):
                 if location in progression:
                     classification = ItemClassification.progression
                 else:
@@ -320,17 +329,17 @@ class TerrariaWorld(World):
             return condition.sign == self.check_conditions(state, operator, conditions)
 
     def check_conditions(
-        self,
-        state,
-        operator: Union[bool, None],
-        conditions: List[
-            Tuple[
-                bool,
-                int,
-                Union[str, Tuple[Union[bool, None], list]],
-                Union[str, int, None],
-            ]
-        ],
+            self,
+            state,
+            operator: Union[bool, None],
+            conditions: List[
+                Tuple[
+                    bool,
+                    int,
+                    Union[str, Tuple[Union[bool, None], list]],
+                    Union[str, int, None],
+                ]
+            ],
     ) -> bool:
         if operator is None:
             if len(conditions) == 0:
@@ -349,7 +358,6 @@ class TerrariaWorld(World):
 
     def set_rules(self) -> None:
         for location in self.ter_locations:
-
             def check(state: CollectionState, location=location):
                 rule = rules[rule_indices[location]]
                 return self.check_conditions(state, rule.operator, rule.conditions)

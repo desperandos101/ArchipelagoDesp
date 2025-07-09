@@ -39,7 +39,19 @@ class Goal(Choice):
     option_boss_rush = 14
     default = 0
 
+class RandomizeNPCs(Toggle):
+    """
+    Randomizes all NPCs, putting them into the item pool. Fulfilling a certain NPC's recruit criteria rewards a check. :)
+    """
+    display_name = "Randomize NPCs"
+    default = False
 
+class RandomizeGuide(Toggle):
+    """
+    Randomizes the Guide, removing them from the start of the game and adding them into the item pool.
+    """
+    display_name = "Randomize Guide"
+    default = False
 class EarlyAchievements(DefaultOnToggle):
     """Adds checks upon collecting early Pre-Hardmode achievements. Adds many sphere 1 checks."""
 
@@ -84,6 +96,8 @@ class TerrariaOptions(PerGameCommonOptions):
     calamity: Calamity
     getfixedboi: Getfixedboi
     goal: Goal
+    randomize_npcs: RandomizeNPCs
+    randomize_guide: RandomizeGuide
     early_achievements: EarlyAchievements
     normal_achievements: NormalAchievements
     grindy_achievements: GrindyAchievements
