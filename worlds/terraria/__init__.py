@@ -34,6 +34,7 @@ from .Checks import (
     accessory_minions,
 )
 from .Options import TerrariaOptions, Goal
+from .Flags import get_flag_dict, get_code_set, RuleCode
 
 
 class TerrariaWeb(WebWorld):
@@ -97,7 +98,10 @@ class TerrariaWorld(World):
 
     def is_location(self, flags):
         return ("Location" in flags
-                or ("Achievement" in flags and self.any_achievements_enabled())
+                or ("Achievement" in flags and self.options.normal_achievements.value)
+                or ("Grindy" in flags and self.options.grindy_achievements.value)
+                or ("Fishing" in flags and self.options.fishing_achievements.value)
+                or ("Early" in flags and self.options.early_achievements.value)
                 or ("Npc" in flags and self.options.randomize_npcs.value)
                 or ("Chest" in flags and self.options.chest_loot)
                 or ("Orb" in flags and self.options.orb_loot.value)
@@ -107,7 +111,7 @@ class TerrariaWorld(World):
                 or ("Miniboss Enemy" in flags and self.options.enemy_miniboss_drops.value > 0)
                 or ("Shop" in flags and self.options.shop_loot > 0)
                 or (
-                            self.options.goal.value == self.options.goal.option_zenith and "Achievement" in flags and "Goal" in flags))  # i gotta do somethin about this
+                            self.options.goal.value == self.options.goal.option_zenith and "Goal" in flags))  # i gotta do somethin about this
 
     def is_item_enemy(self, flags):
         return (("Common Enemy Item" in flags and self.options.enemy_common_drops.value > 0)
@@ -271,12 +275,8 @@ class TerrariaWorld(World):
                             and "Not Calamity Getfixedboi" in rule.flags
                     )
                     or (not self.options.early_achievements.value and early)
-                    or (
-                            not self.options.normal_achievements.value
+                    or (not self.options.normal_achievements.value
                             and "Achievement" in rule.flags
-                            and not early
-                            and not grindy
-                            and not fishing
                     )
                     or (not self.options.grindy_achievements.value and grindy)
                     or (not self.options.fishing_achievements.value and fishing)
@@ -338,7 +338,7 @@ class TerrariaWorld(World):
                 locations.append(rule.name)
 
             if self.is_item(rule.flags) and (
-                    "Achievement" not in rule.flags and rule.name not in goal_locations
+                    "Grindy" not in rule.flags and rule.name not in goal_locations
             ):
                 if "Vanity" in rule.flags:
                     vanity.append(rule.name)

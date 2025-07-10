@@ -4,6 +4,7 @@ from BaseClasses import Item, Location
 from typing import Tuple, Union, Set, List, Dict
 import string
 import pkgutil
+from .Flags import RuleCode, get_id_code_set, arch_id_dict
 
 
 class TerrariaItem(Item):
@@ -163,23 +164,6 @@ COND_LOC = 1
 COND_FN = 2
 COND_GROUP = 3
 
-item_flags = {
-    "Item",
-    "Chest Item",
-    "Orb Item",
-    "Common Enemy Item",
-    "Rare Enemy Item",
-    "Invasion Enemy Item",
-    "Miniboss Enemy Item",
-    "Npc",
-    "Guide",
-    "Shop Item",
-    "Biome Lock",
-    "Not Biome Lock",
-    "Weather Lock",
-    "Grappling Hook"
-}
-
 quant_locs = {
     "Chest",
     "Orb",
@@ -188,13 +172,6 @@ quant_locs = {
     "Invasion Enemy",
     "Miniboss Enemy",
     "Shop",
-}
-
-npc_flags = {
-    "Npc",
-    "Guide",
-    "Slime",
-    "Pet"
 }
 
 
@@ -634,63 +611,13 @@ def read_data() -> Tuple[
                 create_new_rule(name, flags, operator, conditions)
 
             for flag in flags:
-                if flag not in {
-                    "Location",
-                    "Item",
-                    "Goal",
-                    "Early",
-                    "Achievement",
-                    "Chest",
-                    "Chest Item",
-                    "Orb",
-                    "Orb Item",
-                    "Common Enemy",
-                    "Common Enemy Item",
-                    "Rare Enemy",
-                    "Rare Enemy Item",
-                    "Invasion Enemy",
-                    "Invasion Enemy Item",
-                    "Miniboss Enemy",
-                    "Miniboss Enemy Item",
-                    "Shop",
-                    "Shop Item",
-                    "Grindy",
-                    "Fishing",
-                    "Npc",
-                    "Guide",
-                    "Slime",
-                    "Pet",
-                    "Pickaxe",
-                    "Hammer",
-                    "Minions",
-                    "Armor Minions",
-                    "Mech Boss",
-                    "Final Boss",
-                    "Getfixedboi",
-                    "Not Getfixedboi",
-                    "Calamity",
-                    "Not Calamity",
-                    "Not Calamity Getfixedboi",
-                    "Biome Lock",
-                    "Not Biome Lock",
-                    "Weather Lock",
-                    "Grappling Hook",
-                    "Melee",
-                    "Ranged",
-                    "Magic",
-                    "Summoning",
-                    "Weapon Power",
-                    "Armor Power",
-                    "Accessory Power",
-                    "Corruption",
-                    "Crimson",
-                    "Vanity",
-                    "Journey",
-                }:
+                if flag not in set(arch_id_dict.keys()):
                     raise Exception(
                         f"rule `{name}` on line `{line + 1}` has unrecognized flag `{flag}`"
                     )
-            if not item_flags.isdisjoint(flags.keys()):
+            id_code_set = get_id_code_set(list(flags.keys()))
+            if RuleCode.ITEM in id_code_set:
+
                 item_name = get_default_item_name(name, flags)
                 if item_name in item_name_to_id:
                     raise Exception(
@@ -700,6 +627,7 @@ def read_data() -> Tuple[
                 next_id += 1
                 loc_to_item[name] = item_name
             else:
+
                 loc_to_item[name] = name
 
             if "Npc" in flags or "Guide" in flags or "Slime" in flags or "Pet" in flags:
@@ -849,16 +777,8 @@ def read_data() -> Tuple[
     location_name_to_id = {}
 
     for rule in rules:
-        if ("Location" in rule.flags
-                or "Npc" in rule.flags
-                or "Achievement" in rule.flags
-                or "Chest" in rule.flags
-                or "Orb" in rule.flags
-                or "Common Enemy" in rule.flags
-                or "Rare Enemy" in rule.flags
-                or "Invasion Enemy" in rule.flags
-                or "Miniboss Enemy" in rule.flags
-                or "Shop" in rule.flags):
+        if (RuleCode.LOCATION in get_id_code_set(list(rule.flags))
+                or RuleCode.LOCATION_MULTI in get_id_code_set(list(rule.flags))):
             if rule.name in location_name_to_id:
                 raise Exception(f"location `{rule.name}` shadows a previous location")
             location_name_to_id[rule.name] = next_id
