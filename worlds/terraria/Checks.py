@@ -556,7 +556,6 @@ def read_data() -> Tuple[
                     "Grindy",
                     "Fishing",
                     "Npc",
-                    "Guide",
                     "Pet",
                     "Pickaxe",
                     "Hammer",
@@ -586,7 +585,7 @@ def read_data() -> Tuple[
             else:
                 loc_to_item[name] = name
 
-            if "Npc" in flags or "Guide" in flags:
+            if "Npc" in flags:
                 item_name_to_id[name] = next_id
                 next_id += 1
                 loc_to_item[name] = name
@@ -649,7 +648,6 @@ def read_data() -> Tuple[
         prog = False
         if (
             "Npc" in rule.flags
-            or "Guide" in rule.flags
             or "Pet" in rule.flags
             or "Goal" in rule.flags
             or "Pickaxe" in rule.flags

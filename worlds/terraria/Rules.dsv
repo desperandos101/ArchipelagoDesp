@@ -2,7 +2,7 @@
 
 // Starting gear
 Copper Shortsword;
-Guide;                              Guide;
+Guide;                              Npc;
 
 // Immediately accessible
 Squire Slime;                       Pet;
@@ -272,7 +272,7 @@ Cell Phone;                         ;                                           
 Black Mirror;                       Achievement | Grindy;                       Cell Phone;
 Bewitching Table;                   Minions(1);                                 Dungeon | (Witch Doctor & Wizard) | Alchemy Table;
 Alchemy Table;                      ;                                           Dungeon | Bewitching Table;
-Mechanic;                           ;                                           Dungeon;
+Mechanic;                           Npc;                                        Dungeon;
 Wire;                               ;                                           Mechanic | (@calamity & Electrician's Glove);
 Decryption Computer;                Calamity;                                   Mysterious Circuitry & Dubious Plating & Wire;
 Actuator;                           ;                                           Mechanic;

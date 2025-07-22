@@ -106,9 +106,6 @@ class TerrariaWorld(World):
                     or (
                             not self.options.normal_achievements.value
                             and "Achievement" in rule.flags
-                            and not early
-                            and not grindy
-                            and not fishing
                     )
                     or (not self.options.grindy_achievements.value and grindy)
                     or (not self.options.fishing_achievements.value and fishing)
@@ -116,7 +113,7 @@ class TerrariaWorld(World):
                 continue
 
             if "Location" in rule.flags or "Achievement" in rule.flags or (
-                    "Npc" in rule.flags and self.options.randomize_npcs.value == 1):
+                    "Npc" in rule.flags and self.options.randomize_npcs.value):
                 # Location
                 location_count += 1
                 locations.append(rule.name)
@@ -124,14 +121,13 @@ class TerrariaWorld(World):
                     "Achievement" not in rule.flags
                     and "Location" not in rule.flags
                     and "Item" not in rule.flags
-                    and not ("Guide" in rule.flags and self.options.randomize_guide.value)
+                    and not ("Npc" in rule.flags and self.options.randomize_npcs.value)
             ):
                 # Event
                 locations.append(rule.name)
 
             if ("Item" in rule.flags
-                or ("Npc" in rule.flags and self.options.randomize_npcs.value == 1)
-                or ("Guide" in rule.flags and self.options.randomize_guide.value == 1)
+                or ("Npc" in rule.flags and self.options.randomize_npcs.value)
             ) and not (
                     "Achievement" in rule.flags and rule.name not in goal_locations
             ):
@@ -143,6 +139,7 @@ class TerrariaWorld(World):
                     "Achievement" not in rule.flags
                     and "Location" not in rule.flags
                     and "Item" not in rule.flags
+                    and not ("Npc" in rule.flags and self.options.randomize_npcs.value)
             ):
                 # Event
                 items.append(rule.name)
@@ -189,9 +186,15 @@ class TerrariaWorld(World):
         menu = Region("Menu", self.player, self.multiworld)
 
         for location in self.ter_locations:
+            rule = rules[rule_indices[location]]
+            if "Npc" in rule.flags and not self.options.randomize_npcs.value:
+                location_id = None
+            else:
+                location_id = location_name_to_id.get(location)
+
             menu.locations.append(
                 TerrariaLocation(
-                    self.player, location, location_name_to_id.get(location), menu
+                    self.player, location, location_id, menu
                 )
             )
 
@@ -211,8 +214,7 @@ class TerrariaWorld(World):
                 rule = rules[rule_index]
                 if "Item" in rule.flags:
                     name = rule.flags.get("Item") or f"Post-{item}"
-                elif ("Npc" in rule.flags and self.options.randomize_npcs.value == 1) \
-                        or ("Guide" in rule.flags and self.options.randomize_guide.value == 1):
+                elif "Npc" in rule.flags and self.options.randomize_npcs.value == 1:
                     name = item
                 else:
                     continue
@@ -379,4 +381,5 @@ class TerrariaWorld(World):
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
+            "randomize_npcs": bool(self.options.randomize_npcs.value),
         }
