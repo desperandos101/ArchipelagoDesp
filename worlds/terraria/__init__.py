@@ -60,6 +60,8 @@ class TerrariaWorld(World):
     calamity = False
     getfixedboi = False
 
+    npcs_to_randomize = set()
+
     ter_items: List[str]
     ter_locations: List[str]
 
@@ -143,6 +145,9 @@ class TerrariaWorld(World):
             ):
                 # Event
                 items.append(rule.name)
+
+            if "Npc" in rule.flags:
+                self.npcs_to_randomize.add(rule.name)
 
         ordered_rewards = [
             reward
@@ -381,5 +386,5 @@ class TerrariaWorld(World):
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
-            "randomize_npcs": bool(self.options.randomize_npcs.value),
+            "randomize_npcs": list(self.npcs_to_randomize),
         }
