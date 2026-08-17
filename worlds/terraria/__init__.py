@@ -1,9 +1,16 @@
 # Look at `Rules.dsv` first to get an idea for how this works
 
+import dataclasses
 import logging
-from typing import Union, Tuple, List, Dict, Set
+from typing import Union, Tuple, List, Dict, Set, override
+
+from Options import NumericOption
+from rule_builder.cached_world import CachedRuleBuilderWorld
+from rule_builder.field_resolvers import FromWorldAttr
 from worlds.AutoWorld import WebWorld, World
-from BaseClasses import Region, ItemClassification, Tutorial, CollectionState
+from BaseClasses import Region, ItemClassification, Tutorial, CollectionState, Spoiler
+from rule_builder.options import OptionFilter
+from rule_builder.rules import Has, HasAny, HasAll, True_, False_, And, Or, Rule, TWorld, HasFromList, Filtered
 from .Checks import (
     TerrariaItem,
     TerrariaLocation,
@@ -16,24 +23,21 @@ from .Checks import (
     item_name_to_id,
     location_name_to_id,
     loc_to_item,
-    get_cond_name,
     COND_ITEM,
     COND_LOC,
     COND_FN,
     COND_GROUP,
-    quant_locs,
     npcs,
     pickaxes,
     hammers,
-    weapons,
-    armour,
-    accessories,
     mech_bosses,
-    progression,
     armor_minions,
     accessory_minions,
+    health_upgrades,
+    quarter_fruits,
 )
-from .Options import TerrariaOptions, Goal
+from .Options import TerrariaOptions, Goal, ter_option_groups, RandomizeNPCs, Mods, RareAchievements, \
+    TimeAchievements, HealthLogic, Getfixedboi, ShimmerSkips
 
 
 class TerrariaWeb(WebWorld):
@@ -47,40 +51,82 @@ class TerrariaWeb(WebWorld):
             ["Seldom"],
         )
     ]
+    option_groups = ter_option_groups
 
 
-class TerrariaWorld(World):
+class TerrariaSpoiler(Spoiler):
+    def hidden_locations(self) -> Set[str]:
+        hidden = set()
+
+        for loc in self.multiworld.get_filled_locations():
+            if self.multiworld.game[loc.player] != "Terraria Beta":
+                continue
+
+            options = self.multiworld.worlds[loc.player].options
+            if not options.compressed_playthrough.value or not loc.is_event:
+                continue
+
+            rule = rules[rule_indices[loc.name]]
+            if options.health_logic.value and ("Health" in rule.flags or "Quarter Fruit" in rule.flags):
+                continue
+
+            hidden.add(loc.name)
+
+        return hidden
+
+    def create_playthrough(self, create_paths: bool = True) -> None:
+        super().create_playthrough(create_paths)
+
+        hidden_locs = self.hidden_locations()
+
+        visible_spheres = []
+
+        for sphere in sorted(int(num) for num in self.playthrough if num != "0"):
+            sphere = self.playthrough[str(sphere)]
+            visible = {
+                loc: item
+                for loc, item in sphere.items()
+                if loc not in hidden_locs
+            }
+
+            if visible:
+                visible_spheres.append(visible)
+
+        self.playthrough = {
+            "0": self.playthrough.get("0", []),
+            **{
+                str(num): sphere
+                for num, sphere in enumerate(visible_spheres, start=1)
+            },
+        }
+
+        if create_paths:
+            self.paths = {
+                location: path
+                for location, path in self.paths.items()
+                if location not in hidden_locs
+            }
+
+
+class TerrariaWorld(CachedRuleBuilderWorld):
     """
     Terraria is a 2D multiplayer sandbox game featuring mining, building, exploration, and combat.
     Features 18 bosses and 4 classes.
     """
-
-    game = "Terraria"
+    game = "Terraria Beta"
     web = TerrariaWeb()
     options_dataclass = TerrariaOptions
     options: TerrariaOptions
-
-    # data_version is used to signal that items, locations or their names
-    # changed. Set this to 0 during development so other games' clients do not
-    # cache any texts, then increase by 1 for each release that makes changes.
-    data_version = 3
 
     item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
 
     calamity = False
+    fargo = False
     getfixedboi = False
-    require_optimal_gear = False
 
-    multi_loc_dict = {}
-    multi_loc_slot_dicts = {}
-
-    enemy_to_kill_count = {}
-    all_items = []
-    chest_items = []
-    enemy_items = []
-    shop_items = []
-    hardmode_items = []
+    progression = set()
+    npcs_to_randomize = set()
 
     ter_items: List[str]
     ter_locations: List[str]
@@ -89,310 +135,205 @@ class TerrariaWorld(World):
     goal_items: Set[str]
     goal_locations: Set[str]
 
-    def is_npc(self, flags):
-        return ("Npc" in flags
-                or "Guide" in flags
-                or "Slime" in flags
-                or "Pet" in flags)
-
-    def is_location(self, flags):
-        return ("Location" in flags
-                or ("Achievement" in flags and self.any_achievements_enabled())
-                or ("Npc" in flags and self.options.randomize_npcs.value)
-                or ("Chest" in flags and self.options.chest_loot)
-                or ("Orb" in flags and self.options.orb_loot.value)
-                or ("Common Enemy" in flags and self.options.enemy_common_drops.value > 0)
-                or ("Rare Enemy" in flags and self.options.enemy_rare_drops.value > 0)
-                or ("Invasion Enemy" in flags and self.options.enemy_invasion_drops.value > 0)
-                or ("Miniboss Enemy" in flags and self.options.enemy_miniboss_drops.value > 0)
-                or ("Shop" in flags and self.options.shop_loot > 0)
-                or (
-                            self.options.goal.value == self.options.goal.option_zenith and "Achievement" in flags and "Goal" in flags))  # i gotta do somethin about this
-
-    def is_item_enemy(self, flags):
-        return (("Common Enemy Item" in flags and self.options.enemy_common_drops.value > 0)
-                or ("Rare Enemy Item" in flags and self.options.enemy_rare_drops.value > 0)
-                or ("Invasion Enemy Item" in flags and self.options.enemy_invasion_drops.value > 0)
-                or ("Miniboss Enemy Item" in flags and self.options.enemy_miniboss_drops.value > 0))
-
-    def is_item(self, flags):
-        if (("Journey" in flags and self.options.journey_mode)
-                or not self.class_acceptable(flags)):
-            return False
-        allowed_as_rule = ("Item" in flags
-                           or ("Npc" in flags and self.options.randomize_npcs.value)
-                           or ("Guide" in flags and self.options.randomize_guide.value)
-                           or ("Chest Item" in flags and self.options.chest_loot)
-                           or ("Orb Item" in flags and self.options.orb_loot.value)
-                           or ("Shop Item" in flags and self.options.shop_loot.value > 0)
-                           or ("Biome Lock" in flags and self.options.biome_locks)
-                           or ("Not Biome Lock" in flags and not self.options.biome_locks)
-                           or ("Weather Lock" in flags and self.options.weather_locks.value)
-                           or ("Grappling Hook" in flags and self.options.grappling_hook)
-                           or self.is_item_enemy(flags))
-        return allowed_as_rule
-
-    def is_multi_location(self, flags):
-        for flag in quant_locs:
-            if flag in flags:
-                return True
-        return False
-
-    def multi_is_overflow(self, name):
-        loc_name = self.get_multi_loc_name(name)
-        loc_num = self.get_multi_loc_num(name)
-        allowed_quant = self.multi_loc_dict[loc_name]
-        return loc_num > allowed_quant
-
-    def get_multi_loc_num(self, name):
-        num_str = ''.join(i for i in name if i.isdigit())
-        return int(num_str) if num_str != "" else 0
-
-    def get_multi_loc_name(self, name):
-        return ''.join(i for i in name if not i.isdigit()).strip()
-
-    def is_disallowed_multi_location(self, flags):
-        return (("Orb" in flags and not self.options.orb_loot.value) or
-                ("Chest" in flags and not self.options.chest_loot) or
-                ("Common Enemy" in flags and not self.options.enemy_common_drops.value > 0)
-                or ("Rare Enemy" in flags and not self.options.enemy_rare_drops.value > 0)
-                or ("Invasion Enemy" in flags and not self.options.enemy_invasion_drops.value > 0)
-                or ("Miniboss Enemy" in flags and not self.options.enemy_miniboss_drops.value > 0))
-
-    def class_acceptable(self, flags):
-        if ("Melee" not in flags
-                and "Ranged" not in flags
-                and "Magic" not in flags
-                and "Summoning" not in flags):
-            return True
-        return (self.options.class_preference.value == 0
-                or ("Melee" in flags and self.options.class_preference.value == 1)
-                or ("Ranged" in flags and self.options.class_preference.value == 2)
-                or ("Magic" in flags and self.options.class_preference.value == 3)
-                or ("Summoning" in flags and self.options.class_preference.value == 4))
-
-    def is_event(self, flags):
-        return not self.is_location(flags) and not self.is_item(flags)
-
-    def any_achievements_enabled(self):
-        return (self.options.normal_achievements.value
-                or self.options.early_achievements.value
-                or self.options.fishing_achievements.value
-                or self.options.grindy_achievements.value)
-
-    def extra_checks_enabled(self):
-        return (self.options.grindy_achievements
-                or self.options.fishing_achievements
-                or self.options.normal_achievements
-                or self.options.early_achievements
-                or self.options.chest_loot)
+    required_client_version = (0, 6, 100)
 
     def generate_early(self) -> None:
-        self.multi_loc_dict = {
-            "Gold or Wooden Chest": self.options.chest_surface.value,
-            "Mushroom Chest": self.options.chest_mushroom.value,
-            "Web Covered Chest": self.options.chest_web.value,
-            "Marble Chest": self.options.chest_marble.value,
-            "Granite Chest": self.options.chest_granite.value,
-            "Water Chest": self.options.chest_water.value,
-            "Floating Island Chest": self.options.chest_sky.value,
-            "Frozen Chest": self.options.chest_frozen.value,
-            "Sandstone Chest": self.options.chest_desert.value,
-            "Ivy or Mahogany Chest": self.options.chest_jungle.value,
-            "Shadow Chest": self.options.chest_underworld.value,
-            "Dungeon Chest": self.options.chest_dungeon.value,
-            "Shadow/Crimson Orb": self.options.orb_loot.value
-        }
-        goal_id = self.options.goal.value
-        goal, goal_locations = goals[goal_id]
+        if not isinstance(self.multiworld.spoiler, TerrariaSpoiler):
+            self.multiworld.spoiler = TerrariaSpoiler(self.multiworld)
+
+        goal, goal_locations = goals[self.options.goal.value]
+        slot_name = self.multiworld.player_name[self.player]
+        match self.options.shuffle_to.value:
+            case 0:
+                pass
+            case -1:
+                goal = 0
+            case _:
+                if self.options.shuffle_to.value < self.options.goal.value:
+                    logging.warning(f"SLOT {slot_name}: \"Shuffle To\" value ({Goal.name_lookup[self.options.shuffle_to.value]}) was set earlier than the goal ({Goal.name_lookup[self.options.goal.value]}); ignoring")
+                else:
+                    goal, _ = goals[self.options.shuffle_to.value]
         ter_goals = {}
         goal_items = set()
 
-        progressive_item_to_count = {}
-        vanity = []
+        if self.options.getfixedboi and self.options.randomize_npcs:
+            logging.warning(f"SLOT {slot_name}: getfixedboi mode was selected with NPC rando enabled; disabling NPC rando")
+            self.options.randomize_npcs.value = 0
 
         for location in goal_locations:
-            flags = rules[rule_indices[location]].flags
-            if not self.options.calamity.value and "Calamity" in flags:
+            if location == "Wall of Flesh" and not self.options.randomize_npcs.value:
                 logging.warning(
-                    f"Terraria goal `{Goal.name_lookup[goal_id]}`, which requires Calamity, was selected with Calamity disabled; enabling Calamity"
+                    f"SLOT {slot_name}: goal 'Wall of Flesh' was enabled was selected with NPC Randomization disabled. The resulting game will be goalable from Sphere 1."
                 )
-                self.options.calamity.value = True
+            flags = rules[rule_indices[location]].flags
+            if "Calamity" not in self.options.mods.value and "Calamity" in flags:
+                logging.warning(
+                    f"SLOT {slot_name}: goal `{Goal.name_lookup[self.options.goal.value]}`, which requires Calamity, was selected with Calamity disabled; enabling Calamity"
+                )
+                self.options.mods.value.add("Calamity")
+            if "Fargo" not in self.options.mods.value and "Fargo" in flags:
+                logging.warning(
+                    f"SLOT {slot_name}: goal `{Goal.name_lookup[self.options.goal.value]}`, which requires Fargo, was selected with Fargo disabled; enabling Fargo"
+                )
+                self.options.mods.value.add("Fargo")
 
-            item = Checks.get_default_item_name(location, flags)
-            ter_goals[item] = location
-            goal_items.add(item)
-
-        self.calamity = self.options.calamity.value
-        self.getfixedboi = self.options.getfixedboi.value
+            if "Npc" in flags:
+                event = location
+            else:
+                event = flags.get("Item") or f"Post-{location}"
+            ter_goals[event] = location
+            goal_items.add(event)
 
         location_count = 0
         locations = []
         item_count = 0
         items = []
-        for rule in rules[:goal]:
-            if "Item" in rule.flags:
-                name = Checks.get_default_item_name(rule.name, rule.flags)
-            else:
-                name = rule.name
-            prog = False
-            if (
-                    "Goal" in rule.flags
-                    or "Pickaxe" in rule.flags
-                    or "Hammer" in rule.flags
-                    or "Mech Boss" in rule.flags
-                    or "Final Boss" in rule.flags
-                    or (self.any_achievements_enabled()
-                        and (self.is_npc(rule.flags)
-                             or "Minions" in rule.flags
-                             or "Armor Minions" in rule.flags))
-            ):
-                progression.add(name)
-                prog = True
-            if prog or self.is_location(rule.flags):
-                self.mark_progression(
-                    rule.conditions
-                )
-        for rule in rules[:goal]:
+
+        events = []
+
+        def mark_progression(conditions):
+            for condition in conditions:
+                if condition.type == COND_ITEM:
+                    prog = condition.condition in self.progression
+                    self.progression.add(loc_to_item[condition.condition])
+                    rule = rules[rule_indices[condition.condition]]
+                    if (
+                            not prog
+                            and "Achievement" not in rule.flags
+                            and "Location" not in rule.flags
+                            and "Npc" not in rule.flags
+                            and "Item" not in rule.flags
+                    ):
+                        mark_progression(rule.conditions)
+                elif condition.type == COND_LOC:
+                    mark_progression(rules[rule_indices[condition.condition]].conditions)
+                elif condition.type == COND_GROUP:
+                    _, conditions = condition.condition
+                    mark_progression(conditions)
+        valid_rules = rules[:goal] if goal != 0 else rules
+        for rule in valid_rules:
             early = "Early" in rule.flags
+            rare = "Rare" in rule.flags
+            time = "Time" in rule.flags
+            crafting = "Crafting" in rule.flags
             grindy = "Grindy" in rule.flags
             fishing = "Fishing" in rule.flags
 
             if (
-                    (self.options.toggle_evil == 0 and "Crimson" in rule.flags)
-                    or (self.options.toggle_evil == 1 and "Corruption" in rule.flags)
-                    or (not self.getfixedboi and "Getfixedboi" in rule.flags)
-                    or (self.getfixedboi and "Not Getfixedboi" in rule.flags)
-                    or (not self.calamity and "Calamity" in rule.flags)
-                    or (self.calamity and "Not Calamity" in rule.flags)
+                    (not self.options.getfixedboi.value and "Getfixedboi" in rule.flags)
+                    or (self.options.getfixedboi.value and "Not Getfixedboi" in rule.flags)
+                    or ("Calamity" not in self.options.mods.value and "Calamity" in rule.flags)
+                    or ("Calamity" in self.options.mods.value and "Not Calamity" in rule.flags)
                     or (
-                            self.getfixedboi
-                            and self.calamity
+                            self.options.getfixedboi.value
+                            and "Calamity" in self.options.mods.value
                             and "Not Calamity Getfixedboi" in rule.flags
                     )
+                    or ("Fargo" not in self.options.mods.value and "Fargo" in rule.flags)
+                    or ("Fargo" in self.options.mods.value and "Not Fargo" in rule.flags)
+                    or (not self.options.shimmer_skips.value and "Shimmer" in rule.flags)
                     or (not self.options.early_achievements.value and early)
                     or (
                             not self.options.normal_achievements.value
                             and "Achievement" in rule.flags
-                            and not early
-                            and not grindy
-                            and not fishing
                     )
+                    or (not self.options.rare_achievements.value and rare)
+                    or (not self.options.time_achievements.value and time)
+                    or (not self.options.crafting_achievements.value and crafting)
                     or (not self.options.grindy_achievements.value and grindy)
                     or (not self.options.fishing_achievements.value and fishing)
             ) and rule.name not in goal_locations:
                 continue
 
-            for condition in rule.conditions:
-                if isinstance(condition.condition, tuple) and type(condition.condition[0]) is str:
-                    progressive_item = condition.condition[0]
-                    prog_item_count = progressive_item_to_count.get(progressive_item) or 0
-                    prog_item_count_new = condition.condition[1]
-                    if prog_item_count_new > prog_item_count:
-                        progressive_item_to_count[progressive_item] = prog_item_count_new
+            # Special events
+            if (
+                    "Npc" in rule.flags
+                    or "Pet" in rule.flags
+                    or "Pickaxe" in rule.flags
+                    or "Hammer" in rule.flags
+                    or "Mech Boss" in rule.flags
+                    or "Minions" in rule.flags
+                    or "Armor Minions" in rule.flags
+                    or "Health" in rule.flags
+                    or "Quarter Fruit" in rule.flags
+                    or rule.name in goal_locations
+            ):
+                self.progression.add(loc_to_item[rule.name])
+                mark_progression(rule.conditions)
 
-            if ("Chest" in rule.flags or "Orb" in rule.flags) and self.multi_is_overflow(rule.name):
-                continue
-
-            quant = self.get_multi_loc_num(rule.name)
-
-            if (("Common Enemy" in rule.flags and quant > self.options.enemy_common_drops.value)
-                    or ("Rare Enemy" in rule.flags and quant > self.options.enemy_rare_drops.value)
-                    or ("Invasion Enemy" in rule.flags and quant > self.options.enemy_invasion_drops.value)
-                    or ("Miniboss Enemy" in rule.flags and quant > self.options.enemy_miniboss_drops.value)
-                    or ("Shop" in rule.flags and quant > self.options.shop_loot.value)):
-                continue
-            if self.is_multi_location(rule.flags):
-                base_name = self.get_multi_loc_name(rule.name)
-                if quant > 0:
-                    if self.multi_loc_slot_dicts.get(base_name) is None:
-                        self.multi_loc_slot_dicts[base_name] = []
-                        enemy_flag_set = set(rule.flags.keys()).intersection(
-                            {"Common Enemy", "Rare Enemy", "Invasion Enemy", "Miniboss Enemy"})
-                        set_length = len(enemy_flag_set)
-                        if set_length > 1:
-                            raise Exception("Enemy Flag Set Length above 1")
-                        elif set_length == 1:
-                            enemy_type = list(enemy_flag_set)[0]
-                            kill_quant = 0
-                            if enemy_type == "Common Enemy":
-                                kill_quant = self.options.enemy_common_count.value
-                            elif enemy_type == "Rare Enemy":
-                                kill_quant = self.options.enemy_rare_count.value
-                            elif enemy_type == "Invasion Enemy":
-                                kill_quant = self.options.enemy_invasion_count.value
-                            elif enemy_type == "Miniboss Enemy":
-                                kill_quant = self.options.enemy_miniboss_count.value
-                            else:
-                                raise Exception("what?")
-                            self.enemy_to_kill_count[base_name] = kill_quant
-
-                    self.multi_loc_slot_dicts[base_name].append(rule.name)
-
-            if self.is_location(rule.flags):
+            if "Location" in rule.flags or "Achievement" in rule.flags or (
+                    "Npc" in rule.flags and self.options.randomize_npcs.value):
                 # Location
                 location_count += 1
                 locations.append(rule.name)
-            elif self.is_event(rule.flags):
+                if "Npc" in rule.flags:
+                    self.npcs_to_randomize.add(rule.name)
+                mark_progression(rule.conditions)
+            elif (
+                    "Achievement" not in rule.flags
+                    and "Location" not in rule.flags
+                    and "Item" not in rule.flags
+                    and not ("Npc" in rule.flags and self.options.randomize_npcs.value)
+            ):
                 # Event
                 locations.append(rule.name)
+                events.append(rule.name)
 
-            if self.is_item(rule.flags) and (
-                    "Achievement" not in rule.flags and rule.name not in goal_locations
+            if ("Item" in rule.flags
+                or ("Npc" in rule.flags and self.options.randomize_npcs.value)
+            ) and not (
+                    "Achievement" in rule.flags and rule.name not in goal_locations
             ):
-                if "Vanity" in rule.flags:
-                    vanity.append(rule.name)
-                    continue
                 # Item
-                items.append(rule.name)
                 item_count += 1
-                if "Chest Item" in rule.flags:
-                    self.chest_items.append(rule.name)
-                elif self.is_item_enemy(rule.flags):
-                    self.enemy_items.append(rule.name)
-                elif "Shop Item" in rule.flags:
-                    self.shop_items.append(rule.name)
-                if rule_indices[rule.name] > rule_indices["Wall of Flesh"]:
-                    self.hardmode_items.append(rule.name)
+                if rule.name not in goal_locations:
+                    items.append(rule.name)
             elif (
-                    self.is_event(rule.flags)
+                    "Achievement" not in rule.flags
+                    and "Location" not in rule.flags
+                    and "Item" not in rule.flags
+                    and not ("Npc" in rule.flags and self.options.randomize_npcs.value)
             ):
                 # Event
                 items.append(rule.name)
 
-        for progressive_item in progressive_item_to_count.keys():
-            progressive_item_count = progressive_item_to_count[progressive_item]
-            for i in range(progressive_item_count - 1):
-                items.append(progressive_item)
-                item_count += 1
+        pointless_events = [event for event in events if loc_to_item[event] not in self.progression]
+        for event in pointless_events:
+            locations.remove(event)
+            items.remove(loc_to_item[event])
+            location_count -= 1
+            item_count -= 1
 
-        fill_checks = self.options.fill_extra_checks_with.value
         ordered_rewards = [
             reward
             for reward in labels["ordered"]
-            if self.calamity or "Calamity" not in rewards[reward]
+            if ("Calamity" in self.options.mods.value or "Calamity" not in rewards[reward])
+            and ("Fargo" in self.options.mods.value or "Fargo" not in rewards[reward])
         ]
-        while fill_checks == 1 and item_count < location_count and ordered_rewards:
+        while (
+                self.options.fill_extra_checks_with.value == 1
+                and item_count < location_count
+                and ordered_rewards
+        ):
             items.append(ordered_rewards.pop(0))
             item_count += 1
 
         random_rewards = [
             reward
             for reward in labels["random"]
-            if self.calamity or "Calamity" not in rewards[reward]
+            if ("Calamity" in self.options.mods.value or "Calamity" not in rewards[reward])
+            and ("Fargo" in self.options.mods.value or "Fargo" not in rewards[reward])
         ]
         self.multiworld.random.shuffle(random_rewards)
-        while fill_checks == 1 and item_count < location_count and random_rewards:
+        while (
+                self.options.fill_extra_checks_with.value == 1
+                and item_count < location_count
+                and random_rewards
+        ):
             items.append(random_rewards.pop(0))
             item_count += 1
 
-        self.multiworld.random.shuffle(vanity)
-        while len(vanity) > 0 and item_count < location_count - 1:
-            items.append(vanity[0])
-            vanity.pop(0)
-            item_count += 1
-
-        while item_count < location_count - 1:
+        while item_count < location_count:
             items.append("Reward: Coins")
             item_count += 1
 
@@ -407,23 +348,22 @@ class TerrariaWorld(World):
         menu = Region("Menu", self.player, self.multiworld)
 
         for location in self.ter_locations:
-
-            loc_id = location_name_to_id.get(location)
-            if (rule_index := rule_indices.get(location)) is not None:
-                rule = rules[rule_index]
-                if self.is_event(rule.flags):
-                    loc_id = None
+            rule = rules[rule_indices[location]]
+            if "Npc" in rule.flags and not self.options.randomize_npcs.value:
+                location_id = None
+            else:
+                location_id = location_name_to_id.get(location)
 
             menu.locations.append(
                 TerrariaLocation(
-                    self.player, location, loc_id, menu
+                    self.player, location, location_id, menu
                 )
             )
 
         self.multiworld.regions.append(menu)
 
     def create_item(self, item: str) -> TerrariaItem:
-        if item in progression:
+        if item in self.progression:
             classification = ItemClassification.progression
         else:
             classification = ItemClassification.filler
@@ -434,22 +374,24 @@ class TerrariaWorld(World):
         for item in self.ter_items:
             if (rule_index := rule_indices.get(item)) is not None:
                 rule = rules[rule_index]
-                if self.is_item(rule.flags):
-                    name = Checks.get_default_item_name(item, rule.flags)
+                if "Item" in rule.flags:
+                    name = rule.flags.get("Item") or f"Post-{item}"
+                elif "Npc" in rule.flags and self.options.randomize_npcs.value == 1:
+                    name = item
                 else:
                     continue
             else:
                 name = item
 
-            self.all_items.append(name)
             self.multiworld.itempool.append(self.create_item(name))
 
         locked_items = {}
 
         for location in self.ter_locations:
             rule = rules[rule_indices[location]]
-            if self.is_event(rule.flags):
-                if location in progression:
+            if "Location" not in rule.flags and "Achievement" not in rule.flags \
+                    and not ("Npc" in rule.flags and self.options.randomize_npcs.value):
+                if location in self.progression:
                     classification = ItemClassification.progression
                 else:
                     classification = ItemClassification.useful
@@ -463,146 +405,8 @@ class TerrariaWorld(World):
         for location, item in locked_items.items():
             self.multiworld.get_location(location, self.player).place_locked_item(item)
 
-    def check_condition(self, state, condition: Condition) -> bool:
-
-        if condition.type == COND_ITEM:
-
-            item_count = 1
-            if isinstance(condition.condition, tuple):
-                cond_name = condition.condition[0]
-                item_count = condition.condition[1]
-            else:
-                cond_name = condition.condition
-
-            rule = rules[rule_indices[cond_name]]
-            if self.is_item(rule.flags):
-                name = Checks.get_default_item_name(cond_name, rule.flags)
-            else:
-                name = cond_name
-            return condition.sign == state.has(name, self.player, item_count)
-        elif condition.type == COND_LOC:
-            rule = rules[rule_indices[condition.condition]]
-            return condition.sign == self.check_conditions(
-                state, rule.operator, rule.conditions
-            )
-        elif condition.type == COND_FN:
-            if condition.condition == "npc":
-                if type(condition.argument) is not int:
-                    raise Exception("@npc requires an integer argument")
-
-                npc_count = 0
-                for npc in npcs:
-                    if state.has(npc, self.player):
-                        npc_count += 1
-                        if npc_count >= condition.argument:
-                            return condition.sign
-
-                return not condition.sign
-            elif condition.condition == "calamity":
-                return condition.sign == self.calamity
-            elif condition.condition == "biome_locks":
-                return condition.sign == self.options.biome_locks.value
-            elif condition.condition == "grindy":
-                return condition.sign == self.options.grindy_achievements.value
-            elif condition.condition == "extra_checks":
-                return condition.sign == self.extra_checks_enabled()
-            elif condition.condition == "require_boots_jump_hook":
-                return condition.sign == self.options.require_boots_jump_hook
-            elif condition.condition == "require_wings":
-                return condition.sign == self.options.require_wings
-            elif condition.condition == "pickaxe":
-                if type(condition.argument) is not int:
-                    raise Exception("@pickaxe requires an integer argument")
-
-                for pickaxe, power in pickaxes.items():
-                    if power >= condition.argument and state.has(pickaxe, self.player):
-                        return condition.sign
-
-                return not condition.sign
-            elif condition.condition == "hammer":
-                if type(condition.argument) is not int:
-                    raise Exception("@hammer requires an integer argument")
-
-                for hammer, power in hammers.items():
-                    if power >= condition.argument and state.has(hammer, self.player):
-                        return condition.sign
-
-                return not condition.sign
-            elif condition.condition == "gear_power":
-                if not self.require_optimal_gear:
-                    return True
-                if type(condition.argument) is not int:
-                    raise Exception("@gear_power requires an integer argument")
-
-                adequate_weapons = False
-                adequate_armor = False
-                adequate_accessories = False
-
-                def power_met(group, level):
-                    flags = rules[rule_indices[group]].flags
-                    if (level >= condition.argument
-                            and self.check_conditions(state, True, rules[rule_indices[group]].conditions)
-                            and self.class_acceptable(flags)):
-                        return True
-
-                for weapon_group, power in weapons.items():
-                    if power_met(weapon_group, power):
-                        adequate_weapons = True
-                        break
-
-                for armor_group, power in armour.items():
-                    if power_met(armor_group, power):
-                        adequate_armor = True
-                        break
-
-                for accessory_group, power in accessories.items():
-                    if power_met(accessory_group, power):
-                        adequate_accessories = True
-                        break
-
-                return adequate_weapons and adequate_armor and adequate_accessories
-
-            elif condition.condition == "mech_boss":
-                if type(condition.argument) is not int:
-                    raise Exception("@mech_boss requires an integer argument")
-
-                boss_count = 0
-                for boss in mech_bosses:
-                    if state.has(boss, self.player):
-                        boss_count += 1
-                        if boss_count >= condition.argument:
-                            return condition.sign
-
-                return not condition.sign
-            elif condition.condition == "minions":
-                if type(condition.argument) is not int:
-                    raise Exception("@minions requires an integer argument")
-
-                minion_count = 1
-                for armor, minions in armor_minions.items():
-                    if state.has(armor, self.player) and minions + 1 > minion_count:
-                        minion_count = minions + 1
-                        if minion_count >= condition.argument:
-                            return condition.sign
-
-                for accessory, minions in accessory_minions.items():
-                    if state.has(accessory, self.player):
-                        minion_count += minions
-                        if minion_count >= condition.argument:
-                            return condition.sign
-
-                return not condition.sign
-            elif condition.condition == "getfixedboi":
-                return condition.sign == self.getfixedboi
-            else:
-                raise Exception(f"Unknown function {condition.condition}")
-        elif condition.type == COND_GROUP:
-            operator, conditions = condition.condition
-            return condition.sign == self.check_conditions(state, operator, conditions)
-
-    def check_conditions(
+    def create_rule_ini(
             self,
-            state,
             operator: Union[bool, None],
             conditions: List[
                 Tuple[
@@ -611,96 +415,171 @@ class TerrariaWorld(World):
                     Union[str, Tuple[Union[bool, None], list]],
                     Union[str, int, None],
                 ]
-            ],
-    ) -> bool:
+            ]
+    ) -> Rule:
         if operator is None:
             if len(conditions) == 0:
-                return True
+                return True_()
             if len(conditions) > 1:
                 raise Exception("Found multiple conditions without an operator")
-            return self.check_condition(state, conditions[0])
-        elif operator:
-            return any(
-                self.check_condition(state, condition) for condition in conditions
-            )
-        else:
-            return all(
-                self.check_condition(state, condition) for condition in conditions
-            )
+            cond = self.create_rule(conditions[0])
+            return cond if isinstance(cond, Rule) else (True_() & cond)
+        sub_rules = [self.create_rule(condition) for condition in conditions]
+        return Or(*sub_rules) if operator else And(*sub_rules)
 
-    def mark_progression(
-            self,
-            conditions: List[Condition],
-    ):
-        for condition in conditions:
-            if condition.type == COND_ITEM:
-                cond_name = get_cond_name(condition)
-                prog = cond_name in progression
-                progression.add(loc_to_item[cond_name])
-                rule = rules[rule_indices[cond_name]]
-                if (
-                        not prog
-                        and self.is_event(rule.flags)
-                ):
-                    self.mark_progression(
-                        rule.conditions
-                    )
-            elif condition.type == COND_LOC:
-                self.mark_progression(
-                    rules[rule_indices[condition.condition]].conditions
+    def create_rule(self, condition: Condition) -> Rule:
+        if condition.type == COND_ITEM:
+            rule = rules[rule_indices[condition.condition]]
+            if "Item" in rule.flags:
+                name = rule.flags.get("Item") or f"Post-{condition.condition}"
+            else:
+                name = condition.condition
+
+            assert(isinstance(name, str))
+            return Has(name)
+        elif condition.type == COND_LOC:
+            rule = rules[rule_indices[condition.condition]]
+            return self.create_rule_ini(rule.operator, rule.conditions)
+        elif condition.type == COND_FN:
+            if condition.condition == "npc":
+                assert(isinstance(condition.argument, int))
+                return HasFromList(*npcs, count=condition.argument)
+            elif condition.condition == "npc_rando":
+                return True_(options=[OptionFilter(RandomizeNPCs, condition.sign)])
+            elif condition.condition == "calamity":
+                calamity_filter = OptionFilter(Mods, "Calamity", operator="contains")
+                if condition.sign:
+                    return True_(options=[calamity_filter])
+                else:
+                    return False_(options=[calamity_filter], filtered_resolution=True)
+            elif condition.condition == "fargo":
+                fargo_filter = OptionFilter(Mods, "Fargo", operator="contains")
+                if condition.sign:
+                    return True_(options=[fargo_filter])
+                else:
+                    return False_(options=[fargo_filter], filtered_resolution=True)
+            elif condition.condition == "rare":
+                return True_(options=[OptionFilter(RareAchievements, condition.sign)])
+            elif condition.condition == "time":
+                return True_(options=[OptionFilter(TimeAchievements, condition.sign)])
+            elif condition.condition == "pickaxe":
+                if type(condition.argument) is not int:
+                    raise Exception("@pickaxe requires an integer argument")
+
+                eligible_items = []
+                for pickaxe, power in pickaxes.items():
+                    if power >= condition.argument:
+                        eligible_items.append(pickaxe)
+
+                return HasAny(*eligible_items)
+            elif condition.condition == "hammer":
+                if type(condition.argument) is not int:
+                    raise Exception("@hammer requires an integer argument")
+
+                eligible_items = []
+                for hammer, power in hammers.items():
+                    if power >= condition.argument:
+                        eligible_items.append(hammer)
+
+                return HasAny(*eligible_items)
+            elif condition.condition == "mech_boss":
+                assert(isinstance(condition.argument, int))
+                return HasFromList(*mech_bosses, count=condition.argument)
+            elif condition.condition == "minions":
+                assert (isinstance(condition.argument, int))
+                return HasMinion(condition.argument)
+            elif condition.condition == "health":
+                if type(condition.argument) is not int:
+                    raise Exception("@health requires an integer argument")
+
+                health_option = OptionFilter(HealthLogic, 1)
+                health_required = max(condition.argument + self.options.health_logic_handicap.value, 1)
+
+                if health_required == 1:
+                    return Has(health_upgrades[0], options=[health_option], filtered_resolution=True)
+                elif health_required == 2:
+                    return HasAll(*health_upgrades[:2], options=[health_option], filtered_resolution=True)
+
+                highest_base = HasAll(*health_upgrades[:2])
+                quarter_fruits_required = health_required - 2
+                quarter_fruits_rule = HasFromList(
+                    *quarter_fruits,
+                    count=quarter_fruits_required,
+                    options=[OptionFilter(Mods, "Calamity", operator="contains")],
+                    filtered_resolution=True
                 )
-            elif condition.type == COND_FN:
-                if condition.condition == "gear_power" and False:
-                    def minimum_progression_group(item_group_list):  # In truth, it returns the first valid group
-                        # in the set.
-                        for item_group, level in item_group_list.items():
-                            flags = rules[rule_indices[item_group]].flags
-                            if (level >= condition.argument
-                                    and self.class_acceptable(flags)):
-                                return item_group
+                return Filtered((highest_base & quarter_fruits_rule), options=[health_option], filtered_resolution=True)
+            elif condition.condition == "getfixedboi":
+                return True_(options=[OptionFilter(Getfixedboi, condition.sign)])
+            elif condition.condition == "shimmer_skips":
+                return True_(options=[OptionFilter(ShimmerSkips, condition.sign)])
+            else:
+                raise Exception(f"Unknown function {condition.condition}")
+        elif condition.type == COND_GROUP:
+            operator, conditions = condition.condition
 
-                    self.mark_progression(rules[rule_indices[minimum_progression_group(weapons)]].conditions)
-                    self.mark_progression(rules[rule_indices[minimum_progression_group(armour)]].conditions)
-                    self.mark_progression(rules[rule_indices[minimum_progression_group(accessories)]].conditions)
-            elif condition.type == COND_GROUP:
-                _, conditions = condition.condition
-                self.mark_progression(conditions)
+            return self.create_rule_ini(operator, conditions)
 
     def set_rules(self) -> None:
-        for location in self.ter_locations:
-            def check(state: CollectionState, location=location):
-                rule = rules[rule_indices[location]]
-                return self.check_conditions(state, rule.operator, rule.conditions)
+        for location_name in self.ter_locations:
+            if location_name == "Cryonic Ore":
+                pass
+            location = self.multiworld.get_location(location_name, self.player)
+            rule = rules[rule_indices[location_name]]
+            created_rule = self.create_rule_ini(rule.operator, rule.conditions)
+            self.set_rule(location, created_rule)
 
-            self.multiworld.get_location(location, self.player).access_rule = check
-
-        self.multiworld.completion_condition[self.player] = lambda state: state.has_all(
-            self.goal_items, self.player
-        )
+        self.set_completion_rule(HasAll(*self.goal_items))
 
     def fill_slot_data(self) -> Dict[str, object]:
         return {
             "goal": list(self.goal_locations),
             "deathlink": bool(self.options.death_link),
+            "version": list(self.required_client_version),
             # The rest of these are included for trackers
-            "calamity": self.options.calamity.value,
+            "mods": list(self.options.mods.value),
+            "calamity": int("Calamity" in self.options.mods.value),
+            "fargo": int("Fargo" in self.options.mods.value),
             "getfixedboi": self.options.getfixedboi.value,
-            "biome_locks": bool(self.options.biome_locks.value),
-            "weather_locks": bool(self.options.weather_locks.value),
-            "randomize_npcs": bool(self.options.randomize_npcs),
-            "randomize_guide": bool(self.options.randomize_guide.value),
-            "chest_loot": bool(self.options.chest_loot.value),
-            "enemy_to_kill_count": self.enemy_to_kill_count,
-            "enemy_miniboss_drops_all": self.options.enemy_miniboss_drops_all.value,
-            "grappling_hook_rando": bool(self.options.grappling_hook.value),
             "early_achievements": self.options.early_achievements.value,
             "normal_achievements": self.options.normal_achievements.value,
             "grindy_achievements": self.options.grindy_achievements.value,
             "fishing_achievements": self.options.fishing_achievements.value,
-            "chest_items": self.chest_items,
-            "enemy_items": self.enemy_items,
-            "shop_items": self.shop_items,
-            "hardmode_items": self.hardmode_items,
-            "multi_loc_slot_dicts": self.multi_loc_slot_dicts,
-            "all_items": self.all_items if self.options.epic_number.value == 49 else []
+            "npc_rando": self.options.randomize_npcs.value,
+            "randomize_npcs": list(self.npcs_to_randomize),
         }
+
+@dataclasses.dataclass()
+class HasMinion(Rule["TerrariaWorld"], game=TerrariaWorld.game):
+
+    target: int
+
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        return self.Resolved(self.target, player=world.player, caching_enabled=True)
+
+    class Resolved(Rule.Resolved):
+        target: int
+
+        @override
+        def _evaluate(self, state: CollectionState) -> bool:
+            count = 1
+            for armor, minion in armor_minions:
+                if state.has(armor, self.player):
+                    count += minion
+                    break
+            if count >= self.target:
+                return True
+            for accessory, minion in accessory_minions:
+                if state.has(accessory, self.player):
+                    count += minion
+                    if count >= self.target:
+                        return True
+            return False
+
+        @override
+        def item_dependencies(self) -> dict[str, set[int]]:
+            item_dict = {}
+            for item in armor_minions + accessory_minions:
+                item_dict[item[0]] = {id(self)}
+            return item_dict

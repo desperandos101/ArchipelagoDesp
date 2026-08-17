@@ -1,5 +1,3 @@
-import copy
-
 from BaseClasses import Item, Location
 from typing import Tuple, Union, Set, List, Dict
 import string
@@ -15,9 +13,9 @@ class TerrariaLocation(Location):
 
 
 def add_token(
-        tokens: List[Tuple[int, int, Union[str, int, None]]],
-        token: Union[str, int],
-        token_index: int,
+    tokens: List[Tuple[int, int, Union[str, int, None]]],
+    token: Union[str, int],
+    token_index: int,
 ):
     if token == "":
         return
@@ -110,9 +108,6 @@ FN_ARG_END = 14
 END = 15
 GOAL = 16
 
-PRE_ITEM_COUNT = 17
-POST_ITEM_COUNT = 18
-
 POS_FMT = [
     "name or `#`",
     "`;`",
@@ -131,8 +126,6 @@ POS_FMT = [
     "`)`",
     "end of line",
     "goal",
-    "pre item count",
-    "post item count"
 ]
 
 RWD_NAME = 0
@@ -163,99 +156,68 @@ COND_LOC = 1
 COND_FN = 2
 COND_GROUP = 3
 
-item_flags = {
-    "Item",
-    "Chest Item",
-    "Orb Item",
-    "Common Enemy Item",
-    "Rare Enemy Item",
-    "Invasion Enemy Item",
-    "Miniboss Enemy Item",
-    "Npc",
-    "Guide",
-    "Shop Item",
-    "Biome Lock",
-    "Not Biome Lock",
-    "Weather Lock",
-    "Grappling Hook"
-}
-
-quant_locs = {
-    "Chest",
-    "Orb",
-    "Common Enemy",
-    "Rare Enemy",
-    "Invasion Enemy",
-    "Miniboss Enemy",
-    "Shop",
-}
-
-npc_flags = {
-    "Npc",
-    "Guide",
-    "Slime",
-    "Pet"
-}
-
 
 class Condition:
     def __init__(
-            self,
-            # True = positive, False = negative
-            sign: bool,
-            # See the `COND_*` constants
-            type: int,
-            # Condition name or list
-            condition: Union[str, Tuple[Union[bool, None], List["Condition"]], Tuple[str, int]],
-            argument: Union[str, int, None],
+        self,
+        # True = positive, False = negative
+        sign: bool,
+        # See the `COND_*` constants
+        type: int,
+        # Condition name or list
+        condition: Union[str, Tuple[Union[bool, None], List["Condition"]]],
+        argument: Union[str, int, None],
     ):
         self.sign = sign
         self.type = type
         self.condition = condition
         self.argument = argument
 
+    def __str__(self):
+        prefix = "NOT " if not self.sign else ""
+        if type(self.condition) is str:
+            return prefix + str(self.condition)
+        operator, cond_group = self.condition
+        if operator:
+            prefix += "ANY "
+        elif operator is not None:
+            prefix += "ALL "
+        return prefix + str(cond_group)
+
+    __repr__ = __str__
+
 
 class Rule:
     def __init__(
-            self,
-            name: str,
-            # Name to arg
-            flags: Dict[str, Union[str, int, None]],
-            # True = or, False = and, None = N/A
-            operator: Union[bool, None],
-            conditions: List[Condition],
+        self,
+        name: str,
+        # Name to arg
+        flags: Dict[str, Union[str, int, None]],
+        # True = or, False = and, None = N/A
+        operator: Union[bool, None],
+        conditions: List[Condition],
     ):
         self.name = name
         self.flags = flags
         self.operator = operator
         self.conditions = conditions
 
+    def __str__(self):
+        return self.name
 
-def get_default_item_name(name, flags):
-    return flags.get("Item") or name
-
-
-def get_cond_name(condition):
-    if isinstance(condition.condition, tuple):
-        return condition.condition[0]
-    else:
-        return condition.condition
-
-
-
+    __repr__ = __str__
 
 
 def validate_conditions(
-        rule: str,
-        rule_indices: dict,
-        conditions: List[Condition],
+    rule: str,
+    rule_indices: dict,
+    conditions: List[Condition],
 ):
     for condition in conditions:
         if condition.type == COND_ITEM:
-            cond_name = get_cond_name(condition)
-            if cond_name not in rule_indices:
+            if condition.condition not in rule_indices:
                 raise Exception(
-                    f"item `{cond_name}` in `{rule}` is not defined"
+                    f"item `{condition.condition}` in `{rule}` is not defined"
                 )
         elif condition.type == COND_LOC:
             if condition.condition not in rule_indices:
@@ -265,18 +227,18 @@ def validate_conditions(
         elif condition.type == COND_FN:
             if condition.condition not in {
                 "npc",
+                "npc_rando",
                 "calamity",
-                "biome_locks",
-                "extra_checks",
-                "grindy",
+                "fargo",
+                "rare",
+                "time",
                 "pickaxe",
                 "hammer",
                 "mech_boss",
                 "minions",
                 "getfixedboi",
-                "gear_power",
-                "require_boots_jump_hook",
-                "require_wings"
+                "shimmer_skips",
+                "health",
             }:
                 raise Exception(
                     f"function `{condition.condition}` in `{rule}` is not defined"
@@ -289,42 +251,38 @@ def validate_conditions(
 def read_data() -> Tuple[
     # Goal to rule index that ends that goal's range and the locations required
     List[Tuple[int, Set[str]]],
-        # Rules
+    # Rules
     List[Rule],
-        # Rule to rule index
+    # Rule to rule index
     Dict[str, int],
-        # Label to rewards
+    # Label to rewards
     Dict[str, List[str]],
-        # Reward to flags
+    # Reward to flags
     Dict[str, Set[str]],
-        # Item name to ID
+    # Item name to ID
     Dict[str, int],
-        # Location name to ID
+    # Location name to ID
     Dict[str, int],
-        # Location name to Item name
+    # Location name to Item name
     Dict[str, str],
-        # NPCs
+    # NPCs
     List[str],
-        # Pickaxe to pick power
+    # Pickaxe to pick power
     Dict[str, int],
-        # Hammer to hammer power
+    # Hammer to hammer power
     Dict[str, int],
-        # Weapon groups to numerical power
-    Dict[str, int],
-        # Armor groups to numerical power
-    Dict[str, int],
-        # Accessory groups to numerical power
-    Dict[str, int],
-        # Mechanical bosses
+    # Mechanical bosses
     List[str],
-        # Calamity final bosses
+    # Calamity final bosses
     List[str],
-        # Progression rules
-    Set[str],
-        # Armor to minion count,
-    Dict[str, int],
-        # Accessory to minion count,
-    Dict[str, int],
+    # Armor to minion count,
+    Tuple[Tuple[str, int]],
+    # Accessory to minion count,
+    Tuple[Tuple[str, int]],
+    # Health upgrades
+    List[str],
+    # Calamity health upgrades that are unordered and give 25 health each
+    List[str],
 ]:
     next_id = 0x7E0000
     item_name_to_id = {}
@@ -338,20 +296,19 @@ def read_data() -> Tuple[
     npcs = []
     pickaxes = {}
     hammers = {}
-    weapons = {}
-    armor = {}
-    accessories = {}
     mech_boss_loc = []
     mech_bosses = []
     final_boss_loc = []
     final_bosses = []
-    armor_minions = {}
-    accessory_minions = {}
+    armor_minions_list = []
+    accessory_minions_list = []
+    health_upgrades = []
+    quarter_fruits = []
 
     progression = set()
 
     for line, rule in enumerate(
-            pkgutil.get_data(__name__, "Rules.dsv").decode().splitlines()
+        pkgutil.get_data(__name__, "Rules.dsv").decode().splitlines()
     ):
         goal = None
         name = None
@@ -480,28 +437,6 @@ def read_data() -> Tuple[
                     conditions.append(Condition(sign, COND_GROUP, condition, None))
                     sign = True
                     pos = POST_COND
-                elif id == LPAREN:
-                    pos = PRE_ITEM_COUNT
-                else:
-                    unexpected(line, char, id, token, pos, POS_FMT, "Rules.dsv")
-            elif pos == PRE_ITEM_COUNT:
-                if id == NUM:
-                    if token < 1:
-                        raise Exception(
-                            f"{line + 1}:{char + 1}, '{token}' must be a natural number"
-                        )
-                    else:
-                        temp_cond = conditions.pop(-1)
-                        conditions.append(
-                            Condition(temp_cond.sign, temp_cond.type, (temp_cond.condition, token), temp_cond.argument))
-                        pos = POST_ITEM_COUNT
-                else:
-                    raise Exception(
-                        f"{line + 1}:{char + 1}, non ident token found in parentheses"
-                    )
-            elif pos == POST_ITEM_COUNT:
-                if id == RPAREN:
-                    pos = POST_COND
                 else:
                     unexpected(line, char, id, token, pos, POS_FMT, "Rules.dsv")
             elif pos == COND:
@@ -601,37 +536,8 @@ def read_data() -> Tuple[
                 raise Exception(
                     f"rule `{name}` on line `{line + 1}` shadows a previous rule"
                 )
-
-            def create_new_rule(the_name, the_flags, the_operator, the_conditions):
-
-                rule_indices[the_name] = len(rules)
-                new_rule = Rule(the_name, the_flags, the_operator, the_conditions)
-                rules.append(new_rule)
-
-            def get_loc_quantity():
-                flag_list = flags.keys()
-                if not quant_locs.isdisjoint(flag_list):
-                    return 100
-                return 0
-
-            # loc_types_with_quantity = ["Chest", "Orb"]
-            # quant_to_return = 0
-            # type_found = False
-            # for loc_type in loc_types_with_quantity:
-            #     if (quantity := flags.get(loc_type)) is not None:
-            #         quant_to_return = quantity
-            #         if type_found:
-            #             raise Exception(f"rule '{name}' on line '{line + 1}' has multiple location flags")
-            #         type_found = True
-            # return quant_to_return
-            quant = get_loc_quantity()
-            if quant > 0:
-                create_new_rule(name, [], operator, conditions)
-                create_new_rule(f"{name} 1", flags, operator, conditions)
-                for i in range(1, quant):
-                    create_new_rule(f"{name} {i + 1}", flags, operator, conditions)
-            else:
-                create_new_rule(name, flags, operator, conditions)
+            rule_indices[name] = len(rules)
+            rules.append(Rule(name, flags, operator, conditions))
 
             for flag in flags:
                 if flag not in {
@@ -640,25 +546,12 @@ def read_data() -> Tuple[
                     "Goal",
                     "Early",
                     "Achievement",
-                    "Chest",
-                    "Chest Item",
-                    "Orb",
-                    "Orb Item",
-                    "Common Enemy",
-                    "Common Enemy Item",
-                    "Rare Enemy",
-                    "Rare Enemy Item",
-                    "Invasion Enemy",
-                    "Invasion Enemy Item",
-                    "Miniboss Enemy",
-                    "Miniboss Enemy Item",
-                    "Shop",
-                    "Shop Item",
+                    "Rare",
+                    "Time",
+                    "Crafting",
                     "Grindy",
                     "Fishing",
                     "Npc",
-                    "Guide",
-                    "Slime",
                     "Pet",
                     "Pickaxe",
                     "Hammer",
@@ -671,27 +564,18 @@ def read_data() -> Tuple[
                     "Calamity",
                     "Not Calamity",
                     "Not Calamity Getfixedboi",
-                    "Biome Lock",
-                    "Not Biome Lock",
-                    "Weather Lock",
-                    "Grappling Hook",
-                    "Melee",
-                    "Ranged",
-                    "Magic",
-                    "Summoning",
-                    "Weapon Power",
-                    "Armor Power",
-                    "Accessory Power",
-                    "Corruption",
-                    "Crimson",
-                    "Vanity",
-                    "Journey",
+                    "Fargo",
+                    "Not Fargo",
+                    "Shimmer",
+                    "Health",
+                    "Quarter Fruit",
                 }:
                     raise Exception(
                         f"rule `{name}` on line `{line + 1}` has unrecognized flag `{flag}`"
                     )
-            if not item_flags.isdisjoint(flags.keys()):
-                item_name = get_default_item_name(name, flags)
+
+            if "Item" in flags:
+                item_name = flags["Item"] or f"Post-{name}"
                 if item_name in item_name_to_id:
                     raise Exception(
                         f"item `{item_name}` on line `{line + 1}` shadows a previous item"
@@ -702,7 +586,12 @@ def read_data() -> Tuple[
             else:
                 loc_to_item[name] = name
 
-            if "Npc" in flags or "Guide" in flags or "Slime" in flags or "Pet" in flags:
+            if "Npc" in flags:
+                item_name_to_id[name] = next_id
+                next_id += 1
+                loc_to_item[name] = name
+                npcs.append(name)
+            elif "Pet" in flags:
                 npcs.append(name)
 
             if (power := flags.get("Pickaxe")) is not None:
@@ -711,19 +600,8 @@ def read_data() -> Tuple[
             if (power := flags.get("Hammer")) is not None:
                 hammers[name] = power
 
-            if (power := flags.get("Weapon Power")) is not None:
-                weapons[name] = power
-
-            if (power := flags.get("Armor Power")) is not None:
-                armor[name] = power
-
-            if (power := flags.get("Accessory Power")) is not None:
-                accessories[name] = power
-
             if "Mech Boss" in flags:
-                item_name_to_id[name] = next_id
-                next_id += 1
-                mech_bosses.append(name)
+                mech_bosses.append(flags["Item"] or f"Post-{name}")
                 mech_boss_loc.append(name)
 
             if "Final Boss" in flags:
@@ -731,10 +609,16 @@ def read_data() -> Tuple[
                 final_boss_loc.append(name)
 
             if (minions := flags.get("Armor Minions")) is not None:
-                armor_minions[name] = minions
+                armor_minions_list.append((name, minions))
 
             if (minions := flags.get("Minions")) is not None:
-                accessory_minions[name] = minions
+                accessory_minions_list.append((name, minions))
+
+            if "Health" in flags:
+                health_upgrades.append(name)
+
+            if "Quarter Fruit" in flags:
+                quarter_fruits.append(name)
 
         if goal:
             if goal in goal_indices:
@@ -763,6 +647,9 @@ def read_data() -> Tuple[
 
     _, final_boss_items = goals[goal_indices["calamity_final_bosses"]]
     final_boss_items.update(final_boss_loc)
+
+    armor_minions = tuple(sorted(armor_minions_list, key=lambda item: item[1], reverse=True))
+    accessory_minions = tuple(accessory_minions_list)
 
     for rule in rules:
         validate_conditions(rule.name, rule_indices, rule.conditions)
@@ -849,16 +736,7 @@ def read_data() -> Tuple[
     location_name_to_id = {}
 
     for rule in rules:
-        if ("Location" in rule.flags
-                or "Npc" in rule.flags
-                or "Achievement" in rule.flags
-                or "Chest" in rule.flags
-                or "Orb" in rule.flags
-                or "Common Enemy" in rule.flags
-                or "Rare Enemy" in rule.flags
-                or "Invasion Enemy" in rule.flags
-                or "Miniboss Enemy" in rule.flags
-                or "Shop" in rule.flags):
+        if "Location" in rule.flags or "Achievement" in rule.flags or "Npc" in rule.flags:
             if rule.name in location_name_to_id:
                 raise Exception(f"location `{rule.name}` shadows a previous location")
             location_name_to_id[rule.name] = next_id
@@ -876,14 +754,12 @@ def read_data() -> Tuple[
         npcs,
         pickaxes,
         hammers,
-        weapons,
-        armor,
-        accessories,
         mech_bosses,
         final_bosses,
-        progression,
         armor_minions,
         accessory_minions,
+        health_upgrades,
+        quarter_fruits,
     )
 
 
@@ -899,12 +775,10 @@ def read_data() -> Tuple[
     npcs,
     pickaxes,
     hammers,
-    weapons,
-    armour,
-    accessories,
     mech_bosses,
     final_bosses,
-    progression,
     armor_minions,
     accessory_minions,
+    health_upgrades,
+    quarter_fruits,
 ) = read_data()
