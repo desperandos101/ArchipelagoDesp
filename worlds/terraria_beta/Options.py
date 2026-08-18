@@ -33,6 +33,7 @@ class Goal(Choice):
 
     FOR THE BETA: Note that the Wall of Flesh goal is intended to be played with NPC Rando on.
     Otherwise, the generated game will be immediately goal-able.
+    Deviantt goal can be goaled in sphere 1, it is intended to be played in very short syncs.
     """
 
     display_name = "Goal"
