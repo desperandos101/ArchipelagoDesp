@@ -168,7 +168,7 @@ Arctic Diving Gear;                 ;                                           
 Abyssal Diving Gear;                Calamity;                                   Hardmode Anvil & Arctic Diving Gear & Skeletron & Depth Cells & Lumenyl;
 Mollusk Husk;                       Calamity;                                   Wall of Flesh;
 Abyssal Diving Suit;                Calamity;                                   Hardmode Anvil & Abyssal Diving Gear & Skeletron & Luminite Bar & Mollusk Husk;
-Abyss Layer 2;                      Calamity;                                   Sea King | Tinkerer's Workshop | Victide Armor | #Aquatic Scourge | (#Leviathan and Anahita & Skeletron); // Sea King gives you immunity, Tinkerer's Workshop for diving gear, aquatic scourge for aquatic emblem, leviathan and anahita for Aquatic heart
+Abyss Layer 2;                      Calamity;                                   Sea King | Tinkerer's Workshop | Victide Armor | #Aquatic Scourge | (Aquatic Heart & Skeletron); // Sea King gives you immunity, Tinkerer's Workshop for diving gear, aquatic scourge for aquatic emblem, leviathan and anahita for Aquatic heart
 Abyss Layer 4;                      Calamity;                                   Abyss Layer 2 & Abyssal Diving Suit; 
 Planty Mush;                        Calamity;                                   Abyss Layer 2;
 
@@ -366,7 +366,7 @@ Blessed Apple;                      ;                                           
 Rod of Discord;                     ;                                           Hallow;
 Gelatin World Tour;                 Achievement | Time | Rare;                  Dungeon & Wall of Flesh & Hallow & #King Slime;
 Soul of Flight;                     ;                                           Wall of Flesh | (@getfixedboi & #Duke Fishron);
-Head in the Clouds;                 Achievement;                                @rare | (Soul of Flight & ((Hardmode Anvil & (Soul of Light | Soul of Night | Pixie Dust | Wall of Flesh | Solar Eclipse | @mech_boss(1) | Plantera | Spectre Bar | #Golem)) | (Shroomite Bar & Autohammer) | #Mourning Wood | #Pumpking)) | Steampunker | (Wall of Flesh & Plantera & Witch Doctor) | (Solar Eclipse & Plantera) | #Everscream | #Betsy | #Empress of Light | #Duke Fishron | (Fragment & Luminite Bar & Ancient Manipulator);
+Head in the Clouds;                 Achievement;                                @rare | (Soul of Flight & ((Hardmode Anvil & (Soul of Light | Soul of Night | Pixie Dust | Wall of Flesh | Solar Eclipse | @mech_boss(1) | Plantera | Spectre Bar | #Golem)) | (Shroomite Bar & Autohammer) | #Mourning Wood | #Pumpking)) | Steampunker | (Wall of Flesh & Plantera & Witch Doctor) | (Solar Eclipse & Plantera) | #Everscream | (#Old One's Army Tier 3 | (@fargo & #Betsy)) | #Empress of Light | #Duke Fishron | (Fragment & Luminite Bar & Ancient Manipulator);
 Bunny;                              Pet;                                        Zoologist & Wall of Flesh; // Extremely simplified
 Forbidden Fragment;                 ;                                           Sandstorm & Wall of Flesh;
 Astral Infection;                   Calamity;                                   Wall of Flesh | Astrum Aureus;
@@ -654,7 +654,7 @@ Exodium Cluster;                    Calamity;                                   
 Normality Relocator;                Calamity;                                   Hardmode Anvil & Rod of Discord & Exodium Cluster & Fragment;
 Unholy Essence;                     Calamity;                                   Moon Lord | #Providence, the Profaned Goddess | (@getfixedboi & Plantera);
 Necroplasm;                         Calamity;                                   (Moon Lord & (Dungeon | Wall of Flesh)) | #Polterghast | (Shimmer & #The Devourer of Gods);
-Eldritch Soul Artifact;             Calamity | Minions(1);                      Hardmode Anvil & Exodium Cluster & Navyplate & Necroplasm;
+Fragments of Another World;         Calamity | Minions(1);                      Hardmode Anvil & Exodium Cluster & Navyplate & Necroplasm;
 
 // Profaned Guardians
 Profaned Guardians;                 Calamity | Location | Item;                 ((@fargo & Mutant NPC & Profaned Guardians) | (Hardmode Anvil & Unholy Essence & Luminite Bar)) & @health(4);
@@ -780,7 +780,7 @@ Angelic Alliance;                   Calamity | Minions(2);                      
 Demonshade Armor;                   Calamity | Armor Minions(10);               Draedon's Forge & Shadowspec Bar;
 
 // Primordial Wyrm
-Primordial Wyrm;                    Calamity | Location | Item | Goal;          (Rod of Discord | Normality Relocator) & @health(6);
+Primordial Wyrm;                    Calamity | Location | Item | Goal;          (Rod of Discord | Normality Relocator) & Abyss Layer 4 & @health(6);
 # primordial_wyrm
 
 // Mutant
@@ -817,7 +817,7 @@ Pure Heart;                         Fargo | Not Getfixedboi;                    
 Dubious Circuitry;                  Fargo;                                      Hardmode Anvil & #The Twins & #The Destroyer & #Skeletron Prime & Hallowed Bar & Soul of Fright & Soul of Might & Soul of Sight & Deviating Energy;
 Bionomic Cluster;                   Fargo;                                      Hardmode Anvil & Hallow & Wall of Flesh & Blood Moon & #Pirate Invasion & #Frost Legion & #Goblin Army & Deviating Energy & Mythril Bar;
 Supreme Deathbringer Fairy;         Fargo;                                      #King Slime & #Eye of Cthulhu & #Queen Bee & #Skeletron & Hellstone Bar & Deviating Energy;
-Sinister Icon;                      Fargo;                                      #Skeletron; // dungeon guardian fight
+Sinister Icon;                      Fargo;                                      #Skeletron & @health(5); // dungeon guardian fight
 Heart of the Master;                Fargo;                                      Crucible of the Cosmos & #Pumpking & #Ice Queen & #Martian Madness & #Betsy & #Duke Fishron & #Empress of Light & #Moon Lord & Luminite Bar & Deviating Energy;
 Verdant Doomsayer Mask;             Fargo;                                      Ancient Manipulator & #Plantera & #Golem & #Lunatic Cultist & Fragment & Nebula Fragment & Stardust Fragment & Deviating Energy;
 Soul of the Master;                 Fargo;                                      ((~@calamity & Crucible of the Cosmos) | (@calamity & Draedon's Forge)) & Lump of Flesh & Pure Heart & Dubious Circuitry & Bionomic Cluster & Supreme Deathbringer Fairy & Sinister Icon & Abominable Energy & Deviating Energy & Heart of the Master & Verdant Doomsayer Mask & (~@calamity | (Exo Prism & Ashes of Annihilation));
@@ -990,7 +990,7 @@ Polaris Parrotfish;                 Calamity;                                   
 Supreme Bait Tackle Box Fishing Station; Calamity;                              Sea Prism & Sea Remains;
 Trawler Soul;                       Fargo;                                      Crucible of the Cosmos & Angler Enchantment & Golden Fishing Rod & Sitting Duck's Fishing Pole & Spore Sac & Volatile Gelatin & Pink Horseshoe Balloon & Fuzzy Carrot & Obsidian Swordfish & Bladetongue & Arctic Diving Gear & (~@calamity | (The Devour of Cods & Sparkling Empress & Polaris Parrotfish & Supreme Bait Tackle Box Fishing Station & Abyssal Diving Suit & Abominable Energy));
 
-Ultrabright Helmet;                 ;                                           Tinkerer's Workshop & Merchant & Cyborg & Martian Madness;
+Ultrabright Helmet;                 ;                                           Tinkerer's Workshop & Merchant;
 Miner Enchantment;                  Fargo;                                      Ultrabright Helmet;
 Mechanical Ruler;                   ;                                           Mechanic;
 Presserator;                        ;                                           Traveling Merchant;
