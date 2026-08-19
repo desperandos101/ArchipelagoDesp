@@ -6,7 +6,7 @@ class Mods(OptionSet):
     """
     Which content mods to be played with.
     Valid options are Calamity and Fargo.
-    If both are enabled, it is expected to be played with the Fargo Souls DLC Mod.
+    If both are enabled, it is expected to be played with the Fargo's Souls DLC Mod.
     """
     display_name = "Mods"
     valid_keys = {
@@ -18,8 +18,7 @@ class Getfixedboi(Toggle):
     """
     Generation accomodates the secret, very difficult "getfixedboi" seed
 
-    FOR THE BETA: NPC Rando and Fargo's Souls are incompatible with GFB.
-    If both options are selected on generation, NPC rando will be disabled.
+    If either Fargo's Souls or NPC Rando is enabled, getfixedboi will be disabled.
     """
 
     display_name = """"getfixedboi" Seed"""

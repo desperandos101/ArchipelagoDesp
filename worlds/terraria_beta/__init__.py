@@ -157,14 +157,12 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         goal_items = set()
         
         if "Fargo" in self.options.mods.value and self.options.getfixedboi.value:
-            logging.warning(
-                f"Slot {slot_name} has Fargo Souls enabled but getfixedboi also enabled. Turning off getfixedboi."
-            )
+            logging.warning(f"Slot {slot_name} has Fargo Souls enabled but getfixedboi also enabled; disabling getfixedboi.")
             self.options.getfixedboi.value = 0
 
         if self.options.getfixedboi and self.options.randomize_npcs:
-            logging.warning(f"SLOT {slot_name}: getfixedboi mode was selected with NPC rando enabled; disabling NPC rando")
-            self.options.randomize_npcs.value = 0
+            logging.warning(f"SLOT {slot_name}: getfixedboi mode was selected with NPC rando enabled; disabling getfixedboi.")
+            self.options.getfixedboi.value = 0
 
         for location in goal_locations:
             if location == "Wall of Flesh" and not self.options.randomize_npcs.value:
