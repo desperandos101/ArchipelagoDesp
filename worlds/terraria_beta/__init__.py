@@ -124,6 +124,9 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     calamity = False
     fargo = False
     getfixedboi = False
+    
+    is_ut = False
+    ut_can_gen_without_yaml = True
 
     progression = set()
     npcs_to_randomize = set()
@@ -134,12 +137,59 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     ter_goals: Dict[str, str]
     goal_items: Set[str]
     goal_locations: Set[str]
+    
+    disabled_rules: Set[str]
 
     required_client_version = (0, 6, 100)
-
+    
+    OUT_OF_LOGIC = "UT Health Logic"
+    if OUT_OF_LOGIC not in item_name_to_id:
+        item_name_to_id[OUT_OF_LOGIC] = max(item_name_to_id.values()) + 1
+    
+    # Yamlless UT Support
+    @staticmethod
+    def interpret_slot_data(slot_data: Dict[str, object]) -> Dict[str, object]:
+        return {
+            "goal": slot_data["goal_option"],
+            "shuffle_to": slot_data["shuffle_to_option"],
+            "death_link": slot_data["deathlink"],
+            "mods": slot_data["mods"],
+            "getfixedboi": slot_data["getfixedboi"],
+            "randomize_npcs": slot_data["npc_rando"],
+            "early_achievements": slot_data["early_achievements"],
+            "normal_achievements": slot_data["normal_achievements"],
+            "rare_achievements": slot_data["rare_achievements"],
+            "time_achievements": slot_data["time_achievements"],
+            "crafting_achievements": slot_data["crafting_achievements"],
+            "grindy_achievements": slot_data["grindy_achievements"],
+            "fishing_achievements": slot_data["fishing_achievements"],
+            "fill_extra_checks_with": slot_data["fill_extra_checks_with"],
+            "shimmer_skips": slot_data["shimmer_skips"],
+            "health_logic": slot_data["health_logic"],
+            "health_logic_handicap": slot_data["health_logic_handicap"],
+        }
+    
     def generate_early(self) -> None:
+        self.is_ut = getattr(self.multiworld, "generation_is_fake", False)
+        
+        # UT passes the connected slot's options through re_gen_passthrough when
+        # generating the world without a YAML. Restore those options before generation.
+        passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        
+        if self.game in passthrough:
+            slot_data = passthrough[self.game]
+
+            for option_name, value in slot_data.items():
+                if option_name not in self.options_dataclass.type_hints:
+                    continue
+                
+                option_type = self.options_dataclass.type_hints[option_name]
+                setattr(self.options, option_name, option_type.from_any(value))
+        
         if not isinstance(self.multiworld.spoiler, TerrariaSpoiler):
             self.multiworld.spoiler = TerrariaSpoiler(self.multiworld)
+        
+        self.glitches_item_name = self.OUT_OF_LOGIC
 
         goal, goal_locations = goals[self.options.goal.value]
         slot_name = self.multiworld.player_name[self.player]
@@ -155,6 +205,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                     goal, _ = goals[self.options.shuffle_to.value]
         ter_goals = {}
         goal_items = set()
+        self.disabled_rules = set()
 
         for location in goal_locations:
             if location == "Wall of Flesh" and not self.options.randomize_npcs.value:
@@ -194,6 +245,16 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                                 f" - {'\n - '.join(incompatible_options)}\n"
                                 f"Disabling getfixedboi.")
                 self.options.getfixedboi.value = 0
+        
+        if self.options.getfixedboi and not self.options.shimmer_skips.value:
+            self.disabled_rules.update({
+                "Purification Powder",
+                "Mystic Slime",
+                "The Great Slime Mitosis",
+                "Axe of Purity",
+                "Inferna Cutter",
+                "Grax"
+            })
 
         location_count = 0
         locations = []
@@ -229,6 +290,9 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             crafting = "Crafting" in rule.flags
             grindy = "Grindy" in rule.flags
             fishing = "Fishing" in rule.flags
+            
+            if rule.name in self.disabled_rules:
+                continue
 
             if (
                     (not self.options.getfixedboi.value and "Getfixedboi" in rule.flags)
@@ -374,7 +438,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         self.multiworld.regions.append(menu)
 
     def create_item(self, item: str) -> TerrariaItem:
-        if item in self.progression:
+        if item in self.progression or item == self.OUT_OF_LOGIC:
             classification = ItemClassification.progression
         else:
             classification = ItemClassification.filler
@@ -440,6 +504,9 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
     def create_rule(self, condition: Condition) -> Rule:
         if condition.type == COND_ITEM:
+            if condition.condition in self.disabled_rules:
+                return False_()
+            
             rule = rules[rule_indices[condition.condition]]
             if "Item" in rule.flags:
                 name = rule.flags.get("Item") or f"Post-{condition.condition}"
@@ -449,6 +516,9 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             assert(isinstance(name, str))
             return Has(name)
         elif condition.type == COND_LOC:
+            if condition.condition in self.disabled_rules:
+                return False_()
+            
             rule = rules[rule_indices[condition.condition]]
             return self.create_rule_ini(rule.operator, rule.conditions)
         elif condition.type == COND_FN:
@@ -507,19 +577,25 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 health_required = max(condition.argument + self.options.health_logic_handicap.value, 1)
 
                 if health_required == 1:
-                    return Has(health_upgrades[0], options=[health_option], filtered_resolution=True)
+                    health_rule = Has(health_upgrades[0])
                 elif health_required == 2:
-                    return HasAll(*health_upgrades[:2], options=[health_option], filtered_resolution=True)
-
-                highest_base = HasAll(*health_upgrades[:2])
-                quarter_fruits_required = health_required - 2
-                quarter_fruits_rule = HasFromList(
-                    *quarter_fruits,
-                    count=quarter_fruits_required,
-                    options=[OptionFilter(Mods, "Calamity", operator="contains")],
-                    filtered_resolution=True
-                )
-                return Filtered((highest_base & quarter_fruits_rule), options=[health_option], filtered_resolution=True)
+                    health_rule = HasAll(*health_upgrades[:2])
+                else:
+                    highest_base = HasAll(*health_upgrades[:2])
+                    quarter_fruits_required = health_required - 2
+                    quarter_fruits_rule = HasFromList(
+                        *quarter_fruits,
+                        count=quarter_fruits_required,
+                        options=[OptionFilter(Mods, "Calamity", operator="contains")],
+                        filtered_resolution=True
+                    )
+                    health_rule = highest_base & quarter_fruits_rule
+                
+                # Out of logic will be shown as Glitched Logic.
+                if self.is_ut:
+                    return Or(health_rule, Has(self.OUT_OF_LOGIC))
+                                
+                return Filtered(health_rule, options=[health_option], filtered_resolution=True)
             elif condition.condition == "getfixedboi":
                 return True_(options=[OptionFilter(Getfixedboi, condition.sign)])
             elif condition.condition == "shimmer_skips":
@@ -539,25 +615,38 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             rule = rules[rule_indices[location_name]]
             created_rule = self.create_rule_ini(rule.operator, rule.conditions)
             self.set_rule(location, created_rule)
-
-        self.set_completion_rule(HasAll(*self.goal_items))
+        
+        # UT won't recognize you're in go mode because it checks if you have the Post-Boss flags.
+        # To fix this we check if we can reach the goal locations.
+        if self.is_ut:
+            self.set_completion_rule(lambda state: all(state.can_reach_location(loc, self.player) for loc in self.goal_locations))
+        else:
+            self.set_completion_rule(HasAll(*self.goal_items))
 
     def fill_slot_data(self) -> Dict[str, object]:
         return {
             "goal": list(self.goal_locations),
             "deathlink": bool(self.options.death_link),
             "version": list(self.required_client_version),
-            # The rest of these are included for trackers
             "mods": list(self.options.mods.value),
             "calamity": int("Calamity" in self.options.mods.value),
             "fargo": int("Fargo" in self.options.mods.value),
             "getfixedboi": self.options.getfixedboi.value,
-            "early_achievements": self.options.early_achievements.value,
-            "normal_achievements": self.options.normal_achievements.value,
-            "grindy_achievements": self.options.grindy_achievements.value,
-            "fishing_achievements": self.options.fishing_achievements.value,
             "npc_rando": self.options.randomize_npcs.value,
             "randomize_npcs": list(self.npcs_to_randomize),
+            "goal_option": self.options.goal.value,
+            "shuffle_to_option": self.options.shuffle_to.value,
+            "early_achievements": self.options.early_achievements.value,
+            "normal_achievements": self.options.normal_achievements.value,
+            "rare_achievements": self.options.rare_achievements.value,
+            "time_achievements": self.options.time_achievements.value,
+            "crafting_achievements": self.options.crafting_achievements.value,
+            "grindy_achievements": self.options.grindy_achievements.value,
+            "fishing_achievements": self.options.fishing_achievements.value,
+            "fill_extra_checks_with": self.options.fill_extra_checks_with.value,
+            "shimmer_skips": self.options.shimmer_skips.value,
+            "health_logic": self.options.health_logic.value,
+            "health_logic_handicap": self.options.health_logic_handicap.value,
         }
 
 @dataclasses.dataclass()

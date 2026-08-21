@@ -25,7 +25,7 @@ class Getfixedboi(Toggle):
     If any of these apply, Getfixedboi will automatically be disabled during generation.
     """
 
-    display_name = """"getfixedboi" Seed"""
+    display_name = "getfixedboi Seed"
 
 
 class Goal(Choice):
