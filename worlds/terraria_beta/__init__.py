@@ -140,7 +140,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     
     disabled_rules: Set[str]
 
-    required_client_version = (0, 6, 100)
+    required_client_version = (0, 6, 200)
     
     OUT_OF_LOGIC = "UT Health Logic"
     if OUT_OF_LOGIC not in item_name_to_id:
