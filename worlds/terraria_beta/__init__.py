@@ -130,9 +130,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     calamity = False
     fargo = False
     getfixedboi = False
-    
-    is_ut = False
-    ut_can_gen_without_yaml = True
 
     is_ut = False
     ut_can_gen_without_yaml = True
@@ -216,7 +213,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                     goal, _ = goals[self.options.shuffle_to.value]
         ter_goals = {}
         goal_items = set()
-        self.disabled_rules = set()
 
         for location in goal_locations:
             if location == "Wall of Flesh" and not self.options.randomize_npcs.value:
@@ -262,16 +258,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                                 f" - {'\n - '.join(incompatible_options)}\n"
                                 f"Disabling getfixedboi.")
                 self.options.getfixedboi.value = 0
-        
-        if self.options.getfixedboi and not self.options.shimmer_skips.value:
-            self.disabled_rules.update({
-                "Purification Powder",
-                "Mystic Slime",
-                "The Great Slime Mitosis",
-                "Axe of Purity",
-                "Inferna Cutter",
-                "Grax"
-            })
 
         location_count = 0
         locations = []
@@ -552,9 +538,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
     def create_rule(self, condition: Condition) -> Rule:
         if condition.type == COND_ITEM:
-            if condition.condition in self.disabled_rules:
-                return False_()
-            
             rule = rules[rule_indices[condition.condition]]
             if "Item" in rule.flags:
                 name = rule.flags.get("Item") or f"Post-{condition.condition}"
@@ -564,9 +547,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             assert(isinstance(name, str))
             return Has(name)
         elif condition.type == COND_LOC:
-            if condition.condition in self.disabled_rules:
-                return False_()
-            
             rule = rules[rule_indices[condition.condition]]
             return self.create_rule_ini(rule.operator, rule.conditions)
         elif condition.type == COND_FN:
