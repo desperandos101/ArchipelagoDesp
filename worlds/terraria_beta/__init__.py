@@ -124,7 +124,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     calamity = False
     fargo = False
     getfixedboi = False
-    
+
     is_ut = False
     ut_can_gen_without_yaml = True
 
@@ -137,7 +137,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     ter_goals: Dict[str, str]
     goal_items: Set[str]
     goal_locations: Set[str]
-    
+
     disabled_rules: Set[str]
 
     required_client_version = (0, 6, 200)
@@ -145,7 +145,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     OUT_OF_LOGIC = "UT Health Logic"
     if OUT_OF_LOGIC not in item_name_to_id:
         item_name_to_id[OUT_OF_LOGIC] = max(item_name_to_id.values()) + 1
-    
+
     # Yamlless UT Support
     @staticmethod
     def interpret_slot_data(slot_data: Dict[str, object]) -> Dict[str, object]:
@@ -245,7 +245,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                                 f" - {'\n - '.join(incompatible_options)}\n"
                                 f"Disabling getfixedboi.")
                 self.options.getfixedboi.value = 0
-        
+
         if self.options.getfixedboi and not self.options.shimmer_skips.value:
             self.disabled_rules.update({
                 "Purification Powder",
@@ -290,7 +290,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             crafting = "Crafting" in rule.flags
             grindy = "Grindy" in rule.flags
             fishing = "Fishing" in rule.flags
-            
+
             if rule.name in self.disabled_rules:
                 continue
 
@@ -506,7 +506,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         if condition.type == COND_ITEM:
             if condition.condition in self.disabled_rules:
                 return False_()
-            
+
             rule = rules[rule_indices[condition.condition]]
             if "Item" in rule.flags:
                 name = rule.flags.get("Item") or f"Post-{condition.condition}"
@@ -518,7 +518,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         elif condition.type == COND_LOC:
             if condition.condition in self.disabled_rules:
                 return False_()
-            
+
             rule = rules[rule_indices[condition.condition]]
             return self.create_rule_ini(rule.operator, rule.conditions)
         elif condition.type == COND_FN:
@@ -590,11 +590,11 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                         filtered_resolution=True
                     )
                     health_rule = highest_base & quarter_fruits_rule
-                
+
                 # Out of logic will be shown as Glitched Logic.
                 if self.is_ut:
                     return Or(health_rule, Has(self.OUT_OF_LOGIC))
-                                
+
                 return Filtered(health_rule, options=[health_option], filtered_resolution=True)
             elif condition.condition == "getfixedboi":
                 return True_(options=[OptionFilter(Getfixedboi, condition.sign)])
