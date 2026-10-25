@@ -563,8 +563,11 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                     return Has("Progressive Depth", count=condition.argument,
                                options=[OptionFilter(RandomizeDepth, 1, "ge")],
                                filtered_resolution=True)
-                case "depth_safety":
-                    return bool_to_rule(not (condition.sign ^ (self.options.randomize_depth.value > 1)))
+                case "depth_unsafe":
+                    r = bool_to_rule(not (condition.sign ^ (self.options.randomize_depth.value == 1)))
+                    if self.is_ut:
+                        return Or(r, Has(self.OUT_OF_LOGIC))
+                    return r
                 case "calamity":
                     return bool_to_rule(not (condition.sign ^ ("Calamity" in self.options.mods.value)))
                 case "fargo":
