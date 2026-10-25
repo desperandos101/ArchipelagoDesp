@@ -564,7 +564,9 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                                options=[OptionFilter(RandomizeDepth, 1, "ge")],
                                filtered_resolution=True)
                 case "depth_unsafe":
-                    r = bool_to_rule(not (condition.sign ^ (self.options.randomize_depth.value == 1)))
+                    assert(isinstance(condition.argument, int) and 0 < condition.argument < 3)
+                    safety_level = self.options.randomize_depth.option_on + condition.argument
+                    r = bool_to_rule(not (condition.sign ^ (self.options.randomize_depth.value < safety_level)))
                     if self.is_ut:
                         return Or(r, Has(self.OUT_OF_LOGIC))
                     return r

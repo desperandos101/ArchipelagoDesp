@@ -79,7 +79,7 @@ Clumsy Slime;                       Pet;
 
 // Underground
 Underground;                        ;                                           @depth(1);
-Undercavern;                        ;                                           @depth(2) | (@depth_unsafe & @depth(1));  // used for events that could be accessed in underground or caverns based on worldgen
+Undercavern;                        ;                                           @depth(2) | (@depth_unsafe(1) & @depth(1));  // used for events that could be accessed in underground or caverns based on worldgen
 Gold;                               ;                                           @rare | Underground | @calamity;
 Watch Your Step!;                   Achievement;                                Underground;
 Throwing Lines;                     Achievement;                                Underground;
@@ -169,7 +169,7 @@ Obsidian Skull Rose;                ;                                           
 
 // Evil
 Altar;                              ;                                           Underground;
-Orb;                                ;                                           Underground;
+Orb;                                ;                                           Cavern | (Underground & @depth_unsafe(1));
 Smashing, Poppet!;                  Achievement;                                Underground;
 Arms Dealer;                        Npc;                                        Orb | Boomstick | #Wall of Flesh;  // rough gun logic
 Leading Landlord;                   Achievement | Not Getfixedboi;              (Nurse & Arms Dealer) | (Demolitionist & Tavernkeep & Underground) | (Zoologist & (Witch Doctor | Party Girl)) | (Painter & Dryad) | (Golfer & (Angler | Wizard)) | (Stylist & Dye Trader) | (Goblin Tinkerer & Mechanic) | (Clothier & Truffle) | (Party Girl & Wizard) | (Merchant & Tax Collector) | (Truffle & Guide) | (Pirate & Angler) | (Steampunker & Cyborg); // The logic is way more complex; this doesn't account for three NPC setups
@@ -223,7 +223,7 @@ And Good Riddance!;                 Achievement | Grindy;                       
 Acid Rain Tier 1;                   Calamity | Location | Item;                 ((@fargo & Abominationn NPC & Acid Rain Tier 1) | (Eye of Cthulhu | Wall of Flesh | Aquatic Scourge)) & @health(1);
 
 // Crabulon
-Cursed Coffin;                      Fargo | Location | Item;                    (Underground | @depth_unsafe) & @health(1);
+Cursed Coffin;                      Fargo | Location | Item;                    (Underground | @depth_unsafe(1)) & @health(1);
 Crabulon;                           Calamity | Location | Item;                 Underground & @health(1);
 
 // Evil Boss
@@ -304,8 +304,8 @@ Mechanic;                           Npc;                                        
 Wire;                               ;                                           Mechanic | (@calamity & (Shimmer & Electrician's Glove));
 Decryption Computer;                Calamity;                                   Mysterious Circuitry & Sunken Sea & Dubious Plating & Wire;
 Actuator;                           ;                                           Mechanic;
-Muramasa;                           ;                                           Dungeon & (@depth_unsafe | Cavern);
-Cobalt Shield;                      ;                                           (Dungeon & (@depth_unsafe | Cavern)) | (@calamity & Cobalt Bar);
+Muramasa;                           ;                                           Dungeon & (@depth_unsafe(1) | Cavern);
+Cobalt Shield;                      ;                                           (Dungeon & (@depth_unsafe(1) | Cavern)) | (@calamity & Cobalt Bar);
 Obsidian Shield;                    ;                                           Tinkerer's Workshop & Cobalt Shield & Obsidian Skull;
 Elder Slime;                        Pet;                                        Skeletron & Dungeon;
 Bandit;                             Calamity;                                   Skeletron;
