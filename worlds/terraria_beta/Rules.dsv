@@ -91,7 +91,7 @@ Compass;
 Hey! Listen!;                       Achievement;                                Underground;
 I Am Loot!;                         Achievement;                                Gold;
 Magic Mirror;
-Life Crystal;                       Health;                                     Underground | @fishing | @calamity | (Nurse & @fargo);
+Life Crystal;                       Health;                                     Underground | @fishing | (Nurse & @fargo);
 Heart Breaker;                      Achievement;                                Underground;
 Nurse;                              Npc;                                        Merchant & Life Crystal;
 The Frequent Flyer;                 Not Calamity Getfixedboi | Achievement;     Nurse;
