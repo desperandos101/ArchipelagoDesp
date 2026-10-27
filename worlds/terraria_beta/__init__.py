@@ -153,6 +153,8 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         self.goal_items: Set[str]
         self.goal_locations: Set[str]
 
+        self.disabled_rules: Set[str] # to be used soon, by Researchsanity
+
     # Yamlless UT Support
     @staticmethod
     def interpret_slot_data(slot_data: Dict[str, object]) -> Dict[str, object]:
@@ -213,6 +215,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                     goal, _ = goals[self.options.shuffle_to.value]
         ter_goals = {}
         goal_items = set()
+        self.disabled_rules = set()
 
         for location in goal_locations:
             if location == "Wall of Flesh" and not self.options.randomize_npcs.value:
@@ -291,6 +294,8 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
         valid_rules = rules[:goal] if goal != 0 else rules
         for rule in valid_rules:
+            if rule.name in self.disabled_rules:
+                continue
 
             if invalid_flag(rule.flags, self.options) and rule.name not in goal_locations:
                 continue
@@ -330,41 +335,66 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 items.append(rule.name)
 
         # Audit locations, mark progression
-        def unreachable_rules(rule: Rule) -> Set[str]:
+        def unreachable_rules(rule: Rule, already_covered: List[str]) -> Set[str]:
             if isinstance(rule, Has):
                 assert isinstance(rule.item_name, str)
+                # For if you might have an error in this general area.
+                #logging.info("Terraria (Beta) says (Code NonIdiot008) Running unreachable_rules for "+rule.item_name)
                 if rule.item_name in bad_events:
+                    #logging.info("Terraria (Beta) says (Code NonIdiot009_1) false "+rule.item_name)
+                    return {rule.item_name}
+                if rule.item_name in self.disabled_rules:
+                    #logging.info("Terraria (Beta) says (Code NonIdiot009_2) false "+rule.item_name)
                     return {rule.item_name}
                 if rule.item_name not in events:
+                    #logging.info("Terraria (Beta) says (Code NonIdiot009_3) true "+rule.item_name)
                     return set()
                 if isinstance(self.ter_rules[rule.item_name], False_):
+                    #logging.info("Terraria (Beta) says (Code NonIdiot009_4) false "+rule.item_name)
                     return {rule.item_name}
-                sub_result = unreachable_rules(self.ter_rules[rule.item_name])
-                return sub_result.union({rule.item_name}) if sub_result else set()
+                if already_covered.__contains__(rule.item_name):
+                    #logging.info("Terraria (Beta) says (Code NonIdiot009_0) false "+rule.item_name)
+                    return {rule.item_name}
+                already_covered.append(rule.item_name)
+                sub_result = unreachable_rules(self.ter_rules[rule.item_name],already_covered.copy())
+                if sub_result:
+                    #logging.info("Terraria (Beta) says (Code NonIdiot009_5) false "+rule.item_name)
+                    return sub_result.union({rule.item_name})
+                else:
+                    #logging.info("Terraria (Beta) says (Code NonIdiot009_5) true "+rule.item_name)
+                    return set()
             elif isinstance(rule, And):
                 result = set()
                 for r in rule.children:
-                    result = result.union(unreachable_rules(r))
+                    result = result.union(unreachable_rules(r,already_covered.copy()))
                 return result
             elif isinstance(rule, Or):
                 result = set()
                 for r in rule.children:
-                    bad_flags = unreachable_rules(r)
+                    bad_flags = unreachable_rules(r,already_covered.copy())
                     if not bad_flags:
                         return set()
                     result = result.union(bad_flags)
                 return result
             else:
                 return set()
+            
+        def outer_unreachable_rules(thisName: str) -> Set[str]:
+            result = unreachable_rules(self.ter_rules[thisName], [])
+            #if (result):
+            #    logging.warning("Terraria (Beta) says (Code NonIdiot009): "+thisName+" Has Unreachable: "+', '.join(result))
+            #else:
+            #    logging.warning("Terraria (Beta) says (Code NonIdiot009): "+thisName+", No Unreachable")
+            return result
 
         for name in self.ter_rules:
-            if name in events and unreachable_rules(self.ter_rules[name]):
+            if name in events and outer_unreachable_rules(name):
                 bad_events.add(name)
 
         bad_locs = set()
         for loc in locations:
             if loc not in events:
-                sub_result = unreachable_rules(self.ter_rules[loc])
+                sub_result = outer_unreachable_rules(loc)
                 if sub_result:
                     bad_locs.add(loc)
                     bad_events = bad_events.union(sub_result)
@@ -375,7 +405,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         for flag in events_to_evaluate.keys():
             pool = events_to_evaluate[flag]
             for item in pool:
-                if flag == "Pet" and unreachable_rules(self.ter_rules[item]):
+                if flag == "Pet" and outer_unreachable_rules(item):
                     bad_events.add(item)
                     continue
                 self.progression.add(loc_to_item[item])
