@@ -524,6 +524,29 @@ Perennial Ore;                      Calamity;                                   
 Perennial Bar;                      Calamity;                                   (Hardmode Forge & Perennial Ore) | Fleshy Geode | Necromantic Geode | (Shimmer & Life Alloy);
 Beastial Pickaxe;                   Calamity | Pickaxe(200);                    Hardmode Anvil & Perennial Bar;
 
+// Pumpkin Moon
+Pumpkin Moon;                       ;                                           ((@fargo & Abominationn NPC & Pumpking) | (Hardmode Anvil & Pumpkin & Ectoplasm & (@calamity | Hallowed Bar))) & @health(3);
+Spooky Armor;                       Armor Minions(4);                           (@fargo & Lumberjack & Pumpking) | Pumpkin Moon;
+Mourning Wood;                      Location | Item;                            (@fargo & Abominationn NPC & Mourning Wood) | Pumpkin Moon;
+Necromantic Scroll;                 Minions(1);                                 #Mourning Wood;
+Papyrus Scarab;                     Minions(1);                                 (Tinkerer's Workshop & Hercules Beetle & Necromantic Scroll) | (@calamity & Statis' Blessing);
+Statis' Blessing;                   Calamity;                                   (Hardmode Anvil & Papyrus Scarab & Pygmy Necklace & Emblem & Holy Water & Essence of Sunlight) | Statis' Curse;
+Pumpking;                           Location | Item;                            (@fargo & Abominationn NPC & Pumpking) | Pumpkin Moon;
+The Horseman's Blade;               ;                                           #Pumpking;
+Baleful Harvest;                    Achievement;                                Pumpkin Moon;
+
+// Frost Moon
+Frost Moon;                         ;                                           ((@fargo & Abominationn NPC & Ice Queen) | (Hardmode Anvil & Ectoplasm & (@calamity | Soul of Fright))) & @health(3);
+Everscream;                         Location | Item;                            (@fargo & Abominationn NPC & Everscream) | Frost Moon;
+Santa-NK1;                          Location | Item;                            (@fargo & Abominationn NPC & Santa-NK1) | Frost Moon;
+Ice Queen;                          Location | Item;                            (@fargo & Abominationn NPC & Ice Queen) | Frost Moon;
+Ice Scream;                         Achievement;                                Frost Moon;
+Christmas;                          ;                                           Frost Moon;
+
+// Frost Legion
+Frost Legion;                       Location | Item;                            ((Wall of Flesh & ((@fargo & Abominationn NPC) | Christmas)) | (@calamity & Soul of Light & Soul of Night)) & @health(2);
+Santa Claus;                        Npc;                                        Frost Legion & Christmas;
+
 // Solar Eclipse
 Temple Raider;                      Achievement;                                #Plantera & Cavern;
 Lihzahrd Temple;                    ;                                           Cavern & (#Plantera | (Plantera & Actuator) | @pickaxe(210));
@@ -586,29 +609,6 @@ Plaguebringer Armor;                Calamity | Armor Minions(3);                
 
 // Duke Fishron
 Duke Fishron;                       Location | Item;                            ((@fargo & Mutant NPC & Duke Fishron) | ((Bug Net | Sea King) & Wall of Flesh) | (@getfixedboi & @calamity & #Astrum Deus)) & @health(4);
-
-// Pumpkin Moon
-Pumpkin Moon;                       ;                                           ((@fargo & Abominationn NPC & Pumpking) | (Hardmode Anvil & Pumpkin & Ectoplasm & (@calamity | Hallowed Bar))) & @health(3);
-Spooky Armor;                       Armor Minions(4);                           (@fargo & Lumberjack & Pumpking) | Pumpkin Moon;
-Mourning Wood;                      Location | Item;                            (@fargo & Abominationn NPC & Mourning Wood) | Pumpkin Moon;
-Necromantic Scroll;                 Minions(1);                                 #Mourning Wood;
-Papyrus Scarab;                     Minions(1);                                 (Tinkerer's Workshop & Hercules Beetle & Necromantic Scroll) | (@calamity & Statis' Blessing);
-Statis' Blessing;                   Calamity;                                   (Hardmode Anvil & Papyrus Scarab & Pygmy Necklace & Emblem & Holy Water & Essence of Sunlight) | Statis' Curse;
-Pumpking;                           Location | Item;                            (@fargo & Abominationn NPC & Pumpking) | Pumpkin Moon;
-The Horseman's Blade;               ;                                           #Pumpking;
-Baleful Harvest;                    Achievement;                                Pumpkin Moon;
-
-// Frost Moon
-Frost Moon;                         ;                                           ((@fargo & Abominationn NPC & Ice Queen) | (Hardmode Anvil & Ectoplasm & (@calamity | Soul of Fright))) & @health(3);
-Everscream;                         Location | Item;                            (@fargo & Abominationn NPC & Everscream) | Frost Moon;
-Santa-NK1;                          Location | Item;                            (@fargo & Abominationn NPC & Santa-NK1) | Frost Moon;
-Ice Queen;                          Location | Item;                            (@fargo & Abominationn NPC & Ice Queen) | Frost Moon;
-Ice Scream;                         Achievement;                                Frost Moon;
-Christmas;                          ;                                           Frost Moon;
-
-// Frost Legion
-Frost Legion;                       Location | Item;                            ((Wall of Flesh & ((@fargo & Abominationn NPC) | Christmas)) | (@calamity & Soul of Light & Soul of Night)) & @health(2);
-Santa Claus;                        Npc;                                        Frost Legion & Christmas;
 
 // Ravager
 Ravager;                            Calamity | Location | Item;                 ((@fargo & Mutant NPC & Ravager) | (Lihzahrd Temple & Lihzahrd Brick)) & @health(4);
