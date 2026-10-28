@@ -35,18 +35,21 @@ rule_flags = [
     "Depth",
 ]
 
-# Flags that indicate the attached event may be necessary for progression
-special_events = [
+set_items = [
     "Npc",
     "Depth",
     "Pet",
-    "Pickaxe",
-    "Hammer",
     "Mech Boss",
-    "Minions",
-    "Armor Minions",
+    "Final Boss",
     "Health",
     "Quarter Fruit",
+]
+
+dict_items = [
+    "Pickaxe",
+    "Hammer",
+    "Minions",
+    "Armor Minions",
 ]
 
 def invalid_flag(flags: List[str], options: TerrariaOptions):

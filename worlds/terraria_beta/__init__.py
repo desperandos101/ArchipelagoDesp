@@ -14,7 +14,7 @@ from rule_builder.rules import Has, HasAny, HasAll, True_, False_, And, Or, Rule
     HasAnyCount
 from .Flags import (
     invalid_flag,
-    is_location_is_item, special_events,
+    is_location_is_item, set_items, dict_items
 )
 from .Checks import (
     TerrariaItem,
@@ -300,7 +300,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 mark_progression(rule.operator, rule.conditions)
 
             for flag in rule.flags:
-                if flag in special_events:
+                if flag in set_items or flag in dict_items:
                     if flag not in events_to_evaluate:
                         events_to_evaluate[flag] = set()
                     events_to_evaluate[flag].add(rule.name)
