@@ -335,52 +335,81 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 items.append(rule.name)
 
         # Audit locations, mark progression
-        def unreachable_rules(rule: Rule, already_covered: List[str]) -> Set[str]:
+        def unreachable_rules(rule_orig: Rule, already_covered: List[str], layers_deep: int) -> Set[str]:
+            # Used for logging what every rule returns. Set False if not testing or you don't want log spam.
+            def logInfoIf(ii: str):
+                if False:
+                    logging.info(ii)
+            # Used for logging how deep into the rules it is. Set False if not testing.
+            def logInfoIfBasic(ii: str):
+                if False:
+                    logging.info(ii)
+            rule = copy.copy(rule_orig)
+            # This loop makes sure that any "Filtered" rules are actually seen as their outputted logic. Fixes @ functions not being recognized by unreachable_rules.
+            while isinstance(rule, Filtered):
+                rule = rule.child
             if isinstance(rule, Has):
                 assert isinstance(rule.item_name, str)
                 # For if you might have an error in this general area.
-                #logging.info("Terraria (Beta) says (Code NonIdiot008) Running unreachable_rules for "+rule.item_name)
+                logInfoIfBasic("Terraria (Beta) says (Code NonIdiot008) Deepness "+str(layers_deep)+": "+rule.item_name)
                 if rule.item_name in bad_events:
-                    #logging.info("Terraria (Beta) says (Code NonIdiot009_1) false "+rule.item_name)
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_1) false "+rule.item_name)
                     return {rule.item_name}
                 if rule.item_name in self.disabled_rules:
-                    #logging.info("Terraria (Beta) says (Code NonIdiot009_2) false "+rule.item_name)
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_2) false "+rule.item_name)
                     return {rule.item_name}
                 if rule.item_name not in events:
-                    #logging.info("Terraria (Beta) says (Code NonIdiot009_3) true "+rule.item_name)
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_3) true "+rule.item_name)
+                    return set()
+                if isinstance(self.ter_rules[rule.item_name], True_):
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_6) true "+rule.item_name)
                     return set()
                 if isinstance(self.ter_rules[rule.item_name], False_):
-                    #logging.info("Terraria (Beta) says (Code NonIdiot009_4) false "+rule.item_name)
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_4) false "+rule.item_name)
                     return {rule.item_name}
                 if already_covered.__contains__(rule.item_name):
-                    #logging.info("Terraria (Beta) says (Code NonIdiot009_0) false "+rule.item_name)
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_0) false "+rule.item_name)
                     return {rule.item_name}
                 already_covered.append(rule.item_name)
-                sub_result = unreachable_rules(self.ter_rules[rule.item_name],already_covered.copy())
+                sub_result = unreachable_rules(self.ter_rules[rule.item_name],already_covered.copy(),layers_deep+1)
                 if sub_result:
-                    #logging.info("Terraria (Beta) says (Code NonIdiot009_5) false "+rule.item_name)
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_5) false "+rule.item_name)
                     return sub_result.union({rule.item_name})
                 else:
-                    #logging.info("Terraria (Beta) says (Code NonIdiot009_5) true "+rule.item_name)
+                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_5) true "+rule.item_name)
                     return set()
             elif isinstance(rule, And):
                 result = set()
+                logInfoIfBasic("Terraria (Beta) says (Code NonIdiot010) And (len "+str(len(rule.children))+", deepness"+str(layers_deep)+")")
                 for r in rule.children:
-                    result = result.union(unreachable_rules(r,already_covered.copy()))
+                    result = result.union(unreachable_rules(r,already_covered.copy(),layers_deep+1))
                 return result
             elif isinstance(rule, Or):
                 result = set()
+                logInfoIfBasic("Terraria (Beta) says (Code NonIdiot010) Or (len "+str(len(rule.children))+", deepness"+str(layers_deep)+")")
                 for r in rule.children:
-                    bad_flags = unreachable_rules(r,already_covered.copy())
+                    bad_flags = unreachable_rules(r,already_covered.copy(),layers_deep+1)
                     if not bad_flags:
                         return set()
                     result = result.union(bad_flags)
                 return result
-            else:
+            #elif isinstance(rule, Filtered):
+            #    logInfoIfBasic("Terraria (Beta) says (Code NonIdiot010) Filtered (deepness"+str(layers_deep)+") "+str(rule))
+            #    return {"rule at depth "+str(layers_deep)+" that is Filtered_"}
+            elif isinstance(rule, False_):
+                logInfoIf("Terraria (Beta) says (Code NonIdiot010) False (deepness"+str(layers_deep)+")")
+                return {"rule at depth "+str(layers_deep)+" that is False_"}
+            elif isinstance(rule, True_):
+                logInfoIf("Terraria (Beta) says (Code NonIdiot010) True (deepness"+str(layers_deep)+")")
                 return set()
+            else:
+                logging.warning("Terraria (Beta) says (Code NonIdiot011) UNKNOWN (deepness"+str(layers_deep)+") "+str(rule))
+                #return set()
+                # only do the one below instead of the above if you want to REALLY debug this. i dont know why you'd do that
+                return set("rule at depth "+str(layers_deep)+" that is Unknown")
             
         def outer_unreachable_rules(thisName: str) -> Set[str]:
-            result = unreachable_rules(self.ter_rules[thisName], [])
+            result = unreachable_rules(self.ter_rules[thisName], [], 0)
             #if (result):
             #    logging.warning("Terraria (Beta) says (Code NonIdiot009): "+thisName+" Has Unreachable: "+', '.join(result))
             #else:
