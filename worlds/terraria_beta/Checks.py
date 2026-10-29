@@ -1,6 +1,6 @@
 from BaseClasses import Item, Location
 from typing import Tuple, Union, Set, List, Dict
-from .Flags import rule_flags, is_location_is_item
+from .Flags import rule_flags, set_flags, tuple_flags, is_location_is_item
 import string
 import pkgutil
 
