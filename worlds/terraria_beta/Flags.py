@@ -35,7 +35,7 @@ rule_flags = [
     "Depth",
 ]
 
-set_flags = {
+list_flags = {
     "Npc",
     "Depth",
     "Pet",
@@ -45,14 +45,15 @@ set_flags = {
     "Quarter Fruit",
 }
 
-tuple_flags = {
+tuple_list_flags = {
+    "Progressive Item",
     "Pickaxe",
     "Hammer",
     "Minions",
     "Armor Minions",
 }
 
-assert not set_flags.intersection(tuple_flags)
+assert not list_flags.intersection(tuple_list_flags)
 
 def invalid_flag(flags: List[str], options: TerrariaOptions):
     for flag in flags:

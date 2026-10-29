@@ -14,7 +14,7 @@ from rule_builder.rules import Has, HasAny, HasAll, True_, False_, And, Or, Rule
     HasAnyCount
 from .Flags import (
     invalid_flag,
-    is_location_is_item, set_flags, tuple_flags
+    is_location_is_item, list_flags, tuple_list_flags
 )
 from .Checks import (
     TerrariaItem,
@@ -28,19 +28,11 @@ from .Checks import (
     item_name_to_id,
     location_name_to_id,
     loc_to_item,
+    flag_to_items,
     COND_ITEM,
     COND_LOC,
     COND_FN,
     COND_GROUP,
-    progressive_to_count,
-    npcs,
-    pickaxes,
-    hammers,
-    mech_bosses,
-    armor_minions,
-    accessory_minions,
-    health_upgrades,
-    quarter_fruits,
 )
 from .Options import TerrariaOptions, Goal, ter_option_groups, RandomizeNPCs, Mods, RareAchievements, \
     TimeAchievements, HealthLogic, Getfixedboi, ShimmerSkips, FishingSkips, RandomizeDepth
@@ -300,7 +292,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 mark_progression(rule.operator, rule.conditions)
 
             for flag in rule.flags:
-                if flag in set_flags or flag in tuple_flags:
+                if flag in list_flags or flag in tuple_list_flags:
                     if flag not in events_to_evaluate:
                         events_to_evaluate[flag] = set()
                     events_to_evaluate[flag].add(rule.name)
@@ -319,7 +311,8 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                     self.npcs_to_randomize.add(rule.name)
             if is_item and not ("Achievement" in rule.flags and rule.name not in goal_locations):
                 # Item
-                for i in range(progressive_to_count.get(rule.name) or 1):
+                item_amount = next((amount for item, amount in flag_to_items["Progressive Item"] if item == rule.name), 1)
+                for i in range(item_amount):
                     item_count += 1
                     if rule.name not in goal_locations:
                         items.append(rule.name)
@@ -555,7 +548,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             match condition.condition:
                 case "npc":
                     assert(isinstance(condition.argument, int))
-                    return HasFromList(*npcs, count=condition.argument)
+                    return HasFromList(*flag_to_items["Npc"], count=condition.argument)
                 case "npc_rando":
                     return bool_to_rule(not (condition.sign ^ self.options.randomize_npcs.value))
                 case "depth":
@@ -583,7 +576,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                         raise Exception("@pickaxe requires an integer argument")
 
                     eligible_items = []
-                    for pickaxe, power in pickaxes.items():
+                    for pickaxe, power in flag_to_items["Pickaxe"]:
                         if power >= condition.argument:
                             eligible_items.append(pickaxe)
 
@@ -593,14 +586,14 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                         raise Exception("@hammer requires an integer argument")
 
                     eligible_items = []
-                    for hammer, power in hammers.items():
+                    for hammer, power in flag_to_items["Hammer"]:
                         if power >= condition.argument:
                             eligible_items.append(hammer)
 
                     return HasAny(*eligible_items)
                 case "mech_boss":
                     assert(isinstance(condition.argument, int))
-                    return HasFromList(*mech_bosses, count=condition.argument)
+                    return HasFromList(*flag_to_items["Mech Boss"], count=condition.argument)
                 case "minions":
                     assert (isinstance(condition.argument, int))
                     return HasMinion(condition.argument)
@@ -613,6 +606,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
                     health_required = max(condition.argument + self.options.health_logic_handicap.value, 1)
 
+                    health_upgrades = flag_to_items["Health"]
                     if health_required == 1:
                         health_rule = Has(health_upgrades[0])
                     elif health_required == 2:
@@ -621,7 +615,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                         highest_base = HasAll(*health_upgrades[:2])
                         quarter_fruits_required = health_required - 2
                         quarter_fruits_rule = HasFromList(
-                            *quarter_fruits,
+                            *flag_to_items["Quarter Fruit"],
                             count=quarter_fruits_required,
                             options=[OptionFilter(Mods, "Calamity", operator="contains")],
                             filtered_resolution=True
@@ -702,13 +696,13 @@ class HasMinion(Rule["TerrariaWorld"], game=TerrariaWorld.game):
         @override
         def _evaluate(self, state: CollectionState) -> bool:
             count = 1
-            for armor, minion in armor_minions:
+            for armor, minion in flag_to_items["Armor Minions"]:
                 if state.has(armor, self.player):
                     count += minion
                     break
             if count >= self.target:
                 return True
-            for accessory, minion in accessory_minions:
+            for accessory, minion in flag_to_items["Minions"]:
                 if state.has(accessory, self.player):
                     count += minion
                     if count >= self.target:
@@ -718,6 +712,6 @@ class HasMinion(Rule["TerrariaWorld"], game=TerrariaWorld.game):
         @override
         def item_dependencies(self) -> dict[str, set[int]]:
             item_dict = {}
-            for item in armor_minions + accessory_minions:
+            for item in flag_to_items["Armor Minions"] + flag_to_items["Minions"]:
                 item_dict[item[0]] = {id(self)}
             return item_dict

@@ -1,6 +1,6 @@
 from BaseClasses import Item, Location
 from typing import Tuple, Union, Set, List, Dict
-from .Flags import rule_flags, set_flags, tuple_flags, is_location_is_item
+from .Flags import rule_flags, list_flags, tuple_list_flags, is_location_is_item
 import string
 import pkgutil
 
@@ -269,26 +269,8 @@ def read_data() -> Tuple[
     Dict[str, int],
     # Location name to Item name
     Dict[str, str],
-    # Progressive Item to Count
-    Dict[str, int],
-    # NPCs
-    List[str],
-    # Pickaxe to pick power
-    Dict[str, int],
-    # Hammer to hammer power
-    Dict[str, int],
-    # Mechanical bosses
-    List[str],
-    # Calamity final bosses
-    List[str],
-    # Armor to minion count,
-    Tuple[Tuple[str, int]],
-    # Accessory to minion count,
-    Tuple[Tuple[str, int]],
-    # Health upgrades
-    List[str],
-    # Calamity health upgrades that are unordered and give 25 health each
-    List[str],
+    # Flag to items
+    Dict[str, set]
 ]:
     next_id = 0x7E0000
     item_name_to_id = {}
@@ -298,19 +280,12 @@ def read_data() -> Tuple[
     rules = []
     rule_indices = {}
     loc_to_item = {}
-    progressive_to_count = {}
-
-    npcs = []
-    pickaxes = {}
-    hammers = {}
     mech_boss_loc = []
     mech_bosses = []
     final_boss_loc = []
     final_bosses = []
-    armor_minions_list = []
-    accessory_minions_list = []
-    health_upgrades = []
-    quarter_fruits = []
+
+    flag_to_items = {}
 
     progression = set()
 
@@ -566,20 +541,21 @@ def read_data() -> Tuple[
 
             loc_to_item[name] = item_name
 
-            if (count := flags.get("Progressive Item")) is not None:
-                progressive_to_count[name] = count
+            for flag in flags:
 
-            if "Npc" in flags:
-                npcs.append(name)
+                if flag in list_flags:
+                    if not flag_to_items.get(flag):
+                        flag_to_items[flag] = []
+                    flag_to_items[flag].append(item_name)
 
-            elif "Pet" in flags:
-                npcs.append(name)
-
-            if (power := flags.get("Pickaxe")) is not None:
-                pickaxes[name] = power
-
-            if (power := flags.get("Hammer")) is not None:
-                hammers[name] = power
+                elif flag in tuple_list_flags:
+                    if not flag_to_items.get(flag):
+                        flag_to_items[flag] = []
+                    if (value := flags.get(flag)) is None:
+                        raise Exception(
+                            f"item `{name} on line `{line + 1}` has flag {flag} without assigned value"
+                        )
+                    flag_to_items[flag].append((item_name, value))
 
             if "Mech Boss" in flags:
                 mech_bosses.append(flags["Item"] or f"Post-{name}")
@@ -588,18 +564,6 @@ def read_data() -> Tuple[
             if "Final Boss" in flags:
                 final_bosses.append(flags["Item"] or f"Post-{name}")
                 final_boss_loc.append(name)
-
-            if (minions := flags.get("Armor Minions")) is not None:
-                armor_minions_list.append((name, minions))
-
-            if (minions := flags.get("Minions")) is not None:
-                accessory_minions_list.append((name, minions))
-
-            if "Health" in flags:
-                health_upgrades.append(name)
-
-            if "Quarter Fruit" in flags:
-                quarter_fruits.append(name)
 
         if goal:
             if goal in goal_indices:
@@ -629,8 +593,7 @@ def read_data() -> Tuple[
     _, final_boss_items = goals[goal_indices["calamity_final_bosses"]]
     final_boss_items.update(final_boss_loc)
 
-    armor_minions = tuple(sorted(armor_minions_list, key=lambda item: item[1], reverse=True))
-    accessory_minions = tuple(accessory_minions_list)
+    flag_to_items["Armor Minions"] = list(sorted(flag_to_items["Armor Minions"], key=lambda item: item[1], reverse=True))
 
     for rule in rules:
         validate_conditions(rule.name, rule_indices, rule.conditions)
@@ -735,16 +698,7 @@ def read_data() -> Tuple[
         item_name_to_id,
         location_name_to_id,
         loc_to_item,
-        progressive_to_count,
-        npcs,
-        pickaxes,
-        hammers,
-        mech_bosses,
-        final_bosses,
-        armor_minions,
-        accessory_minions,
-        health_upgrades,
-        quarter_fruits,
+        flag_to_items,
     )
 
 
@@ -757,14 +711,5 @@ def read_data() -> Tuple[
     item_name_to_id,
     location_name_to_id,
     loc_to_item,
-    progressive_to_count,
-    npcs,
-    pickaxes,
-    hammers,
-    mech_bosses,
-    final_bosses,
-    armor_minions,
-    accessory_minions,
-    health_upgrades,
-    quarter_fruits,
+    flag_to_items,
 ) = read_data()
