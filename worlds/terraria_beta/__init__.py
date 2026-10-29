@@ -378,6 +378,57 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 else:
                     logInfoIf("Terraria (Beta) says (Code NonIdiot009_5) true "+rule.item_name)
                     return set()
+            if isinstance(rule, HasFromList):
+                # makes sure that if it loops back to the same thing, it returns false instead of looping
+                if already_covered.__contains__(",".join(rule.item_names)):
+                    return set("rule at depth "+str(layers_deep)+" that is HasFromList of len "+str(len(rule.item_names))+" that has looped already")
+                already_covered.append(",".join(rule.item_names))
+                can_do_amt = 0
+                result = set()
+                logInfoIfBasic("Terraria (Beta) says (Code NonIdiot010) HasFromList (len "+str(len(rule.item_names))+", deepness"+str(layers_deep)+")")
+                for r in rule.item_names:
+                    assert isinstance(r, str)
+                    bad_flags = set()
+                    if r in self.ter_rules:
+                        bad_flags = unreachable_rules(self.ter_rules[r],already_covered.copy(),layers_deep+1)
+                    if not bad_flags:
+                        can_do_amt += 1
+                        if can_do_amt >= rule.count:
+                            return set()
+                    result = result.union(bad_flags)
+                if can_do_amt >= rule.count:
+                    return set()
+                return result
+            if isinstance(rule, HasAll):
+                # makes sure that if it loops back to the same thing, it returns false instead of looping
+                if already_covered.__contains__(",".join(rule.item_names)):
+                    return set("rule at depth "+str(layers_deep)+" that is HasAll of len "+str(len(rule.item_names))+" that has looped already")
+                already_covered.append(",".join(rule.item_names))
+                result = set()
+                logInfoIfBasic("Terraria (Beta) says (Code NonIdiot010) HasAll (len "+str(len(rule.item_names))+", deepness"+str(layers_deep)+")")
+                for r in rule.item_names:
+                    assert isinstance(r, str)
+                    bad_flags = set()
+                    if r in self.ter_rules:
+                        bad_flags = unreachable_rules(self.ter_rules[r],already_covered.copy(),layers_deep+1)
+                    result = result.union(bad_flags)
+                return result
+            if isinstance(rule, HasAny):
+                # makes sure that if it loops back to the same thing, it returns false instead of looping
+                if already_covered.__contains__(",".join(rule.item_names)):
+                    return set("rule at depth "+str(layers_deep)+" that is HasAny of len "+str(len(rule.item_names))+" that has looped already")
+                already_covered.append(",".join(rule.item_names))
+                result = set()
+                logInfoIfBasic("Terraria (Beta) says (Code NonIdiot010) HasAny (len "+str(len(rule.item_names))+", deepness"+str(layers_deep)+")")
+                for r in rule.item_names:
+                    assert isinstance(r, str)
+                    bad_flags = set()
+                    if r in self.ter_rules:
+                        bad_flags = unreachable_rules(self.ter_rules[r],already_covered.copy(),layers_deep+1)
+                    if not bad_flags:
+                        return set()
+                    result = result.union(bad_flags)
+                return result
             elif isinstance(rule, And):
                 result = set()
                 logInfoIfBasic("Terraria (Beta) says (Code NonIdiot010) And (len "+str(len(rule.children))+", deepness"+str(layers_deep)+")")
