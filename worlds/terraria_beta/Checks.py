@@ -554,14 +554,13 @@ def read_data() -> Tuple[
 
             _, is_item = is_location_is_item(list(flags.keys()))
             item_name = name
-            if "Item" in flags:
-                item_name = flags["Item"] or f"Post-{name}"
+            if is_item:
+                if "Item" in flags:
+                    item_name = flags["Item"] or f"Post-{name}"
                 if item_name in item_name_to_id:
                     raise Exception(
                         f"item `{item_name}` on line `{line + 1}` shadows a previous item"
                     )
-
-            if is_item:
                 item_name_to_id[item_name] = next_id
                 next_id += 1
 
