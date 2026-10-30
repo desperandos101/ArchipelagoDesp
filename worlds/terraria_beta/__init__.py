@@ -1,5 +1,6 @@
 # Look at `Rules.dsv` first to get an idea for how this works
 
+import copy
 import dataclasses
 import logging
 from typing import Union, Tuple, List, Dict, Set, override
@@ -153,8 +154,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         self.goal_items: Set[str]
         self.goal_locations: Set[str]
 
-        self.disabled_rules: Set[str] # to be used soon, by Researchsanity
-
     # Yamlless UT Support
     @staticmethod
     def interpret_slot_data(slot_data: Dict[str, object]) -> Dict[str, object]:
@@ -215,7 +214,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                     goal, _ = goals[self.options.shuffle_to.value]
         ter_goals = {}
         goal_items = set()
-        self.disabled_rules = set()
 
         for location in goal_locations:
             if location == "Wall of Flesh" and not self.options.randomize_npcs.value:
@@ -294,8 +292,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
         valid_rules = rules[:goal] if goal != 0 else rules
         for rule in valid_rules:
-            if rule.name in self.disabled_rules:
-                continue
 
             if invalid_flag(rule.flags, self.options) and rule.name not in goal_locations:
                 continue
@@ -354,9 +350,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 logInfoIfBasic("Terraria (Beta) says (Code NonIdiot008) Deepness "+str(layers_deep)+": "+rule.item_name)
                 if rule.item_name in bad_events:
                     logInfoIf("Terraria (Beta) says (Code NonIdiot009_1) false "+rule.item_name)
-                    return {rule.item_name}
-                if rule.item_name in self.disabled_rules:
-                    logInfoIf("Terraria (Beta) says (Code NonIdiot009_2) false "+rule.item_name)
                     return {rule.item_name}
                 if rule.item_name not in events:
                     logInfoIf("Terraria (Beta) says (Code NonIdiot009_3) true "+rule.item_name)
