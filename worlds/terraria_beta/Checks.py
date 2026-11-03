@@ -680,8 +680,6 @@ def read_data() -> Tuple[
     location_name_to_id = {}
 
     for rule in rules:
-        if rule.name == "Squire Slime":
-            pass
         is_loc, _ = is_location_is_item(rule.flags)
         if is_loc:
             if rule.name in location_name_to_id:
