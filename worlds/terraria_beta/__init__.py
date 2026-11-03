@@ -22,8 +22,8 @@ from .Checks import (
     TerrariaLocation,
     Condition,
     goals,
-    rules,
-    rule_indices,
+    entries,
+    entry_indices,
     labels,
     rewards,
     item_name_to_id,
@@ -65,8 +65,8 @@ class TerrariaSpoiler(Spoiler):
             if not options.compressed_playthrough.value or not loc.is_event:
                 continue
 
-            rule = rules[rule_indices[loc.name]]
-            if options.health_logic.value and ("Health" in rule.flags or "Quarter Fruit" in rule.flags):
+            entry = entries[entry_indices[loc.name]]
+            if options.health_logic.value and ("Health" in entry.flags or "Quarter Fruit" in entry.flags):
                 continue
 
             hidden.add(loc.name + f" ({self.multiworld.get_player_name(loc.player)})" if self.multiworld.players > 1 else loc.name)
@@ -208,7 +208,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 logging.warning(
                     f"SLOT {slot_name}: goal 'Wall of Flesh' was enabled was selected with NPC Randomization disabled. The resulting game will be goalable from Sphere 1."
                 )
-            flags = rules[rule_indices[location]].flags
+            flags = entries[entry_indices[location]].flags
             if "Calamity" not in self.options.mods.value and "Calamity" in flags:
                 logging.warning(
                     f"SLOT {slot_name}: goal `{Goal.name_lookup[self.options.goal.value]}`, which requires Calamity, was selected with Calamity disabled; enabling Calamity"
@@ -257,98 +257,53 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         bad_events = set()
         events_to_evaluate = {}
 
-        def mark_progression(operator, conditions):
-            for condition in conditions:
-                if condition.type == COND_ITEM:
-                    prog = condition.condition in self.progression
-                    self.progression.add(loc_to_item[condition.condition])
-                    rule = rules[rule_indices[condition.condition]]
-                    if (
-                            not prog
-                            and not any(is_location_is_item(rule.flags, self.options))
-                    ):
-                        mark_progression(rule.operator, rule.conditions)
-                elif condition.type == COND_LOC:
-                    rule = rules[rule_indices[condition.condition]]
-                    mark_progression(rule.operator, rule.conditions)
-                elif condition.type == COND_GROUP:
-                    operator, conds = condition.condition
-                    rule = self.create_rule_ini(operator, conds)
-                    if isinstance(rule, True_) or isinstance(rule, False_):
-                        continue
-                    mark_progression(operator, conds)
+        def mark_progression(rule: Rule[TerrariaWorld]):
+            # do recursive self.progression adding stuff
+            pass
 
-        valid_rules = rules[:goal] if goal != 0 else rules
-        for rule in valid_rules:
+        valid_entries = entries[:goal] if goal != 0 else entries
+        for entry in valid_entries:
 
-            if invalid_flag(rule.flags, self.options) and rule.name not in goal_locations:
+            if invalid_flag(entry.flags, self.options) and entry.name not in goal_locations:
                 continue
 
-            if rule.name in goal_locations:
-                self.progression.add(loc_to_item[rule.name])
-                mark_progression(rule.operator, rule.conditions)
+            # move this up
+            if entry.name in goal_locations:
+                self.progression.add(loc_to_item[entry.name])
+                mark_progression(entry.rule)
 
-            for flag in rule.flags:
+            for flag in entry.flags:
                 if flag in list_flags or flag in tuple_list_flags:
                     if flag not in events_to_evaluate:
                         events_to_evaluate[flag] = set()
-                    events_to_evaluate[flag].add(rule.name)
+                    events_to_evaluate[flag].add(entry.name)
 
-            built_rule = self.create_rule_ini(rule.operator, rule.conditions)
-            if isinstance(built_rule, False_):
-                bad_events.add(rule.name)
-            self.ter_rules[rule.name] = built_rule
+            print(entry.name)
+            built_rule = entry.rule.resolve(self)
+            self.ter_rules[entry.name] = built_rule
 
-            is_loc, is_item = is_location_is_item(rule.flags, self.options)
+            is_loc, is_item = is_location_is_item(entry.flags, self.options)
 
             if is_loc:
                 location_count += 1
-                locations.append(rule.name)
-                if "Npc" in rule.flags:
-                    self.npcs_to_randomize.add(rule.name)
-            if is_item and not ("Achievement" in rule.flags and rule.name not in goal_locations):
+                locations.append(entry.name)
+                if "Npc" in entry.flags:
+                    self.npcs_to_randomize.add(entry.name)
+            if is_item and not ("Achievement" in entry.flags and entry.name not in goal_locations):
                 # Item
-                item_amount = next((amount for item, amount in flag_to_items["Progressive Item"] if item == rule.name), 1)
+                item_amount = next((amount for item, amount in flag_to_items["Progressive Item"] if item == entry.name), 1)
                 for i in range(item_amount):
                     item_count += 1
-                    if rule.name not in goal_locations:
-                        items.append(rule.name)
+                    if entry.name not in goal_locations:
+                        items.append(entry.name)
             elif not is_loc and not is_item:
                 # Event
-                locations.append(rule.name)
-                events.append(rule.name)
-                items.append(rule.name)
-
-        # Audit locations, mark progression
-        def unreachable_rules(rule: Rule) -> Set[str]:
-            if isinstance(rule, Has):
-                assert isinstance(rule.item_name, str)
-                if rule.item_name in bad_events:
-                    return {rule.item_name}
-                if rule.item_name not in events:
-                    return set()
-                if isinstance(self.ter_rules[rule.item_name], False_):
-                    return {rule.item_name}
-                sub_result = unreachable_rules(self.ter_rules[rule.item_name])
-                return sub_result.union({rule.item_name}) if sub_result else set()
-            elif isinstance(rule, And):
-                result = set()
-                for r in rule.children:
-                    result = result.union(unreachable_rules(r))
-                return result
-            elif isinstance(rule, Or):
-                result = set()
-                for r in rule.children:
-                    bad_flags = unreachable_rules(r)
-                    if not bad_flags:
-                        return set()
-                    result = result.union(bad_flags)
-                return result
-            else:
-                return set()
+                locations.append(entry.name)
+                events.append(entry.name)
+                items.append(entry.name)
 
         for name in self.ter_rules:
-            if name in events and unreachable_rules(self.ter_rules[name]):
+            if name in events and self.ter_rules[name].always_false:
                 bad_events.add(name)
 
         bad_locs = set()
@@ -369,8 +324,8 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                     bad_events.add(item)
                     continue
                 self.progression.add(loc_to_item[item])
-                rule = rules[rule_indices[item]]
-                mark_progression(rule.operator, rule.conditions)
+                entry = rules[rule_indices[item]]
+                mark_progression(entry.operator, entry.conditions)
 
         location_count -= len(bad_locs)
         locations = [loc for loc in locations if (loc not in bad_locs and loc not in bad_events)]
@@ -488,64 +443,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         for location, item in locked_items.items():
             self.multiworld.get_location(location, self.player).place_locked_item(item)
 
-    def create_rule_ini(
-            self,
-            operator: Union[bool, None],
-            conditions: List[
-                Tuple[
-                    bool,
-                    int,
-                    Union[str, Tuple[Union[bool, None], list]],
-                    Union[str, int, None],
-                ]
-            ]
-    ) -> Rule:
-        if operator is None:
-            if len(conditions) == 0:
-                return True_()
-            if len(conditions) > 1:
-                raise Exception("Found multiple conditions without an operator")
-            cond = self.create_rule(conditions[0])
-            if isinstance(cond, bool):
-                return True_() if cond else False_()
-            return cond
-        sub_rules = [self.create_rule(condition) for condition in conditions]
-
-        if operator:
-            if any(isinstance(r, True_) for r in sub_rules):
-                return True_()
-            elif all(isinstance(r, False_) for r in sub_rules):
-                return False_()
-            final_rules = [r for r in sub_rules if not isinstance(r, False_)]
-            return final_rules[0] if len(final_rules) == 1 else Or(*final_rules)
-        else:
-            if any(isinstance(r, False_) for r in sub_rules):
-                return False_()
-            elif all(isinstance(r, True_) for r in sub_rules):
-                return True_()
-            final_rules = [r for r in sub_rules if not isinstance(r, True_)]
-            return final_rules[0] if len(final_rules) == 1 else And(*final_rules)
-
-    def create_rule(self, condition: Condition) -> Rule:
-        if condition.type == COND_ITEM:
-            rule = rules[rule_indices[condition.condition]]
-            if "Item" in rule.flags:
-                name = rule.flags.get("Item") or f"Post-{condition.condition}"
-            else:
-                name = condition.condition
-
-            assert(isinstance(name, str))
-            return Has(name)
-        elif condition.type == COND_LOC:
-            rule = rules[rule_indices[condition.condition]]
-            return self.create_rule_ini(rule.operator, rule.conditions)
-        elif condition.type == COND_FN:
-            def bool_to_rule(b):
-                return True_() if b else False_()
-        elif condition.type == COND_GROUP:
-            operator, conditions = condition.condition
-
-            return self.create_rule_ini(operator, conditions)
 
     def set_rules(self) -> None:
         for location_name in self.ter_locations:

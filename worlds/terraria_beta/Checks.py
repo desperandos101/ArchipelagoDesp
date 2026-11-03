@@ -890,8 +890,8 @@ def read_data() -> Tuple[
 
 (
     goals,
-    rules,
-    rule_indices,
+    entries,
+    entry_indices,
     labels,
     rewards,
     item_name_to_id,
