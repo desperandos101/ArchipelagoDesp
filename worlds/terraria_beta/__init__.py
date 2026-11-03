@@ -17,6 +17,7 @@ from .Flags import (
     is_location_is_item, list_flags, tuple_list_flags
 )
 from .Checks import (
+    game_name,
     TerrariaItem,
     TerrariaLocation,
     Condition,
@@ -32,7 +33,7 @@ from .Checks import (
     COND_ITEM,
     COND_LOC,
     COND_FN,
-    COND_GROUP,
+    COND_GROUP, OUT_OF_LOGIC,
 )
 from .Options import TerrariaOptions, Goal, ter_option_groups, RandomizeNPCs, Mods, RareAchievements, \
     TimeAchievements, HealthLogic, Getfixedboi, ShimmerSkips, FishingSkips, RandomizeDepth
@@ -111,7 +112,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     Terraria is a 2D multiplayer sandbox game featuring mining, building, exploration, and combat.
     Features 18 bosses and 4 classes.
     """
-    game = "Terraria Beta"
+    game = game_name
     web = TerrariaWeb()
     options_dataclass = TerrariaOptions
     options: TerrariaOptions
@@ -127,10 +128,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     ut_can_gen_without_yaml = True
 
     required_client_version = (0, 6, 200)
-    
-    OUT_OF_LOGIC = "UT Health Logic"
-    if OUT_OF_LOGIC not in item_name_to_id:
-        item_name_to_id[OUT_OF_LOGIC] = max(item_name_to_id.values()) + 1
 
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
@@ -189,7 +186,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         if not isinstance(self.multiworld.spoiler, TerrariaSpoiler):
             self.multiworld.spoiler = TerrariaSpoiler(self.multiworld)
         
-        self.glitches_item_name = self.OUT_OF_LOGIC
+        self.glitches_item_name = OUT_OF_LOGIC
 
         goal, goal_locations = goals[self.options.goal.value]
         slot_name = self.multiworld.player_name[self.player]
@@ -545,96 +542,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         elif condition.type == COND_FN:
             def bool_to_rule(b):
                 return True_() if b else False_()
-            match condition.condition:
-                case "npc":
-                    assert(isinstance(condition.argument, int))
-                    return HasFromList(*flag_to_items["Npc"], count=condition.argument)
-                case "npc_rando":
-                    return bool_to_rule(not (condition.sign ^ self.options.randomize_npcs.value))
-                case "depth":
-                    assert(isinstance(condition.argument, int))
-                    return Has("Progressive Depth", count=condition.argument,
-                               options=[OptionFilter(RandomizeDepth, 1, "ge")],
-                               filtered_resolution=True)
-                case "depth_unsafe":
-                    assert(isinstance(condition.argument, int) and 0 < condition.argument < 3)
-                    safety_level = self.options.randomize_depth.option_on + condition.argument
-                    r = bool_to_rule(not (condition.sign ^ (self.options.randomize_depth.value < safety_level)))
-                    if self.is_ut:
-                        return Or(r, Has(self.OUT_OF_LOGIC))
-                    return r
-                case "calamity":
-                    return bool_to_rule(not (condition.sign ^ ("Calamity" in self.options.mods.value)))
-                case "fargo":
-                    return bool_to_rule(not (condition.sign ^ ("Fargo" in self.options.mods.value)))
-                case "rare":
-                    return bool_to_rule(not (condition.sign ^ self.options.rare_achievements.value))
-                case "time":
-                    return bool_to_rule(not (condition.sign ^ self.options.time_achievements.value))
-                case "pickaxe":
-                    if type(condition.argument) is not int:
-                        raise Exception("@pickaxe requires an integer argument")
-
-                    eligible_items = []
-                    for pickaxe, power in flag_to_items["Pickaxe"]:
-                        if power >= condition.argument:
-                            eligible_items.append(pickaxe)
-
-                    return HasAny(*eligible_items)
-                case "hammer":
-                    if type(condition.argument) is not int:
-                        raise Exception("@hammer requires an integer argument")
-
-                    eligible_items = []
-                    for hammer, power in flag_to_items["Hammer"]:
-                        if power >= condition.argument:
-                            eligible_items.append(hammer)
-
-                    return HasAny(*eligible_items)
-                case "mech_boss":
-                    assert(isinstance(condition.argument, int))
-                    return HasFromList(*flag_to_items["Mech Boss"], count=condition.argument)
-                case "minions":
-                    assert (isinstance(condition.argument, int))
-                    return HasMinion(condition.argument)
-                case "health":
-                    if type(condition.argument) is not int:
-                        raise Exception("@health requires an integer argument")
-
-                    if not self.options.health_logic.value:
-                        return True_()
-
-                    health_required = max(condition.argument + self.options.health_logic_handicap.value, 1)
-
-                    health_upgrades = flag_to_items["Health"]
-                    if health_required == 1:
-                        health_rule = Has(health_upgrades[0])
-                    elif health_required == 2:
-                        health_rule = HasAll(*health_upgrades[:2])
-                    else:
-                        highest_base = HasAll(*health_upgrades[:2])
-                        quarter_fruits_required = health_required - 2
-                        quarter_fruits_rule = HasFromList(
-                            *flag_to_items["Quarter Fruit"],
-                            count=quarter_fruits_required,
-                            options=[OptionFilter(Mods, "Calamity", operator="contains")],
-                            filtered_resolution=True
-                        )
-                        health_rule = highest_base & quarter_fruits_rule
-
-                    # Out of logic will be shown as Glitched Logic.
-                    if self.is_ut:
-                        return Or(health_rule, Has(self.OUT_OF_LOGIC))
-
-                    return Filtered(health_rule, filtered_resolution=True)
-                case "getfixedboi":
-                    return bool_to_rule(not (condition.sign ^ self.options.getfixedboi.value))
-                case "fishing":
-                    return bool_to_rule(not (condition.sign ^ self.options.fishing_skips.value))
-                case "shimmer_skips":
-                    return bool_to_rule(not (condition.sign ^ self.options.shimmer_skips.value))
-                case _:
-                    raise Exception(f"Unknown function {condition.condition}")
         elif condition.type == COND_GROUP:
             operator, conditions = condition.condition
 
@@ -680,38 +587,3 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             "health_logic": self.options.health_logic.value,
             "health_logic_handicap": self.options.health_logic_handicap.value,
         }
-
-@dataclasses.dataclass()
-class HasMinion(Rule["TerrariaWorld"], game=TerrariaWorld.game):
-
-    target: int
-
-    @override
-    def _instantiate(self, world: TWorld) -> Rule.Resolved:
-        return self.Resolved(self.target, player=world.player, caching_enabled=True)
-
-    class Resolved(Rule.Resolved):
-        target: int
-
-        @override
-        def _evaluate(self, state: CollectionState) -> bool:
-            count = 1
-            for armor, minion in flag_to_items["Armor Minions"]:
-                if state.has(armor, self.player):
-                    count += minion
-                    break
-            if count >= self.target:
-                return True
-            for accessory, minion in flag_to_items["Minions"]:
-                if state.has(accessory, self.player):
-                    count += minion
-                    if count >= self.target:
-                        return True
-            return False
-
-        @override
-        def item_dependencies(self) -> dict[str, set[int]]:
-            item_dict = {}
-            for item in flag_to_items["Armor Minions"] + flag_to_items["Minions"]:
-                item_dict[item[0]] = {id(self)}
-            return item_dict
