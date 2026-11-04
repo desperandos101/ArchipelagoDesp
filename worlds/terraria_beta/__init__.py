@@ -120,6 +120,9 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
 
+    entries = entries
+    entry_indices = entry_indices
+
     calamity = False
     fargo = False
     getfixedboi = False
@@ -136,6 +139,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
         self.ter_items: List[str]
         self.ter_locations: List[str]
+        self.bad_events = set()
         self.ter_rules = dict()
 
         self.ter_goals: Dict[str, str]
@@ -254,7 +258,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         items = []
 
         events = []
-        bad_events = set()
         events_to_evaluate = {}
 
         def mark_progression(rule: Rule[TerrariaWorld]):
@@ -301,9 +304,23 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                 events.append(entry.name)
                 items.append(entry.name)
 
-        for name in self.ter_rules:
-            if name in events and self.ter_rules[name].always_false:
-                bad_events.add(name)
+        # This block evaluates for bad events, or events that will always be false
+        # given the current option configuration.
+        # See also: The custom HasValid rule
+        while True:
+            new_baddies = set()
+            for name in self.ter_rules.keys():
+                if name in self.bad_events:
+                    continue
+                item_dependents = self.ter_rules[name].item_dependencies().keys()
+                if self.bad_events.intersection(item_dependents):
+                    self.ter_rules[name] = entries[entry_indices[name]].rule.resolve(self)
+                if self.ter_rules[name].always_false:
+                    new_baddies.add(name)
+            if not new_baddies:
+                break
+            self.bad_events.update(new_baddies)
+
 
         bad_locs = set()
         for loc in locations:

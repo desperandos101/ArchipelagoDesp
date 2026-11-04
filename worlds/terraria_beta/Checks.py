@@ -219,6 +219,18 @@ class Entry:
 
 
 @dataclasses.dataclass()
+class HasValid(Rule["TerrariaWorld"], game=game_name):
+
+    item: str
+
+    def _instantiate(self, world: "TerrariaWorld") -> "Resolved":
+        if self.item in world.bad_events:
+            return False_().resolve(world)
+        else:
+            return Has(self.item).resolve(world)
+
+
+@dataclasses.dataclass()
 class HasMinion(Rule["TerrariaWorld"], game=game_name):
 
     target: int
@@ -627,7 +639,7 @@ def read_data() -> Tuple[
             else:
                 cond_name = cond.condition
             assert isinstance(cond_name, str)
-            return Has(cond_name)
+            return HasValid(cond_name)
         elif cond.type == COND_LOC:
             _, _, op, conds = entry_parts[entry_indices[cond.condition]]
             return conditions_to_rule(op, conds)
