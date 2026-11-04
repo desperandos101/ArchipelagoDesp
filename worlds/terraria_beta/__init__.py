@@ -278,7 +278,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
                         events_to_evaluate[flag] = set()
                     events_to_evaluate[flag].add(entry.name)
 
-            print(entry.name)
             built_rule = entry.rule.resolve(self)
             self.ter_rules[entry.name] = built_rule
 
