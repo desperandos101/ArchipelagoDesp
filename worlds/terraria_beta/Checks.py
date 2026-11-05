@@ -717,7 +717,7 @@ def read_data() -> Tuple[
                                                                            max_handicap,
                                                                            "lt")],
                                                      filtered_resolution=True))
-                        return Or(And(*rule_sum, options=[OptionFilter(HealthLogic, 1, "eq")]),
+                        return Or(And(*rule_sum, options=[OptionFilter(HealthLogic, 1, "eq")], filtered_resolution=True),
                                   Has(OUT_OF_LOGIC))
 
                     health_upgrades = flag_to_items["Health"]
