@@ -11,7 +11,7 @@ from worlds.AutoWorld import WebWorld, World
 from BaseClasses import Region, ItemClassification, Tutorial, CollectionState, Spoiler, MultiWorld
 from rule_builder.options import OptionFilter
 from rule_builder.rules import Has, HasAny, HasAll, True_, False_, And, Or, Rule, TWorld, HasFromList, Filtered, \
-    HasAnyCount
+    HasAnyCount, NestedRule
 from .Flags import (
     invalid_flag,
     is_location_is_item, list_flags, tuple_list_flags
@@ -258,11 +258,9 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         items = []
 
         events = []
-        events_to_evaluate = {}
 
-        def mark_progression(rule: Rule[TerrariaWorld]):
-            # do recursive self.progression adding stuff
-            pass
+        def mark_progression(rule: Rule.Resolved):
+            self.progression.update(rule.item_dependencies().keys())
 
         valid_entries = entries[:goal] if goal != 0 else entries
         for entry in valid_entries:
@@ -270,19 +268,12 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             if invalid_flag(entry.flags, self.options) and entry.name not in goal_locations:
                 continue
 
-            # move this up
-            if entry.name in goal_locations:
-                self.progression.add(loc_to_item[entry.name])
-                mark_progression(entry.rule)
-
-            for flag in entry.flags:
-                if flag in list_flags or flag in tuple_list_flags:
-                    if flag not in events_to_evaluate:
-                        events_to_evaluate[flag] = set()
-                    events_to_evaluate[flag].add(entry.name)
-
             built_rule = entry.rule.resolve(self)
             self.ter_rules[entry.name] = built_rule
+
+            if entry.name in goal_locations:
+                self.progression.add(loc_to_item[entry.name])
+                mark_progression(built_rule)
 
             is_loc, is_item = is_location_is_item(entry.flags, self.options)
 
@@ -325,30 +316,22 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         bad_locs = set()
         for loc in locations:
             if loc not in events:
-                sub_result = unreachable_rules(self.ter_rules[loc])
-                if sub_result:
+                self.ter_rules[loc] = entries[entry_indices[loc]].rule.resolve(self)
+                if self.ter_rules[loc].always_false:
                     bad_locs.add(loc)
-                    bad_events = bad_events.union(sub_result)
+
         if bad_locs:
             logging.warning(f"SLOT {slot_name}: The following locations are inaccessible due to your config and will be removed:\n"
                             f" - {'\n - '.join(bad_locs)}")
 
-        for flag in events_to_evaluate.keys():
-            pool = events_to_evaluate[flag]
-            for item in pool:
-                if flag == "Pet" and unreachable_rules(self.ter_rules[item]):
-                    bad_events.add(item)
-                    continue
-                self.progression.add(loc_to_item[item])
-                entry = rules[rule_indices[item]]
-                mark_progression(entry.operator, entry.conditions)
 
         location_count -= len(bad_locs)
-        locations = [loc for loc in locations if (loc not in bad_locs and loc not in bad_events)]
+        locations = [loc for loc in locations if (loc not in bad_locs and loc not in self.bad_events)]
         for loc in locations:
-            mark_progression(rules[rule_indices[loc]].operator, rules[rule_indices[loc]].conditions)
-        events = [i for i in events if i not in bad_events]
-        items = [i for i in items if i not in bad_events]
+            if loc not in events:
+                mark_progression(self.ter_rules[loc])
+        events = [i for i in events if i not in self.bad_events]
+        items = [i for i in items if i not in self.bad_events]
 
         pointless_events = [event for event in events if loc_to_item[event] not in self.progression]
         for event in pointless_events:
@@ -401,11 +384,12 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         menu = Region("Menu", self.player, self.multiworld)
 
         for location in self.ter_locations:
-            rule = rules[rule_indices[location]]
-            if "Npc" in rule.flags and not self.options.randomize_npcs.value:
-                location_id = None
-            else:
+            entry = entries[entry_indices[location]]
+            is_location, is_item = is_location_is_item(entry.flags, self.options)
+            if is_location:
                 location_id = location_name_to_id.get(location)
+            else:
+                location_id = None
 
             menu.locations.append(
                 TerrariaLocation(
@@ -416,7 +400,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         self.multiworld.regions.append(menu)
 
     def create_item(self, item: str) -> TerrariaItem:
-        if item in self.progression or item == self.OUT_OF_LOGIC:
+        if item in self.progression:
             classification = ItemClassification.progression
         else:
             classification = ItemClassification.filler
@@ -425,11 +409,11 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
     def create_items(self) -> None:
         for item in self.ter_items:
-            if (rule_index := rule_indices.get(item)) is not None:
-                rule = rules[rule_index]
-                _, is_item = is_location_is_item(rule.flags, self.options)
-                if "Item" in rule.flags:
-                    name = rule.flags.get("Item") or f"Post-{item}"
+            if (entry_index := entry_indices.get(item)) is not None:
+                entry = entries[entry_index]
+                _, is_item = is_location_is_item(entry.flags, self.options)
+                if "Item" in entry.flags:
+                    name = entry.flags.get("Item") or f"Post-{item}"
                 elif is_item:
                     name = item
                 else:
@@ -442,8 +426,8 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         locked_items = {}
 
         for location in self.ter_locations:
-            rule = rules[rule_indices[location]]
-            is_loc, _ = is_location_is_item(rule.flags, self.options)
+            entry = entries[entry_indices[location]]
+            is_loc, _ = is_location_is_item(entry.flags, self.options)
             if not is_loc:
                 if location in self.progression:
                     classification = ItemClassification.progression
@@ -463,9 +447,7 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     def set_rules(self) -> None:
         for location_name in self.ter_locations:
             location = self.multiworld.get_location(location_name, self.player)
-            rule = rules[rule_indices[location_name]]
-            created_rule = self.create_rule_ini(rule.operator, rule.conditions)
-            self.set_rule(location, created_rule)
+            self.set_rule(location, entries[entry_indices[location_name]].rule)
         
         # UT won't recognize you're in go mode because it checks if you have the Post-Boss flags.
         # To fix this we check if we can reach the goal locations.
