@@ -259,9 +259,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
         events = []
 
-        def mark_progression(rule: Rule.Resolved):
-            self.progression.update(rule.item_dependencies().keys())
-
         valid_entries = entries[:goal] if goal != 0 else entries
         for entry in valid_entries:
 
@@ -270,10 +267,6 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
             built_rule = entry.rule.resolve(self)
             self.ter_rules[entry.name] = built_rule
-
-            if entry.name in goal_locations:
-                self.progression.add(loc_to_item[entry.name])
-                mark_progression(built_rule)
 
             is_loc, is_item = is_location_is_item(entry.flags, self.options)
 
@@ -324,6 +317,21 @@ class TerrariaWorld(CachedRuleBuilderWorld):
             logging.warning(f"SLOT {slot_name}: The following locations are inaccessible due to your config and will be removed:\n"
                             f" - {'\n - '.join(bad_locs)}")
 
+
+        def mark_progression(rule: Rule.Resolved):
+            item_deps = list(rule.item_dependencies().keys())
+            while item_deps:
+                next_item = item_deps.pop(0)
+                if next_item in self.progression:
+                    continue
+                self.progression.add(next_item)
+                if next_item in events:
+                    for itm in self.ter_rules[next_item].item_dependencies().keys():
+                        item_deps.append(itm)
+
+        for name in goal_locations:
+            self.progression.add(loc_to_item[name])
+            mark_progression(self.ter_rules[name])
 
         location_count -= len(bad_locs)
         locations = [loc for loc in locations if (loc not in bad_locs and loc not in self.bad_events)]
