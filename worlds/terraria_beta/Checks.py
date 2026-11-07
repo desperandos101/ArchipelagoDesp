@@ -650,7 +650,8 @@ def read_data() -> Tuple[
             match cond.condition:
                 case "npc":
                     assert (isinstance(cond.argument, int))
-                    return HasFromList(*flag_to_items["Npc"], count=cond.argument)
+                    return HasFromList(*(flag_to_items["Npc"] + flag_to_items["Pet"]),
+                                       count=cond.argument)
                 case "npc_rando":
                     return option_to_rule(RandomizeNPCs)
                 case "depth":
