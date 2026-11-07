@@ -36,6 +36,10 @@ rule_flags = [
     "Depth Achievement",
 ]
 
+store_location_name = {
+    "Location"
+}
+
 list_flags = {
     "Item",
     "Location",

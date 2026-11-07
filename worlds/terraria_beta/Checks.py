@@ -6,7 +6,7 @@ from typing import Tuple, Union, Set, List, Dict, override, TYPE_CHECKING
 from rule_builder.options import OptionFilter
 if TYPE_CHECKING:
     from worlds.terraria_beta import TerrariaWorld
-from .Flags import rule_flags, list_flags, tuple_list_flags, is_location_is_item
+from .Flags import rule_flags, list_flags, tuple_list_flags, is_location_is_item, store_location_name
 import string
 import pkgutil
 from rule_builder.rules import TWorld, Rule, True_, False_, Has, And, Or, HasFromList, HasAny, HasAll, Filtered
@@ -603,7 +603,10 @@ def read_data() -> Tuple[
                 if flag in list_flags:
                     if not flag_to_items.get(flag):
                         flag_to_items[flag] = []
-                    flag_to_items[flag].append(item_name)
+                    if flag in store_location_name:
+                        flag_to_items[flag].append(name)
+                    else:
+                        flag_to_items[flag].append(item_name)
 
                 elif flag in tuple_list_flags:
                     if not flag_to_items.get(flag):
