@@ -715,11 +715,11 @@ def read_data() -> Tuple[
                     def cascade_to_rules():
                         rule_sum = []
                         for h in range(len(health_cascade)):
-                            max_handicap = len(health_cascade) - h
+                            min_handicap = h - len(health_cascade)
                             rule_sum.append(Filtered(health_cascade[h],
                                                      options=[OptionFilter(HealthLogicHandicap,
-                                                                           max_handicap,
-                                                                           "lt")],
+                                                                           min_handicap,
+                                                                           "gt")],
                                                      filtered_resolution=True))
                         return Or(And(*rule_sum, options=[OptionFilter(HealthLogic, 1, "eq")], filtered_resolution=True),
                                   Has(OUT_OF_LOGIC))
