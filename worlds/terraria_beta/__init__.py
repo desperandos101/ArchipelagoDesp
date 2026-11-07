@@ -407,13 +407,13 @@ class TerrariaWorld(CachedRuleBuilderWorld):
 
         self.multiworld.regions.append(menu)
 
-    def create_item(self, item: str) -> TerrariaItem:
-        if item in self.progression:
+    def create_item(self, name: str) -> TerrariaItem:
+        if name in self.progression:
             classification = ItemClassification.progression
         else:
             classification = ItemClassification.filler
 
-        return TerrariaItem(item, classification, item_name_to_id[item], self.player)
+        return TerrariaItem(name, classification, item_name_to_id[name], self.player)
 
     def create_items(self) -> None:
         for item in self.ter_items:
