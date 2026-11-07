@@ -631,7 +631,7 @@ def read_data() -> Tuple[
                     f"goal `{goal}` on line `{line + 1}` shadows a previous goal"
                 )
             goal_indices[goal] = len(goals)
-            goals.append((len(entries), set()))
+            goals.append((len(entry_parts), set()))
 
     def condition_to_rule(cond: Condition) -> Rule:
         if cond.type == COND_ITEM:
