@@ -36,6 +36,7 @@ rule_flags = [
 ]
 
 list_flags = {
+    "Item",
     "Npc",
     "Depth",
     "Pet",
@@ -54,6 +55,11 @@ tuple_list_flags = {
 }
 
 assert not list_flags.intersection(tuple_list_flags)
+
+item_flag_to_group = {
+    "Item": "Flags",
+    "Npc": "NPCs",
+}
 
 def invalid_flag(flags: List[str], options: TerrariaOptions):
     for flag in flags:

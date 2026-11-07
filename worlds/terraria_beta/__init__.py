@@ -120,6 +120,12 @@ class TerrariaWorld(CachedRuleBuilderWorld):
     item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
 
+    item_name_groups = {
+        "Flags": set(flag_to_items["Item"]),
+        "NPCs": set(flag_to_items["Npc"]),
+        "Rewards": set(rewards.keys()),
+    }
+
     entries = entries
     entry_indices = entry_indices
 
