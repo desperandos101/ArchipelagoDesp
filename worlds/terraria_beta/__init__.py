@@ -126,6 +126,12 @@ class TerrariaWorld(CachedRuleBuilderWorld):
         "Rewards": set(rewards.keys()),
     }
 
+    location_name_groups = {
+        "Bosses and Events": set(flag_to_items["Location"]),
+        "Achievements": set(flag_to_items["Achievement"]).union(set(flag_to_items["Depth Achievement"])),
+        "NPCs": set(flag_to_items["Npc"]),
+    }
+
     entries = entries
     entry_indices = entry_indices
 

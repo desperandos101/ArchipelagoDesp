@@ -33,12 +33,16 @@ rule_flags = [
     "Health",
     "Quarter Fruit",
     "Depth",
+    "Depth Achievement",
 ]
 
 list_flags = {
     "Item",
+    "Location",
+    "Achievement",
     "Npc",
     "Depth",
+    "Depth Achievement",
     "Pet",
     "Mech Boss",
     "Final Boss",
@@ -93,7 +97,7 @@ def invalid_flag(flags: List[str], options: TerrariaOptions):
                 valid_flag = options.grindy_achievements.value
             case "Fishing":
                 valid_flag = options.fishing_achievements.value
-            case "Depth":
+            case "Depth" | "Depth Achievement":
                 valid_flag = options.randomize_depth.value
         if not valid_flag:
             return True
@@ -111,6 +115,8 @@ def is_location_only(flags: List[str], options: TerrariaOptions | None = None) -
             case "Location":
                 return True
             case "Achievement":
+                return True
+            case "Depth Achievement":
                 return True
     return False
 
