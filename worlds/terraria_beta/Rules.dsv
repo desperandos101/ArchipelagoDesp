@@ -562,7 +562,7 @@ Solar Veil;                         Calamity;                                   
 Vampiric Talisman;                  Calamity;                                   Hardmode Anvil & Raider's Talisman & Eye of Cthulhu & Solar Veil;
 
 // Great Sand Shark
-Great Sand Shark;                   Calamity | Location | Item;                 ((@fargo & Abominationn NPC & Cragmaw Mire) | (#Plantera | (Hardmode Anvil & Forbidden Fragment & Core of Calamity))) & @health(3);
+Great Sand Shark;                   Calamity | Location | Item;                 ((@fargo & Abominationn NPC & Great Sand Shark) | (#Plantera | (Hardmode Anvil & Forbidden Fragment & Core of Calamity))) & @health(3);
 Grand Scale;                        Calamity;                                   #Great Sand Shark | (Shimmer & Sand Shark Tooth Necklace);
 Sand Shark Tooth Necklace;          Calamity;                                   (Tinkerer's Workshop & Shark Tooth Necklace & Avenger Emblem & Grand Scale) | (@getfixedboi & #Desert Scourge);
 
