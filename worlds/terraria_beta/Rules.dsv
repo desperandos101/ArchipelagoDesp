@@ -350,7 +350,7 @@ Cross Necklace;                     ;                                           
 Break Altar;                        ;                                           Wall of Flesh & Altar &  @hammer(80);
 Begone, Evil!;                      Achievement;                                Break Altar;
 Cobalt Ore;                         ;                                           (@fargo & Demolitionist & Moon Lord) | (((~@calamity & Break Altar) | (@calamity & Wall of Flesh)) & Underground & @pickaxe(100)) | (Wall of Flesh & @fishing) | (Shimmer & (Mythril Ore | Cobalt Bar));
-Extra Shiny!;                       Achievement;                                Cobalt Ore | Mythril Ore | Adamantite Ore | Chlorophyte Ore;
+Extra Shiny!;                       Achievement;                                (Cobalt Ore & @pickaxe(100)) | (Mythril Ore & @pickaxe(110)) | (Adamantite Ore & @pickaxe(150)) | #Photosynthesis;  // The achievement triggers on mining it
 Cobalt Bar;                         ;                                           Cobalt Ore | (@calamity & Shimmer & Lunic Eye) | (Wall of Flesh & @fishing);
 Cobalt Pickaxe;                     Pickaxe(110);                               Cobalt Bar;
 Blindfold;                          ;                                           Wall of Flesh | (Shimmer & Pocket Mirror);
@@ -474,7 +474,7 @@ Mechanical Glove;                   ;                                           
 Celestial Emblem;                   ;                                           (Celestial Magnet & Tinkerer's Workshop & Avenger Emblem) | (Shimmer & Sigil of Calamitas);
 Light Disc;                         ;                                           (Hallowed Bar & Soul of Light & Soul of Might) | (@getfixedboi & @calamity & #Evil Boss);
 Chlorophyte Ore;                    ;                                           (@fargo & Demolitionist & Moon Lord) | (Wall of Flesh & @pickaxe(200) & Underground) | (Shimmer & ((~@calamity & Luminite) | Chlorophyte Bar | (@calamity & Perennial Ore)));
-Photosynthesis;                     Achievement;                                Chlorophyte Ore;
+Photosynthesis;                     Achievement;                                Chlorophyte Ore & Pickaxe Axe;  // see Extra Shiny
 Chlorophyte Bar;                    ;                                           (Hardmode Forge & Chlorophyte Ore) | (Shimmer & (Spectre Bar | Shroomite Bar));
 Chlorophyte Armor;                  ;                                           Hardmode Anvil & Chlorophyte Bar;
 True Excalibur;                     ;                                           Hardmode Anvil & Excalibur & Chlorophyte Bar;
