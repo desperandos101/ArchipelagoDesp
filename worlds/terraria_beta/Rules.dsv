@@ -619,7 +619,8 @@ Empress of Light;                   Location | Item | Goal;                     
 # empress_of_light
 
 // Lunatic Cultist
-Lunatic Cultist;                    Location | Item | Goal;                     ((@fargo & Mutant NPC & Lunatic Cultist) | ((@calamity | (Dungeon & Golem)) & Wall of Flesh) | (@calamity & Calamitas Clone)) & @health(4);
+Eidolist;                           Calamity;                                   Abyss Layer 2 & (Wall of Flesh | Calamitas Clone);
+Lunatic Cultist;                    Location | Item | Goal;                     ((@fargo & Mutant NPC & Lunatic Cultist) | (Dungeon & Golem & Wall of Flesh) | Eidolist) & @health(4);
 Astrum Deus;                        Calamity | Location | Item | Goal;          ((@fargo & Mutant NPC & Astrum Deus) | Titan Heart) & @health(4);
 # lunatic_cultist
 # astrum_deus
